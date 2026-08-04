@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Phone, MessageCircle, Sparkles, Heart, ChevronRight, MapPin, Navigation, Ruler, Scissors, Gem } from "lucide-react";
+import { ArrowRight, Phone, MessageCircle, Ruler, Scissors, Gem, GraduationCap, Clock4, Sparkles } from "lucide-react";
 import { SEO, SchemaBuilders } from "@/components/seo/SEO";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -8,23 +8,20 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Counter } from "@/components/ui/Counter";
 import { useTheme } from "@/theme/ThemeContext";
 import { Reveal, Stagger, RevealItem } from "@/components/ui/Reveal";
-import { Badge } from "@/components/ui/Badge";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
 import { ResponsiveHeroBackground } from "@/components/ui/ResponsiveHeroBackground";
-import { ResponsiveHeroPortrait } from "@/components/ui/ResponsiveHeroPortrait";
 import { PressingText } from "@/components/ui/PressingText";
 import { WallOfLove } from "@/components/sections/WallOfLove";
+import { CreationStrip } from "@/components/sections/CreationStrip";
 import { Marquee } from "@/components/ui/Marquee";
 import { Aurora } from "@/components/ui/Aurora";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Spotlight } from "@/components/ui/Spotlight";
-import { StitchDivider } from "@/components/ui/StitchDivider";
-import { SERVICES, FORMULES, TESTIMONIALS, CONTACT } from "@/data/content";
+import { SERVICES, CONTACT } from "@/data/content";
 import { GALLERY_ATELIER } from "@/data/galleries";
 import { env } from "@/utils/env";
 import { buildWhatsAppUrl } from "@/utils/whatsapp";
 import { trackCtaClick, trackPhone, trackWhatsapp } from "@/utils/api";
-import { cn } from "@/utils/cn";
 
 // Vocabulaire du ruban défilant — l'ADN de l'atelier en un mouvement
 const MARQUEE_TERMS = [
@@ -34,30 +31,15 @@ const MARQUEE_TERMS = [
   "Pagne tissé",
   "Sur mesure",
   "Retouches fines",
-  "Tenues de cérémonie",
-  "Formations couture",
+  "Cérémonies",
+  "Formations",
   "Porto-Novo",
 ];
 
 const PROCESS_STEPS = [
-  {
-    n: "01",
-    icon: Ruler,
-    title: "Prise de mesures",
-    desc: "Accueil à l'atelier, mesures précises et choix du tissu ensemble — le geste juste commence ici.",
-  },
-  {
-    n: "02",
-    icon: Scissors,
-    title: "Confection minutieuse",
-    desc: "Coupe, assemblage et essayages intermédiaires : chaque pièce est cousue comme une œuvre unique.",
-  },
-  {
-    n: "03",
-    icon: Gem,
-    title: "Finitions d'exception",
-    desc: "Surfileuse EMEL, boutons, pressing final — votre tenue sort impeccable, prête à briller.",
-  },
+  { n: "01", icon: Ruler, title: "Mesures", desc: "Accueil, mesures, tissu choisi ensemble." },
+  { n: "02", icon: Scissors, title: "Confection", desc: "Coupe, assemblage, essayages précis." },
+  { n: "03", icon: Gem, title: "Finitions", desc: "Surfileuse, pressing — prête à briller." },
 ];
 
 export default function Home() {
@@ -69,9 +51,7 @@ export default function Home() {
     resolvedTheme === "light" ? undefined : { textShadow: "0 2px 18px rgba(0,0,0,0.35)" };
 
   const heroSrc = "/images/header-colombes.webp";
-  const portraitSrc: string | null = null;
 
-  // Chorégraphie d'entrée du hero (cascade maîtrisée)
   const heroParent = {
     hidden: {},
     show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
@@ -100,11 +80,11 @@ export default function Home() {
         ]}
       />
 
-      {/* ===================== BIBLIOTHÈQUE GALERIE (juste après le header) ===================== */}
+      {/* ===================== GALERIE D'OUVERTURE ===================== */}
       <PageHeaderBand
         images={GALLERY_ATELIER}
         introTitle="L'atelier en images"
-        introSubtitle="Plongez dans l'univers des Services Colombes — du fil aux finitions, l'attention portée à chaque pièce."
+        introSubtitle="Plongez dans l'univers des Services Colombes — du fil aux finitions."
         introLabel="Ouverture du site"
         seamCaption="L'atelier"
         maxHeight="min(58vh, 540px)"
@@ -123,10 +103,10 @@ export default function Home() {
           halo
           minRatio={0.8}
           maxRatio={1.78}
-          minHeight="min(70vh, 520px)"
-          maxHeight="min(85vh, 720px)"
+          minHeight="min(70vh, 560px)"
+          maxHeight="min(88vh, 760px)"
         >
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20 w-full">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full">
             {/* Orbes flottants décoratifs (desktop) */}
             {!reduce && (
               <>
@@ -140,16 +120,6 @@ export default function Home() {
                   aria-hidden="true"
                 />
                 <div
-                  className="absolute bottom-16 right-[22%] hidden lg:block w-12 h-12 rounded-full pointer-events-none lsc-drift"
-                  style={{
-                    background: "radial-gradient(circle at 30% 30%, rgba(201,168,124,0.65), rgba(139,69,19,0.12) 72%)",
-                    filter: "blur(2px)",
-                    animationDuration: "14s",
-                    animationDelay: "-5s",
-                  }}
-                  aria-hidden="true"
-                />
-                <div
                   className="absolute top-1/3 right-[3%] hidden lg:block w-40 h-40 rounded-full border border-dashed pointer-events-none lsc-spin-slow"
                   style={{ borderColor: "rgba(201,168,124,0.5)" }}
                   aria-hidden="true"
@@ -157,38 +127,14 @@ export default function Home() {
               </>
             )}
 
-            {/* Petits pois décoratifs */}
-            <div className="absolute top-6 right-6 hidden md:block opacity-70">
-              <div className="flex gap-2">
-                {[0, 1, 2, 3].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: "var(--color-orange)" }}
-                    animate={reduce ? undefined : { y: [0, -6, 0] }}
-                    transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.22, ease: "easeInOut" }}
-                  />
-                ))}
-              </div>
-            </div>
-
             <motion.div
-              className={cn(
-                "grid items-center",
-                portraitSrc ? "lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10" : "grid-cols-1",
-              )}
+              className="grid grid-cols-1 items-center"
               variants={heroParent}
               initial="hidden"
               animate="show"
             >
-              {/* Texte — premier sur mobile, à gauche sur desktop */}
-              <div
-                className={cn(
-                  "order-1",
-                  portraitSrc ? "lg:col-span-7 lg:order-1" : "max-w-3xl mx-auto text-center",
-                )}
-              >
-                <motion.div variants={heroChild} className="flex flex-wrap items-center justify-center gap-2 mb-7">
+              <div className="max-w-3xl mx-auto text-center">
+                <motion.div variants={heroChild} className="flex flex-wrap items-center justify-center gap-2 mb-8">
                   <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.18em] uppercase lsc-glass-strong text-[var(--color-ink)] lsc-badge-breathe">
                     <span className="relative flex w-1.5 h-1.5">
                       <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-orange)] opacity-75 animate-ping" />
@@ -196,20 +142,6 @@ export default function Home() {
                     </span>
                     Atelier de Couture · Porto-Novo
                   </div>
-                  <a
-                    href={env.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.location)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Voir l'atelier sur Google Maps"
-                    className="group inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide lsc-glass-strong text-[var(--color-ink)] transition-all duration-300 hover:-translate-y-0.5"
-                  >
-                    <span className="relative inline-flex items-center justify-center w-5 h-5 rounded-full bg-[var(--color-orange)]/15">
-                      <MapPin className="w-3 h-3" style={{ color: "var(--color-orange)" }} />
-                      <Navigation className="w-2 h-2 absolute -bottom-0.5 -right-0.5 text-white bg-[var(--color-orange)] rounded-full p-0.5" strokeWidth={3} />
-                    </span>
-                    <span className="hidden sm:inline">Les Services Colombes, Porto-Novo</span>
-                    <span className="sm:hidden">Nous trouver</span>
-                  </a>
                 </motion.div>
 
                 <motion.h1
@@ -220,7 +152,7 @@ export default function Home() {
                   <span className="block text-[var(--color-ink)]">Un rendu</span>
                   <span className="block">
                     <PressingText
-                      words={["pli parfait", "lisse", "vapeur douce", "soin du tissu", "finition soignée", "éclat", "tendu"]}
+                      words={["pli parfait", "lisse", "impeccable", "soyeux", "finition soignée", "éclat", "tendu"]}
                       className="italic"
                       wordClassName="!text-[var(--color-orange)]"
                     />
@@ -229,68 +161,34 @@ export default function Home() {
 
                 <motion.p
                   variants={heroChild}
-                  className="text-lg md:text-xl mb-3 italic font-semibold"
+                  className="text-lg md:text-xl italic font-semibold max-w-xl mx-auto"
                   style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)", ...(heroTextShadow || {}) }}
                 >
-                  Atelier de Couture & Formation d'Exception
-                </motion.p>
-                <motion.p
-                  variants={heroChild}
-                  className="text-base md:text-lg leading-relaxed mb-9 max-w-xl mx-auto"
-                  style={{ color: "var(--color-ink)", ...(heroTextShadow || {}) }}
-                >
-                  Confection sur mesure pour <strong>les jeunes filles</strong>, <strong>les bébés</strong> et les femmes.
+                  Couture d'exception pour femmes, filles & bébés.
                 </motion.p>
 
-                <motion.div variants={heroChild} className="flex flex-wrap justify-center gap-3">
+                {/* CTA — on regarde, on clique. Pas un mot de trop. */}
+                <motion.div variants={heroChild} className="mt-9 flex flex-wrap justify-center gap-3">
                   <Magnetic strength={0.18}>
-                    <Link to="/services" onClick={() => trackCtaClick("hero_découvrir")} className="inline-block">
+                    <Link to="/services" onClick={() => trackCtaClick("hero_commander")} className="inline-block">
                       <Button size="lg" icon={<ArrowRight className="w-4 h-4" />} shimmer>
-                        Découvrir nos services
+                        Commander ma tenue
                       </Button>
                     </Link>
                   </Magnetic>
                   <Magnetic strength={0.18}>
-                    <a href={`tel:${CONTACT.phone1Raw}`} onClick={() => trackPhone(CONTACT.phone1Raw)} className="inline-block">
-                      <Button size="lg" variant="outline" icon={<Phone className="w-4 h-4" />}>
-                        {CONTACT.phone1}
-                      </Button>
+                    <a
+                      href={buildWhatsAppUrl(CONTACT.whatsappRaw)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackWhatsapp("hero")}
+                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white bg-[#25D366] shadow-[0_12px_28px_-10px_rgba(37,211,102,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(37,211,102,0.7)] active:scale-[0.97]"
+                    >
+                      <MessageCircle className="w-4 h-4" /> WhatsApp
                     </a>
                   </Magnetic>
                 </motion.div>
               </div>
-
-              {/* Portrait Hero — affiché uniquement si fournie (évite le doublon) */}
-              {portraitSrc && portraitSrc !== heroSrc && (
-                <motion.div
-                  className="order-2 lg:col-span-5 lg:order-2"
-                  initial={{ opacity: 0, scale: 0.92, rotate: 2 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 60, damping: 14, delay: 0.5 }}
-                >
-                  <div className="relative mx-auto w-full max-w-[260px] sm:max-w-[300px] lg:max-w-none">
-                    <ResponsiveHeroPortrait
-                      src={portraitSrc}
-                      alt={`${env.atelierName} — Atelier`}
-                      fallbackRatio={3 / 4}
-                      minRatio={0.6}
-                      maxRatio={1.0}
-                      maxWidth="min(100%, 22rem)"
-                      maxHeight="min(60vh, 480px)"
-                      float
-                      aura
-                      grain
-                      steam
-                    />
-                    <div
-                      className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-[0.2em] uppercase lsc-glass-strong text-[var(--color-ink)] shadow-lg whitespace-nowrap"
-                      aria-hidden
-                    >
-                      ✦ Pressing d'auteur
-                    </div>
-                  </div>
-                </motion.div>
-              )}
             </motion.div>
 
             {/* Indicateur scroll */}
@@ -332,46 +230,24 @@ export default function Home() {
         </Marquee>
       </section>
 
-      {/* ===================== ACCROCHE "DEPUIS…" ===================== */}
-      <section
-        className="relative py-16 md:py-24 bg-white overflow-hidden"
-        aria-labelledby="home-hook-title"
-      >
+      {/* ===================== ACCROCHE — UNE SEULE PHRASE, GÉANTE ===================== */}
+      <section className="relative py-20 md:py-28 bg-white overflow-hidden" aria-label="Notre promesse">
         <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <p
-              className="lsc-section-kicker justify-center text-xs sm:text-sm uppercase tracking-[0.35em] text-[var(--color-muted)] mb-6"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              <span className="px-3 py-1 rounded-full lsc-glass-strong">Depuis {env.atelierFounded}</span>
+            <p className="text-xs sm:text-sm uppercase tracking-[0.4em] text-[var(--color-muted)] mb-6"
+              style={{ fontFamily: "var(--font-display)" }}>
+              Depuis {env.atelierFounded}
             </p>
             <h2
-              id="home-hook-title"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.12] italic"
               style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
             >
-              <span className="block">
-                <PressingText
-                  words={[
-                    "l'élégance",
-                    "le sur-mesure",
-                    "le geste juste",
-                    "le détail",
-                    "la tradition",
-                    "l'audace",
-                    "la finesse",
-                  ]}
-                  className="italic"
-                  wordClassName="!text-[var(--color-orange)]"
-                />
-              </span>
-              <span className="block mt-2">
-                {env.atelierHeroHook}
-              </span>
+              Trois décennies de savoir-faire,{" "}
+              <span className="lsc-text-silk not-italic">au service de votre élégance.</span>
             </h2>
             <div
-              className="mx-auto mt-8 h-1 w-20 rounded-full"
+              className="mx-auto mt-10 h-1 w-20 rounded-full"
               style={{ background: "linear-gradient(90deg, var(--color-citron), var(--color-gold-thread))" }}
               aria-hidden
             />
@@ -379,86 +255,35 @@ export default function Home() {
         </div>
       </section>
 
-      <StitchDivider className="max-w-5xl mx-auto px-6" label="L'atelier, fil à fil" />
+      {/* ===================== GALERIE CINÉMA ===================== */}
+      <CreationStrip />
 
-      {/* ===================== PRESENTATION ===================== */}
+      {/* ===================== L'ATELIER EN 1 REGARD ===================== */}
       <section className="py-16 md:py-24 scroll-mt-header" id="about">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <Spotlight className="rounded-[2rem]">
-              <Card hover={false} className="lsc-glass-strong p-8 md:p-12 grid md:grid-cols-5 gap-8 items-center rounded-[2rem] border-[var(--color-line)]">
-                <div className="md:col-span-3">
-                  <Badge tone="orange">L'atelier</Badge>
-                  <h3 className="text-3xl md:text-4xl font-bold mt-4 mb-4" style={{ fontFamily: "var(--font-display)" }}>
-                    Colombe
-                  </h3>
-                  <p className="text-sm uppercase tracking-wider text-[var(--color-muted)] mb-6">
-                    Atelier Les Services Colombes · Maîtresse Couturière
-                  </p>
-                  <p className="text-base md:text-lg text-[var(--color-ink-soft)] leading-relaxed mb-6">
-                    Colombe réalise pour vous des créations uniques alliant tradition et modernité. Un savoir-faire
-                    transmis et perpétué depuis plus de 35 ans, au service de votre élégance.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    <Badge tone="citron" className="gap-1.5"><Sparkles className="w-3 h-3" /> Savoir-faire familial</Badge>
-                    <Badge tone="citron" className="gap-1.5"><Heart className="w-3 h-3" /> Confection sur mesure</Badge>
-                    <Badge tone="orange">Formations pro</Badge>
+              <Card hover={false} className="lsc-glass-strong p-8 md:p-10 rounded-[2rem] border-[var(--color-line)]">
+                <div className="grid md:grid-cols-5 gap-8 items-center">
+                  <div className="md:col-span-3 text-center md:text-left">
+                    <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)] mb-2">L'atelier · Maîtresse Couturière</p>
+                    <h3 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
+                      Colombe
+                    </h3>
+                    <p className="text-base md:text-lg text-[var(--color-ink-soft)] leading-relaxed">
+                      Créations uniques, tradition et modernité — depuis plus de 35 ans.
+                    </p>
                   </div>
-                </div>
-                <div className="md:col-span-2 grid grid-cols-2 gap-3">
-                  <Counter end={35} suffix="+" label="Années" icon="⭐" />
-                  <Counter end={500} suffix="+" label="Créations" icon="✂️" />
-                  <Counter end={30} suffix="+" label="Apprenantes" icon="🎓" />
-                  <Counter end={100} suffix="%" label="Satisfaction" icon="💯" />
+                  <div className="md:col-span-2 grid grid-cols-2 gap-3">
+                    <Counter end={35} suffix="+" label="Années" icon="⭐" />
+                    <Counter end={500} suffix="+" label="Créations" icon="✂️" />
+                    <Counter end={30} suffix="+" label="Apprenantes" icon="🎓" />
+                    <Counter end={100} suffix="%" label="Satisfaction" icon="💯" />
+                  </div>
                 </div>
               </Card>
             </Spotlight>
           </Reveal>
-        </div>
-      </section>
-
-      <WallOfLove />
-
-      {/* ===================== SERVICES APERÇU ===================== */}
-      <section className="relative py-16 md:py-24 bg-white overflow-hidden">
-        <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            eyebrow="Nos Services"
-            title={
-              <>
-                Faites confectionner<br />
-                <span className="lsc-text-silk">vos tenues africaines sur mesure</span>
-              </>
-            }
-            subtitle="Confection & finitions professionnelles avec une forte mise en avant des modèles africains béninois."
-          />
-
-          <Stagger className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            {SERVICES.slice(0, 4).map((s) => (
-              <RevealItem key={s.title}>
-                <Card className="text-center h-full group">
-                  <div className="w-14 h-14 rounded-2xl bg-[var(--color-citron)]/30 flex items-center justify-center text-2xl mb-4 mx-auto transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-[var(--color-citron)]/50">
-                    {s.emoji}
-                  </div>
-                  <h4 className="font-bold text-base mb-2" style={{ fontFamily: "var(--font-display)" }}>
-                    {s.title}
-                  </h4>
-                  <p className="text-sm text-[var(--color-muted)] leading-relaxed">{s.desc}</p>
-                </Card>
-              </RevealItem>
-            ))}
-          </Stagger>
-
-          <div className="text-center">
-            <Magnetic strength={0.16}>
-              <Link to="/services" onClick={() => trackCtaClick("home_services_voir_tout")} className="inline-block">
-                <Button size="lg" variant="secondary" icon={<ArrowRight className="w-4 h-4" />}>
-                  Voir tous les services
-                </Button>
-              </Link>
-            </Magnetic>
-          </div>
         </div>
       </section>
 
@@ -471,16 +296,14 @@ export default function Home() {
             title={
               <>
                 De votre idée…<br />
-                <span className="lsc-text-silk">à votre tenue d'exception</span>
+                <span className="lsc-text-silk">à votre tenue</span>
               </>
             }
-            subtitle="Trois temps, un savoir-faire : voici comment chaque commande prend vie à l'atelier."
           />
 
           <Stagger className="grid md:grid-cols-3 gap-5">
             {PROCESS_STEPS.map((step, idx) => (
               <RevealItem key={step.n} className="relative">
-                {/* Fil qui relie les étapes (desktop) */}
                 {idx < PROCESS_STEPS.length - 1 && (
                   <svg
                     className="hidden md:block absolute top-12 left-[calc(100%-1rem)] w-8 h-[2px] z-10"
@@ -511,52 +334,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===================== FORMATION APERÇU ===================== */}
+      {/* ===================== SERVICES — ICONIQUES, SANS BAVARDAGE ===================== */}
       <section className="relative py-16 md:py-24 bg-white overflow-hidden">
         <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
-            eyebrow="Formation"
+            eyebrow="Nos Services"
             title={
               <>
-                Devenez Maîtresse Couturière<br />
-                <span className="lsc-text-silk">avec une Pro</span>
+                Vos tenues africaines<br />
+                <span className="lsc-text-silk">sur mesure</span>
               </>
             }
-            subtitle="Deux formules adaptées à votre niveau, avec une progression claire sur plusieurs mois ou années."
-            tone="citron"
           />
 
-          <Stagger className="grid md:grid-cols-2 gap-5 mb-10">
-            {FORMULES.map((f) => (
-              <RevealItem key={f.id}>
-                <Card hover={false} className="lsc-card-sheen lsc-hemline h-full p-8 relative">
-                  <Badge tone={f.badge.tone === "citron" ? "citron" : "neutral"} className="absolute top-5 right-5">
-                    {f.badge.label}
-                  </Badge>
-                  <div className="text-4xl mb-4">{f.emoji}</div>
-                  <h3 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                    {f.title}
-                  </h3>
-                  <p className="text-sm text-[var(--color-muted)] mb-5">{f.subtitle}</p>
-                  <ul className="space-y-2 text-sm text-[var(--color-ink-soft)]">
-                    {f.bullets.map((b) => (
-                      <li key={b} className="flex gap-2">
-                        <ChevronRight className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--color-citron-d)" }} />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
+          <Stagger className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+            {SERVICES.slice(0, 6).map((s) => (
+              <RevealItem key={s.title}>
+                <Link
+                  to="/services"
+                  onClick={() => trackCtaClick(`home_service_${s.title.slice(0, 12)}`)}
+                  className="block group h-full"
+                >
+                  <Card className="h-full text-center !p-5">
+                    <div className="w-14 h-14 rounded-2xl bg-[var(--color-citron)]/30 flex items-center justify-center text-2xl mb-3 mx-auto transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-[var(--color-citron)]/50">
+                      {s.emoji}
+                    </div>
+                    <h4 className="font-bold text-sm md:text-base leading-snug" style={{ fontFamily: "var(--font-display)" }}>
+                      {s.title}
+                    </h4>
+                  </Card>
+                </Link>
               </RevealItem>
             ))}
           </Stagger>
 
           <div className="text-center">
             <Magnetic strength={0.16}>
-              <Link to="/formation" onClick={() => trackCtaClick("home_formation_découvrir")} className="inline-block">
-                <Button size="lg" icon={<ArrowRight className="w-4 h-4" />}>
-                  Découvrir les formations
+              <Link to="/services" onClick={() => trackCtaClick("home_services_voir_tout")} className="inline-block">
+                <Button size="lg" variant="secondary" icon={<ArrowRight className="w-4 h-4" />}>
+                  Voir tous les services
                 </Button>
               </Link>
             </Magnetic>
@@ -564,31 +381,85 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===================== TÉMOIGNAGES ===================== */}
-      <section className="relative py-16 md:py-24 overflow-hidden" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2))" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            eyebrow="Témoignages"
-            title={<>Elles en parlent <span className="lsc-text-silk">mieux que nous</span></>}
-          />
-          <Stagger className="grid md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t) => (
-              <RevealItem key={t.name}>
-                <Card hover={false} className="lsc-card-sheen lsc-hemline h-full">
-                  <div className="text-3xl mb-3" aria-hidden="true">{t.emoji}</div>
-                  <p className="text-sm md:text-base text-[var(--color-ink-soft)] leading-relaxed mb-4 italic">
-                    « {t.content} »
-                  </p>
-                  <div>
-                    <p className="font-semibold text-sm">{t.name}</p>
-                    <p className="text-xs text-[var(--color-muted)]">{t.role}</p>
+      {/* ===================== FORMATION — BLOC VISUEL (plus de listes) ===================== */}
+      <section className="relative py-16 md:py-24 overflow-hidden" aria-label="Formations couture">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Visuel */}
+            <Reveal>
+              <div className="relative">
+                <div
+                  className="absolute -inset-3 rounded-[2.25rem] pointer-events-none"
+                  style={{ border: "2px dashed var(--color-gold-thread)", opacity: 0.5, transform: "rotate(-1.5deg)" }}
+                  aria-hidden="true"
+                />
+                <motion.div
+                  className="relative rounded-[2rem] overflow-hidden lsc-grain"
+                  style={{ boxShadow: "0 32px 64px -24px rgba(60,38,20,0.45)" }}
+                  whileHover={reduce ? undefined : { scale: 1.02, rotate: 0.5 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                >
+                  <img
+                    src="/images/hero-formation.webp"
+                    alt="Formation couture à l'atelier Les Services Colombes"
+                    className="w-full h-[320px] md:h-[420px] object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(180deg, transparent 55%, rgba(11,9,7,0.75) 100%)" }}
+                  />
+                  <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-white/70 mb-1">Deviens pro</p>
+                      <p className="text-xl md:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+                        Maîtresse Couturière
+                      </p>
+                    </div>
+                    <div className="w-11 h-11 rounded-2xl lsc-glass-strong flex items-center justify-center shrink-0">
+                      <GraduationCap className="w-5 h-5" style={{ color: "var(--color-orange)" }} />
+                    </div>
                   </div>
-                </Card>
-              </RevealItem>
-            ))}
-          </Stagger>
+                </motion.div>
+              </div>
+            </Reveal>
+
+            {/* Contenu — trois puces, un bouton. C'est tout. */}
+            <div className="text-center md:text-left">
+              <Reveal delay={0.08}>
+                <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)] mb-4">Formation Couture</p>
+                <h2 className="text-3xl md:text-5xl font-bold leading-[1.12] mb-6" style={{ fontFamily: "var(--font-display)" }}>
+                  Apprends avec<br />
+                  <span className="lsc-text-silk">une vraie Pro</span>
+                </h2>
+                <div className="flex flex-wrap justify-center md:justify-start gap-2.5 mb-8">
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold lsc-glass-strong text-[var(--color-ink)]">
+                    <Clock4 className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} /> 6–12 mois · Rapide
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold lsc-glass-strong text-[var(--color-ink)]">
+                    <GraduationCap className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} /> 3–5 ans · Complète
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold lsc-glass-strong text-[var(--color-ink)]">
+                    <Sparkles className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} /> Machines fournies
+                  </span>
+                </div>
+                <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                  <Magnetic strength={0.16}>
+                    <Link to="/formation" onClick={() => trackCtaClick("home_formation_bloc")} className="inline-block">
+                      <Button size="lg" icon={<ArrowRight className="w-4 h-4" />} shimmer>
+                        Voir les formations
+                      </Button>
+                    </Link>
+                  </Magnetic>
+                </div>
+              </Reveal>
+            </div>
+          </div>
         </div>
       </section>
+
+      <WallOfLove />
 
       {/* ===================== CTA FINAL ===================== */}
       <section
@@ -597,10 +468,7 @@ export default function Home() {
       >
         <div
           className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, #0B0B12 0%, #000000 50%, #0B0B12 100%)",
-          }}
+          style={{ background: "linear-gradient(180deg, #0B0B12 0%, #000000 50%, #0B0B12 100%)" }}
         />
         <Aurora className="absolute inset-0" variant="night" intensity="vivid" />
         <div className="absolute inset-0 pointer-events-none cta-dots" aria-hidden="true" />
@@ -624,14 +492,11 @@ export default function Home() {
           </motion.span>
           <h2
             id="cta-final-title"
-            className="text-3xl md:text-5xl font-bold mb-5 drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
+            className="text-3xl md:text-5xl font-bold mb-8 drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
             style={{ fontFamily: "var(--font-display)", color: "#ffffff" }}
           >
             Prête à donner vie à votre projet ?
           </h2>
-          <p className="mb-10 max-w-xl mx-auto text-base md:text-lg drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]" style={{ color: "rgba(255,255,255,0.95)" }}>
-            Contactez-nous pour un devis, un essayage ou une commande sur mesure. Réponse rapide garantie.
-          </p>
 
           <div className="flex flex-wrap justify-center gap-3">
             <Magnetic strength={0.2}>

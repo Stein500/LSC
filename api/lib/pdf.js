@@ -64,6 +64,8 @@ const C = {
   line: rgb(176 / 255, 221 / 255, 240 / 255),     // #B0DDF0 ligne bleu ciel
   paper: rgb(1, 1, 1),                            // #FFFFFF blanc
   rose: rgb(214 / 255, 96 / 255, 96 / 255),       // #D66060 — petite touche féminine
+  gold: rgb(201 / 255, 168 / 255, 124 / 255),     // #C9A87C fil d'or — cadre « patron »
+  goldD: rgb(155 / 255, 122 / 255, 82 / 255),     // doré foncé — ciseaux du cadre
 };
 
 // =============================================================
@@ -456,6 +458,29 @@ export async function buildSubmissionPdf(type, data) {
   const page = pdf.addPage([595.28, 841.89]);
   const { width, height } = page.getSize();
   const margin = 42;
+
+  // ============== CADRE « PATRON À DÉCOUPER » ==============
+  // Pourtour en pointillés dorés, comme la marge de coupe d'un patron —
+  // signature visuelle de l'atelier, reprise du fil de couture du site.
+  const FRAME_INSET = 16;
+  page.drawRectangle({
+    x: FRAME_INSET,
+    y: FRAME_INSET,
+    width: width - FRAME_INSET * 2,
+    height: height - FRAME_INSET * 2,
+    borderColor: C.gold,
+    borderWidth: 1.1,
+    borderDashArray: [7, 4],
+  });
+  // Petits ciseaux vectoriels sur le bord gauche, à mi-hauteur
+  (function drawScissors(cx, cy) {
+    const s = 7; // ouverture des branches
+    const arm = 11; // longueur des branches
+    page.drawCircle({ x: cx - s / 2, y: cy - s / 2 - 3, size: 2.6, borderColor: C.goldD, borderWidth: 1 });
+    page.drawCircle({ x: cx + s / 2, y: cy - s / 2 - 3, size: 2.6, borderColor: C.goldD, borderWidth: 1 });
+    page.drawLine({ start: { x: cx - s / 2, y: cy - s / 2 - 1 }, end: { x: cx + arm * 0.55, y: cy + arm }, thickness: 1.1, color: C.goldD });
+    page.drawLine({ start: { x: cx + s / 2, y: cy - s / 2 - 1 }, end: { x: cx - arm * 0.55, y: cy + arm }, thickness: 1.1, color: C.goldD });
+  })(FRAME_INSET, Math.round(height / 2));
 
   // ============== HEADER (bande tissée + logo + ref) ==============
   // Bande tissée 3 traits façon pagne — 4px de haut total

@@ -787,7 +787,7 @@ function buildAdminMail(type, data) {
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:1px solid #B0DDF0;border-radius:8px;overflow:hidden;">
         ${fields.map(([k, v, tone]) => fieldRow(k, v, tone)).join("")}
       </table>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:24px;border-top:1px dashed #B0DDF0;padding-top:12px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:24px;border-top:1px dashed #C9A87C;padding-top:12px;">
         <tr>
           <td style="font-size:12px;color:#8A8A8A;padding-top:10px;">
             <strong style="color:#000000;">Reçu le</strong>
@@ -897,7 +897,7 @@ export async function sendSubmissionMail(type, data) {
     const pdfBanner = `<p style="margin:18px 0 0;padding:10px 14px;background:#F0F8E0;border-left:4px solid #BFFF00;border-radius:6px;font-size:13px;color:#000000;">📎 <strong>PDF récapitulatif joint</strong> — Ticket <code style="background:#FFFFFF;padding:2px 6px;border-radius:4px;font-family:monospace;">${escHtml(data.ref || "")}</code></p>`;
     adminMail.html = adminMail.html.replace(
       /<table role="presentation"[^>]*style="margin-top:24px;border-top:1px dashed[^>]*>/s,
-      `${pdfBanner}<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:24px;border-top:1px dashed #B0DDF0;padding-top:12px;">`,
+      `${pdfBanner}<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:24px;border-top:1px dashed #C9A87C;padding-top:12px;">`,
     );
     adminMail.text += `\n\n📎 PDF récapitulatif joint : ${pdfAttachment.filename}\n`;
   }

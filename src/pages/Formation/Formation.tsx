@@ -64,12 +64,9 @@ export default function Formation() {
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed">
-              Formations dispensées par{" "}
-              <strong style={{ color: "var(--color-orange)", fontFamily: "var(--font-display)" }}>
-                Colombe
-              </strong>
-              , Maîtresse Couturière depuis plus de 35 ans. Encadrement personnalisé, machines fournies, programmes progressifs.
+            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed italic" style={{ fontFamily: "var(--font-display)" }}>
+              <strong style={{ color: "var(--color-orange)", fontFamily: "var(--font-display)" }}>Colombe</strong>
+              , Maîtresse Couturière depuis 35 ans — encadrement personnalisé, machines fournies.
             </p>
           </Reveal>
         </div>

@@ -79,12 +79,9 @@ export default function Services() {
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed">
-              <span style={{ fontFamily: "var(--font-display)", color: "var(--color-orange)" }}>
-                Chez Les Services Colombes,
-              </span>{" "}
-              chaque pièce est unique. Nous travaillons à partir de vos mesures, de vos envies et de votre morphologie
-              pour créer des tenues féminines qui vous ressemblent — du quotidien aux modèles africains d'exception.
+            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed italic" style={{ fontFamily: "var(--font-display)" }}>
+              Vos mesures, vos envies, notre savoir-faire —
+              <span style={{ fontFamily: "var(--font-display)", color: "var(--color-orange)" }}> du quotidien à l'exception.</span>
             </p>
           </Reveal>
         </div>

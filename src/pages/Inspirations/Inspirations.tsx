@@ -66,12 +66,11 @@ export default function Inspirations() {
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed">
-              Chez Les Services Colombes, chaque tenue raconte une ville et une matière. Cette galerie réunit{' '}
+            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed italic" style={{ fontFamily: 'var(--font-display)' }}>
               <span style={{ fontFamily: 'var(--font-display)', color: 'var(--color-orange)' }}>
                 {PROFILES.length} visages
               </span>
-              , du Bénin à l'Afrique de l'Ouest, du Maghreb à l'Europe et l'Asie — tous passés par le même atelier, à Porto-Novo.
+              , un même fil — du pagne béninois au kimono revisité.
             </p>
           </Reveal>
         </div>
