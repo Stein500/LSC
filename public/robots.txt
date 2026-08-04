@@ -1,0 +1,54 @@
+# =============================================================
+# Robots.txt — Les Services Colombes
+# https://lesservicescolombes.vercel.app
+# =============================================================
+
+# Règles globales : on laisse crawler les pages publiques (SEO)
+User-agent: *
+Allow: /
+Allow: /services
+Allow: /formation
+Allow: /contact
+Allow: /inspirations
+Allow: /mentions-legales
+
+# Pages techniques / API / pages sans valeur SEO
+Disallow: /api/
+Disallow: /404
+Disallow: /merci
+Disallow: /offline
+Disallow: /og-*.html$
+Disallow: /*?spa=1$
+
+# Sitemaps
+Sitemap: https://lesservicescolombes.vercel.app/sitemap.xml
+Sitemap: https://lesservicescolombes.vercel.app/image-sitemap.xml
+
+# Crawl-delay raisonnable
+Crawl-delay: 1
+
+# Bots connus : autoriser Googlebot et Bingbot explicitement
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Bloquer les scrapers IA connus qui pompent sans citer
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /

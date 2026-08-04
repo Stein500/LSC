@@ -1,0 +1,60 @@
+{
+  "name": "Les Services Colombes — Atelier de Couture à Porto-Novo",
+  "short_name": "Colombes",
+  "description": "Atelier de couture, mercerie et centre de formation à Porto-Novo (Bénin). Confection sur mesure, tenues africaines, layette et formations professionnelles.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#87CEEB",
+  "theme_color": "#BFFF00",
+  "categories": ["lifestyle", "shopping", "business", "education"],
+  "icons": [
+    {
+      "src": "/icon-192.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Services",
+      "short_name": "Services",
+      "url": "/services?utm_source=pwa",
+      "description": "Découvrir nos services de couture"
+    },
+    {
+      "name": "Formation",
+      "short_name": "Formation",
+      "url": "/formation?utm_source=pwa",
+      "description": "Devenir couturier(ère) professionnel(le)"
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "url": "/contact?utm_source=pwa",
+      "description": "Nous écrire ou nous rendre visite"
+    },
+    {
+      "name": "Inspirations",
+      "short_name": "Inspirations",
+      "url": "/inspirations?utm_source=pwa",
+      "description": "Découvrir la galerie d'inspirations couture"
+    }
+  ]
+}

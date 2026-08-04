@@ -1,0 +1,174 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "trailingSlash": false,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/ping", "destination": "/api/ping" },
+    { "source": "/api/images-version", "destination": "/api/images-version" },
+    { "source": "/api/health", "destination": "/api/system" },
+    { "source": "/api/init-sheets", "destination": "/api/system" },
+    { "source": "/api/notify", "destination": "/api/system" },
+    { "source": "/api/system/(.*)", "destination": "/api/system" },
+    { "source": "/sw.js", "destination": "/sw.js" },
+    { "source": "/manifest.webmanifest", "destination": "/manifest.webmanifest" },
+    { "source": "/favicon.ico", "destination": "/favicon.ico" },
+    { "source": "/favicon-32.webp", "destination": "/favicon-32.webp" },
+    { "source": "/icon-512.webp", "destination": "/icon-512.webp" },
+    { "source": "/icon-192.webp", "destination": "/icon-192.webp" },
+    { "source": "/images/(.*)", "destination": "/images/$1" },
+    { "source": "/assets/(.*)", "destination": "/assets/$1" },
+    { "source": "/og-index", "destination": "/og-index.html" },
+    { "source": "/og-services", "destination": "/og-services.html" },
+    { "source": "/og-formation", "destination": "/og-formation.html" },
+    { "source": "/og-contact", "destination": "/og-contact.html" },
+    { "source": "/og-inspirations", "destination": "/og-inspirations.html" },
+    { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
+    { "source": "/image-sitemap.xml", "destination": "/image-sitemap.xml" },
+    { "source": "/services", "destination": "/services.html" },
+    { "source": "/formation", "destination": "/formation.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/inspirations", "destination": "/inspirations.html" },
+    { "source": "/merci", "destination": "/merci.html" },
+    { "source": "/mentions-legales", "destination": "/mentions-legales.html" },
+    { "source": "/404", "destination": "/404.html" },
+    { "source": "/offline", "destination": "/offline.html" },
+    { "source": "/notifications", "destination": "/index.html" },
+    { "source": "/tickets", "destination": "/index.html" },
+    { "source": "/parametres", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Service-Worker-Allowed", "value": "/" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json" },
+        { "key": "Cache-Control", "value": "public, max-age=86400, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/favicon.ico",
+      "headers": [
+        { "key": "Content-Type", "value": "image/x-icon" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/favicon-32.webp",
+      "headers": [
+        { "key": "Content-Type", "value": "image/webp" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/icon-512.webp",
+      "headers": [
+        { "key": "Content-Type", "value": "image/webp" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/images/(.*)\\.webp",
+      "headers": [
+        { "key": "Content-Type", "value": "image/webp" },
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" },
+        { "key": "Vary", "value": "Accept" }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.css",
+      "headers": [
+        { "key": "Content-Type", "value": "text/css; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.js",
+      "headers": [
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/og-(.*)\\.html",
+      "headers": [
+        { "key": "Content-Type", "value": "text/html; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=86400, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "index, follow" }
+      ]
+    },
+    {
+      "source": "/(services|formation|contact|inspirations|merci|mentions-legales|404)\\.html",
+      "headers": [
+        { "key": "Content-Type", "value": "text/html; charset=utf-8" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" },
+        { "key": "X-Robots-Tag", "value": "index, follow" }
+      ]
+    },
+    {
+      "source": "/offline.html",
+      "headers": [
+        { "key": "Content-Type", "value": "text/html; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=86400, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.js",
+      "headers": [
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.css",
+      "headers": [
+        { "key": "Content-Type", "value": "text/css; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=(), interest-cohort=()" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "X-DNS-Prefetch-Control", "value": "on" }
+      ]
+    }
+  ],
+  "installCommand": "npm install --legacy-peer-deps --no-audit --no-fund"
+}

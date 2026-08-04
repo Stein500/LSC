@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- ============== PAGE D'ACCUEIL ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/</loc>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/og-share-preview.webp</image:loc>
+      <image:title>Les Services Colombes — Atelier de Couture à Porto-Novo</image:title>
+      <image:caption>Atelier de couture d'exception à Porto-Novo, Bénin</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/header-colombes.webp</image:loc>
+      <image:title>Hero — Atelier Les Services Colombes</image:title>
+      <image:caption>Vue principale de l'atelier de couture à Porto-Novo</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/logo.webp</image:loc>
+      <image:title>Logo Les Services Colombes</image:title>
+      <image:caption>Logo officiel de l'atelier de couture</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============== GALERIE — L'ATELIER ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/</loc>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-01.webp</image:loc>
+      <image:title>Vue d'ensemble de l'atelier Les Services Colombes</image:title>
+      <image:caption>L'atelier — un espace dédié à la création</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-02.webp</image:loc>
+      <image:title>Les machines à coudre professionnelles</image:title>
+      <image:caption>Parc machines entretenu avec soin</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-03.webp</image:loc>
+      <image:title>Détail d'un travail de couture en cours</image:title>
+      <image:caption>Chaque détail compte</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-04.webp</image:loc>
+      <image:title>La table de coupe et les patrons</image:title>
+      <image:caption>La coupe — étape fondatrice du sur-mesure</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-05.webp</image:loc>
+      <image:title>Espace essayage de l'atelier</image:title>
+      <image:caption>L'essayage — pour une tenue qui vous va</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-06.webp</image:loc>
+      <image:title>KOUKOUI COLOMBE en plein travail</image:title>
+      <image:caption>Plus de 35 ans de passion et de savoir-faire</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============== GALERIE — CRÉATIONS (page /services) ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/services</loc>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-01.webp</image:loc>
+      <image:title>Tenue africaine béninoise sur mesure</image:title>
+      <image:caption>Boubous et ensembles — l'élégance africaine</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-02.webp</image:loc>
+      <image:title>Robe moderne en pagne tissé</image:title>
+      <image:caption>Pagne tissé — pour des cérémonies uniques</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-03.webp</image:loc>
+      <image:title>Création en bazin chic</image:title>
+      <image:caption>Bazin chic — raffinement et prestance</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-04.webp</image:loc>
+      <image:title>Robe africaine moderne et fluide</image:title>
+      <image:caption>Robes modernes — entre tradition et contemporain</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-05.webp</image:loc>
+      <image:title>Ensemble layette pour nouveau-né</image:title>
+      <image:caption>Layette — la douceur pour les tout-petits</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-06.webp</image:loc>
+      <image:title>Finitions d'une tenue sur mesure</image:title>
+      <image:caption>Les finitions — la signature d'un travail bien fait</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============== GALERIE — FORMATION (page /formation) ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/formation</loc>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-01.webp</image:loc>
+      <image:title>Salle de formation en couture</image:title>
+      <image:caption>Un cadre propice à l'apprentissage</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-02.webp</image:loc>
+      <image:title>Apprenante en cours de couture</image:title>
+      <image:caption>Encadrement personnalisé à chaque étape</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-03.webp</image:loc>
+      <image:title>Apprentissage de la prise de mesures</image:title>
+      <image:caption>Les bases — de la mesure à la coupe</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-04.webp</image:loc>
+      <image:title>Démonstration sur machine à coudre</image:title>
+      <image:caption>Les techniques — expliquées et pratiquées</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-05.webp</image:loc>
+      <image:title>Groupe d'apprenantes en pleine séance</image:title>
+      <image:caption>Une progression ensemble, dans la bonne humeur</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-06.webp</image:loc>
+      <image:title>Présentation d'un projet de fin de formation</image:title>
+      <image:caption>Le résultat — des créations qui leur ressemblent</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============== PAGE INSPIRATIONS ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/inspirations</loc>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-01.webp</image:loc>
+      <image:title>Inspirations — Wax multicolore</image:title>
+      <image:caption>Pièce signature de l'atelier</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-02.webp</image:loc>
+      <image:title>Inspirations — Macro de tissus</image:title>
+      <image:caption>Mélange wax, bazin, pagne, lin</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-03.webp</image:loc>
+      <image:title>Inspirations — Silhouette bazin</image:title>
+      <image:caption>Portrait éditorial en bazin brodé</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-04.webp</image:loc>
+      <image:title>Inspirations — Flat lay couture</image:title>
+      <image:caption>Outils et matières premières</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============== PAGE CONTACT ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/contact</loc>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-01.webp</image:loc>
+      <image:title>Contact — Façade atelier</image:title>
+      <image:caption>Vue de l'atelier Les Services Colombes</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-02.webp</image:loc>
+      <image:title>Contact — Consultation</image:title>
+      <image:caption>Mains d'une couturière au téléphone</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-03.webp</image:loc>
+      <image:title>Contact — Table de travail</image:title>
+      <image:caption>Espace de travail de l'atelier</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-04.webp</image:loc>
+      <image:title>Contact — Espace accueil</image:title>
+      <image:caption>Coin accueil visiteurs</image:caption>
+    </image:image>
+  </url>
+
+</urlset>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Page d'accueil -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/header-colombes.webp</image:loc>
+      <image:title>Les Services Colombes — Atelier de Couture à Porto-Novo</image:title>
+      <image:caption>Vue de l'atelier de couture à Porto-Novo</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/og-share-preview.webp</image:loc>
+      <image:title>Les Services Colombes — Atelier de Couture d'Exception</image:title>
+      <image:caption>Logo / visuel officiel de l'atelier</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Services -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/services</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/hero-services.webp</image:loc>
+      <image:title>Services de Couture sur Mesure à Porto-Novo</image:title>
+      <image:caption>Confection sur mesure, finitions, retouches et layette</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-01.webp</image:loc>
+      <image:title>Boubous et ensembles africains</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-02.webp</image:loc>
+      <image:title>Pagne tissé — cérémonies</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-03.webp</image:loc>
+      <image:title>Bazin chic — raffinement</image:title>
+    </image:image>
+  </url>
+
+  <!-- Formation -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/formation</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/hero-formation.webp</image:loc>
+      <image:title>Formation Couture Professionnelle à Porto-Novo</image:title>
+      <image:caption>Devenez Maîtresse Couturière avec KOUKOUI COLOMBE</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-01.webp</image:loc>
+      <image:title>Salle de formation en couture</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-03.webp</image:loc>
+      <image:title>Apprentissage de la prise de mesures</image:title>
+    </image:image>
+  </url>
+
+  <!-- ============== INSPIRATIONS ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/inspirations</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-01.webp</image:loc>
+      <image:title>Pièce de wax multicolore sur mannequin invisible</image:title>
+      <image:caption>Wax — la pièce signature de l'atelier</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-02.webp</image:loc>
+      <image:title>Mélange de tissus africains et européens</image:title>
+      <image:caption>Matières — wax, bazin, pagne, lin</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-03.webp</image:loc>
+      <image:title>Silhouette éditoriale en bazin brodé</image:title>
+      <image:caption>Silhouette — heure dorée</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-04.webp</image:loc>
+      <image:title>Flat lay d'outils de couture</image:title>
+      <image:caption>Outils — le geste et la matière</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ============== CONTACT (mise à jour images) ============== -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/contact</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-01.webp</image:loc>
+      <image:title>Façade de l'atelier Les Services Colombes à Porto-Novo</image:title>
+      <image:caption>L'atelier — un lieu ouvert et coloré</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-02.webp</image:loc>
+      <image:title>Consultation à l'atelier</image:title>
+      <image:caption>À votre écoute — par tous les canaux</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-03.webp</image:loc>
+      <image:title>Table de travail de l'atelier</image:title>
+      <image:caption>Un espace calme pour parler de votre projet</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-04.webp</image:loc>
+      <image:title>Espace d'accueil de l'atelier</image:title>
+      <image:caption>Bienvenue — on vous attend</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Mentions légales -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/mentions-legales</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

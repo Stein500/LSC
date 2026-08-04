@@ -1,0 +1,81 @@
+Verification summary
+====================
+
+PHASE 0 (livrée antérieurement) :
+- npm ci
+- npm run build
+- Preview server started on http://127.0.0.1:4173/
+
+Static checks:
+- /inspirations route exists in src/routes.tsx
+- WallOfLove component exists in src/components/sections/WallOfLove.tsx
+- Reusable components present: Masonry, HeartPulse, WorldClock
+
+PHASE A — Touch "Maman Colombe" sur les mails (cette livraison) :
+- Touches appliquées sur api/lib/mailer.js
+- Bande "pagne tissé" SVG inline en tête de chaque mail (kente + couleurs atelier)
+- Liseré "fil de couture" SVG inline en pied (juste avant le footer)
+- Pictos SVG inline sur les 4 étapes (carnet / ciseaux / bobine / aiguille)
+- Bloc signature manuscrite "Maman Colombe" en Caveat (Google Fonts) côté client
+- Signature Caveat courte côté admin (alignée à droite, en italique)
+- Import Google Fonts Caveat avec preconnect (perf + fiabilité)
+- Media query responsive < 480px (padding réduit, h1 plus petit)
+- Aucune dépendance ajoutée — que du HTML/SVG inline
+- Aucune logique fonctionnelle modifiée (SMTP, envois, etc.) — réversible
+
+Vérification visuelle :
+- Samples HTML générés pour 3 profils (formation / precommande / contact) × 2 destinataires
+  -> samples/mail_client_*.html, samples/mail_admin_*.html
+- Rendu PNG capturé via Playwright (chromium) : samples/png/mail_*.png
+- Toutes les briques attendues sont visibles sur les captures :
+  * Bande pagne wax en tête
+  * Liseré orange/vert conservé
+  * Pictos SVG inline sur les étapes
+  * Bloc Maman Colombe en Caveat (côté client)
+  * Liseré fil de couture en pied
+  * Footer inchangé
+
+Notes :
+- node_modules est installé uniquement pour la vérification locale et sera exclu
+  de l'archive source finale.
+- dist sera exclu de l'archive source finale.
+- Aucun fichier de public/ n'a été modifié — seul mailer.js et les samples
+  sont nouveaux / modifiés.
+- pdf.js a été touché dans la PHASE B pour ajouter la signature, le footer et
+  le fil de couture.
+
+PHASE B — Touch PDF récapitulatif (cette livraison) :
+- Bloc "Signature atelier" ajouté en bas du PDF
+- Footer enrichi avec date d'émission et pagination
+- Mini-fil de couture ajouté sur la dernière page
+- Logo du site conservé via l'embedding PNG partagé
+- Aucune dépendance ajoutée — réversible
+
+PHASE C — Harmonisation WebP + réparation SEO structurée (2026-07-19) :
+- Galeries Contact/Inspirations : 8 placeholders .svg → .webp (1600×1200),
+  galleries.ts + Inspirations.tsx + inspirations.html + og-inspirations.html
+  mis à jour en conséquence (plus aucune référence .svg résiduelle)
+- JSON-LD réparé (invalide → valide, vérifié par json.loads()) sur
+  og-contact.html, og-formation.html, og-index.html (accolades/virgules
+  manquantes, un bloc entier avait perdu ses balises <script>)
+- JSON-LD ajouté sur les 4 vraies pages indexées qui n'en avaient aucun :
+  services.html, contact.html, formation.html, inspirations.html
+  (LocalBusiness/Service/Course + liaison parentOrganization)
+- Bug doublon de marque corrigé : Inspirations.tsx passait déjà
+  "— Les Services Colombes" dans son title, dupliqué par SEO.tsx
+- Hiérarchie de titres corrigée (h2 → h4 → h2 → h3) sur les 4 pages
+  statiques + static-page.css (.lsc-footer h4 → h3)
+- title/description d'inspirations.html raccourcis (105→76 et 215→156
+  caractères, troncature Google évitée)
+- robots.txt (Allow: /inspirations) et manifest.webmanifest (raccourci PWA
+  Inspirations) complétés — absents alors que la page existe déjà ailleurs
+- PageHero.tsx : suppression du cas spécial SVG devenu mort (plus aucune
+  image du site n'est en SVG)
+- Favicon dupliqué retiré de og-index.html
+- Vérification : validation JSON formelle (Python json.loads) sur les 9
+  fichiers HTML porteurs de JSON-LD, balance des tags <head>/<script>/<body>
+  sur tous les fichiers touchés, diff complet contre l'archive source.
+  PAS de npm ci / npm run build / capture Playwright cette fois (pas
+  d'accès réseau dans cet environnement) — vérification statique uniquement,
+  à confirmer par un build réel avant déploiement.
+- node_modules et dist exclus de l'archive livrée (n'y étaient déjà pas)
