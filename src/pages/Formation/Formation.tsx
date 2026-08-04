@@ -10,6 +10,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Badge } from "@/components/ui/Badge";
 import { FormationForm } from "@/components/forms/FormationForm";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
+import { Aurora } from "@/components/ui/Aurora";
 import { FORMULES, FAQ_FORMATION, TESTIMONIALS } from "@/data/content";
 import { GALLERY_FORMATION } from "@/data/galleries";
 
@@ -83,8 +84,9 @@ export default function Formation() {
       </section>
 
       {/* 2 Formules */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 md:py-24 bg-white overflow-hidden">
+        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Formules"
             title={<>Deux parcours <span style={{ color: "var(--color-orange)" }}>adaptés</span></>}
@@ -116,10 +118,13 @@ export default function Formation() {
                     className="w-full text-sm font-semibold flex items-center justify-center gap-2 py-3 rounded-full border border-[var(--color-citron)] text-[var(--color-ink)] hover:bg-[var(--color-citron)]/20 transition-colors"
                   >
                     Voir le programme détaillé
-                    <ChevronDown
-                      className="w-4 h-4 transition-transform"
-                      style={{ transform: openFormule === f.id ? "rotate(180deg)" : "rotate(0)" }}
-                    />
+                    <motion.span
+                      animate={{ rotate: openFormule === f.id ? 180 : 0 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                      className="inline-flex"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.span>
                   </button>
 
                   <AnimatePresence initial={false}>
@@ -128,6 +133,7 @@ export default function Formation() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 210, damping: 26 }}
                         className="overflow-hidden"
                       >
                         <div className="pt-5 space-y-4">
@@ -153,8 +159,9 @@ export default function Formation() {
       </section>
 
       {/* Formulaire */}
-      <section className="py-16 md:py-24 bg-[var(--color-cream)]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 md:py-24 bg-[var(--color-cream)] overflow-hidden">
+        <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-10 items-start">
             <div className="lg:col-span-2">
               <SectionTitle
@@ -205,8 +212,9 @@ export default function Formation() {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 bg-[var(--color-cream)]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 bg-[var(--color-cream)] overflow-hidden">
+        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="FAQ"
             title={<><HelpCircle className="inline w-8 h-8 mr-2" />Questions fréquentes</>}
@@ -220,10 +228,13 @@ export default function Formation() {
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-semibold text-sm md:text-base">{f.q}</span>
-                    <ChevronDown
-                      className="w-4 h-4 transition-transform shrink-0"
-                      style={{ transform: openFaq === i ? "rotate(180deg)" : "rotate(0)" }}
-                    />
+                    <motion.span
+                      animate={{ rotate: openFaq === i ? 180 : 0 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                      className="shrink-0 inline-flex"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.span>
                   </div>
                   <AnimatePresence initial={false}>
                     {openFaq === i && (
@@ -231,6 +242,7 @@ export default function Formation() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 210, damping: 26 }}
                         className="overflow-hidden"
                       >
                         <p className="pt-3 text-sm text-[var(--color-ink-soft)] leading-relaxed">{f.a}</p>

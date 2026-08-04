@@ -15,9 +15,21 @@ const HAS_SUPPORT_EMAIL = SUPPORT_EMAIL.length > 0;
 
 export function Footer() {
   return (
-    <footer className="bg-[var(--app-footer-bg)] text-white mt-24">
-      <div className="border-b border-[var(--app-footer-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+    <footer className="relative bg-[var(--app-footer-bg)] text-white mt-24 overflow-hidden">
+      {/* Orbes aurora de nuit — profondeur couture */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div
+          className="absolute -top-32 left-[8%] w-72 h-72 rounded-full blur-[110px] lsc-drift"
+          style={{ backgroundColor: "rgba(191,255,0,0.10)", animationDuration: "18s" }}
+        />
+        <div
+          className="absolute -bottom-24 right-[12%] w-80 h-80 rounded-full blur-[120px] lsc-drift"
+          style={{ backgroundColor: "rgba(139,69,19,0.22)", animationDuration: "22s", animationDelay: "-8s" }}
+        />
+      </div>
+
+      <div className="relative border-b border-[var(--app-footer-border)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-9 text-center">
           <p
             className="text-2xl md:text-3xl italic"
             style={{ fontFamily: "var(--font-display)", color: "var(--color-citron)" }}
@@ -27,7 +39,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
             <div className="flex items-center gap-3 mb-5">

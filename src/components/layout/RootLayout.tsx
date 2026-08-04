@@ -17,6 +17,8 @@ import { ErrorBoundary } from "@/components/system/ErrorBoundary";
 import { getPendingTickets, updateTicket } from "@/utils/tickets";
 import { trackFormSubmit } from "@/utils/api";
 import { onSuccessSmartToast } from "@/hooks/useSmartToasts";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 /**
  * Layout racine — structure globale :
@@ -93,11 +95,14 @@ export function RootLayout() {
     >
       <SkipToContent />
       <SplashScreen />
+      <ScrollProgress />
       <Nav />
       <OfflineBanner />
       <main id="main-content" tabIndex={-1} className={`flex-1 ${NAV_PADDING}`}>
         <ErrorBoundary>
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </ErrorBoundary>
       </main>
       <Footer />

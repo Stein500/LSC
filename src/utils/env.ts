@@ -1,62 +1,89 @@
 /**
  * Helpers typés pour lire les variables d'env Vite.
- * Centralise les accès pour pouvoir mocker en dev facilement.
  *
- * Notes :
- * - Préfixe officiel : VITE_ATELIER_*  (cohérent avec .env et Vercel).
- * - Des accesseurs "rétrocompat" exposent aussi `schoolX` pour ne rien
- *   casser dans le code historique. On pourra les retirer plus tard.
+ * Philosophie : **le site ne doit JAMAIS afficher "undefined" ou casser**
+ * parce qu'une variable manque. Chaque lecture passe par `v(key, fallback)`
+ * avec une valeur par défaut cohérente avec l'identité de l'atelier.
+ *
+ * - Les valeurs publiques (préfixe VITE_) sont embarquées dans le bundle :
+ *   c'est normal, elles ne sont pas secrètes (téléphones, adresse, tokens
+ *   publics de tracking).
+ * - Les secrets serveur (TRACK_TOKEN, SMTP_*, GOOGLE_*) ne passent JAMAIS ici.
+ *
+ * Les accesseurs `schoolX` sont conservés en rétrocompat avec le code
+ * historique — ils délèguent aux valeurs `atelierX`.
  */
+
+/** Lecture robuste d'une variable Vite avec fallback. */
+function v(key: keyof ImportMetaEnv, fallback: string): string {
+  const raw = import.meta.env[key] as unknown;
+  if (typeof raw !== "string") return fallback;
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : fallback;
+}
+
 export const env = {
   // Identité
-  atelierName: import.meta.env.VITE_ATELIER_NAME as string,
-  atelierShortName: import.meta.env.VITE_ATELIER_SHORT_NAME as string,
-  atelierTagline: import.meta.env.VITE_ATELIER_TAGLINE as string,
-  atelierDescription: import.meta.env.VITE_ATELIER_DESCRIPTION as string,
-  atelierFounded: (import.meta.env.VITE_ATELIER_FOUNDED as string) || "1990",
+  atelierName: v("VITE_ATELIER_NAME", "Les Services Colombes"),
+  atelierShortName: v("VITE_ATELIER_SHORT_NAME", "Colombes"),
+  atelierTagline: v("VITE_ATELIER_TAGLINE", "Atelier de Couture d'Exception"),
+  atelierDescription: v(
+    "VITE_ATELIER_DESCRIPTION",
+    "Couture sur mesure, mercerie, layette & formations à Porto-Novo",
+  ),
+  atelierFounded: v("VITE_ATELIER_FOUNDED", "1990"),
   // Super accroche affichée juste après le hero (à la place des anciennes
   // cartes stats). Défaut pensé pour être percutant même sans valeur custom.
-  atelierHeroHook: (import.meta.env.VITE_ATELIER_HERO_HOOK as string)
-    || "Trois décennies de savoir-faire, au service de votre élégance.",
-  atelierLocation: (import.meta.env.VITE_ATELIER_LOCATION as string) || "Les Services Colombes, Porto-Novo, Bénin, Afrique",
-  atelierLocationFull: (import.meta.env.VITE_ATELIER_LOCATION_FULL as string) || (import.meta.env.VITE_ATELIER_LOCATION as string) || "Les Services Colombes, Porto-Novo, Bénin, Afrique",
+  atelierHeroHook: v(
+    "VITE_ATELIER_HERO_HOOK",
+    "Trois décennies de savoir-faire, au service de votre élégance.",
+  ),
+  atelierLocation: v("VITE_ATELIER_LOCATION", "Les Services Colombes, Porto-Novo – Bénin"),
+  atelierLocationFull: v(
+    "VITE_ATELIER_LOCATION_FULL",
+    v("VITE_ATELIER_LOCATION", "Les Services Colombes, Porto-Novo – Bénin"),
+  ),
 
   // Téléphones
-  atelierPhone: import.meta.env.VITE_ATELIER_PHONE as string,
-  atelierPhoneRaw: import.meta.env.VITE_ATELIER_PHONE_RAW as string,
-  atelierPhone2: import.meta.env.VITE_ATELIER_PHONE_2 as string,
-  atelierPhone2Raw: import.meta.env.VITE_ATELIER_PHONE_2_RAW as string,
-  atelierEmail: (import.meta.env.VITE_ATELIER_EMAIL as string) || "",
+  atelierPhone: v("VITE_ATELIER_PHONE", "+229 01 67 40 94 08"),
+  atelierPhoneRaw: v("VITE_ATELIER_PHONE_RAW", "2290167409408"),
+  atelierPhone2: v("VITE_ATELIER_PHONE_2", "+229 01 95 76 36 01"),
+  atelierPhone2Raw: v("VITE_ATELIER_PHONE_2_RAW", "2290195763601"),
+  atelierEmail: v("VITE_ATELIER_EMAIL", "lesservicescolombes@gmail.com"),
 
   // WhatsApp
-  whatsappGeneral: import.meta.env.VITE_WHATSAPP_GENERAL as string,
-  whatsappGeneralRaw: import.meta.env.VITE_WHATSAPP_GENERAL_RAW as string,
-  whatsappSecretariat: import.meta.env.VITE_WHATSAPP_SECRETARIAT as string,
-  whatsappSecretariatRaw: import.meta.env.VITE_WHATSAPP_SECRETARIAT_RAW as string,
-  whatsappDirection: import.meta.env.VITE_WHATSAPP_DIRECTION as string,
-  whatsappDirectionRaw: import.meta.env.VITE_WHATSAPP_DIRECTION_RAW as string,
+  whatsappGeneral: v("VITE_WHATSAPP_GENERAL", "+229 01 67 40 94 08"),
+  whatsappGeneralRaw: v("VITE_WHATSAPP_GENERAL_RAW", "2290167409408"),
+  whatsappSecretariat: v("VITE_WHATSAPP_SECRETARIAT", "+229 01 67 40 94 08"),
+  whatsappSecretariatRaw: v("VITE_WHATSAPP_SECRETARIAT_RAW", "2290167409408"),
+  whatsappDirection: v("VITE_WHATSAPP_DIRECTION", "+229 01 95 76 36 01"),
+  whatsappDirectionRaw: v("VITE_WHATSAPP_DIRECTION_RAW", "2290195763601"),
 
   // Adresse / Maps
-  mapsUrl: (import.meta.env.VITE_MAPS_URL as string) || "https://maps.app.goo.gl/A14pmkvWbbxpwS4J6",
-  mapsEmbed: (import.meta.env.VITE_MAPS_EMBED as string) || "https://www.google.com/maps?q=Les+Services+Colombes&ll=6.4922053,2.6004269&output=embed",
+  mapsUrl: v("VITE_MAPS_URL", "https://maps.app.goo.gl/A14pmkvWbbxpwS4J6"),
+  mapsEmbed: v(
+    "VITE_MAPS_EMBED",
+    "https://www.google.com/maps?q=Les+Services+Colombes&ll=6.4922053,2.6004269&output=embed",
+  ),
 
   // Réseaux
-  facebookUrl: (import.meta.env.VITE_FACEBOOK_URL as string) || "",
-  instagramUrl: (import.meta.env.VITE_INSTAGRAM_URL as string) || "",
-  tiktokUrl: (import.meta.env.VITE_TIKTOK_URL as string) || "",
-  portalUrl: (import.meta.env.VITE_PORTAL_URL as string) || "",
+  facebookUrl: v("VITE_FACEBOOK_URL", ""),
+  instagramUrl: v("VITE_INSTAGRAM_URL", ""),
+  tiktokUrl: v("VITE_TIKTOK_URL", ""),
+  portalUrl: v("VITE_PORTAL_URL", ""),
 
   // SEO
-  siteUrl: import.meta.env.VITE_SITE_URL as string,
+  siteUrl: v("VITE_SITE_URL", "https://couturecolombe.vercel.app"),
 
-  // API back
-  apiUrl: import.meta.env.VITE_API_URL as string,
-  apiToken: import.meta.env.VITE_TRACK_TOKEN as string,
-  sourceId: (import.meta.env.VITE_ATELIER_SOURCE_ID as string) || "atelier-colombes",
+  // API back — **relatif par défaut** : le même build fonctionne sur
+  // couturecolombe.vercel.app, sur les URLs de preview Vercel et en
+  // dev local sans reconfiguration. Le token public ne protège que le
+  // tracking (le vrai secret TRACK_TOKEN reste côté serveur).
+  apiUrl: v("VITE_API_URL", "/api/track"),
+  apiToken: v("VITE_TRACK_TOKEN", ""),
+  sourceId: v("VITE_ATELIER_SOURCE_ID", "atelier-colombes"),
 
   // --- Aliases rétrocompat (utilisés dans certains composants) ---
-  // Pour ne rien casser durant la transition, on expose aussi les anciens
-  // noms "schoolX" qui pointent vers les valeurs "atelierX".
   get schoolName() { return this.atelierName; },
   get schoolShortName() { return this.atelierShortName; },
   get schoolTagline() { return this.atelierTagline; },

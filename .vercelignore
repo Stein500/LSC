@@ -1,0 +1,8 @@
+# Jamais uploadé vers Vercel (les vraies variables vivent
+# dans Project → Settings → Environment Variables)
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+*.log

@@ -43,7 +43,7 @@ const ATELIER_WA = process.env.ATELIER_WA || "2290167409408";
 const ATELIER_LOCATION =
   process.env.ATELIER_LOCATION ||
   "Devant l'école primaire publique TOKPOTA DAVO GROUPE ABC, Porto-Novo – Bénin";
-const ATELIER_SITE = process.env.ATELIER_SITE || "https://lesservicescolombes.vercel.app";
+const ATELIER_SITE = process.env.ATELIER_SITE || "https://couturecolombe.vercel.app";
 const ATELIER_LOGO_URL = process.env.ATELIER_LOGO_URL || `${ATELIER_SITE.replace(/\/$/, "")}/images/logo.webp`;
 
 let _transport = null;

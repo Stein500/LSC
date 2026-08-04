@@ -4,10 +4,12 @@ import { ChevronDown, Scissors } from "lucide-react";
 import { SEO, SchemaBuilders } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
+import { Reveal, Stagger, RevealItem } from "@/components/ui/Reveal";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { PrecommandeForm } from "@/components/forms/PrecommandeForm";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
+import { Aurora } from "@/components/ui/Aurora";
+import { StitchDivider } from "@/components/ui/StitchDivider";
 import { SERVICES } from "@/data/content";
 import { GALLERY_CREATIONS } from "@/data/galleries";
 
@@ -89,37 +91,38 @@ export default function Services() {
       </section>
 
       {/* Grille services */}
-      <section className="py-12 md:py-16 bg-[var(--color-cream)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-12 md:py-16 bg-[var(--color-cream)] overflow-hidden">
+        <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Nos prestations"
-            title={<>Des modèles <span style={{ color: "var(--color-orange)" }}>africains et béninois</span> à votre disposition</>}
+            title={<>Des modèles <span className="lsc-text-silk">africains et béninois</span> à votre disposition</>}
           />
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {SERVICES.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.05}>
+          <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            {SERVICES.map((s) => (
+              <RevealItem key={s.title}>
                 <button
                   onClick={() => handlePreset(s.title)}
-                  className="text-left w-full"
+                  className="text-left w-full group"
                   type="button"
                 >
                   <Card className="h-full">
-                    <div className="w-12 h-12 rounded-xl bg-[var(--color-citron)]/30 flex items-center justify-center text-2xl mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--color-citron)]/30 flex items-center justify-center text-2xl mb-3 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-[var(--color-citron)]/50">
                       {s.emoji}
                     </div>
                     <h4 className="font-bold text-sm mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
                       {s.title}
                     </h4>
                     <p className="text-xs text-[var(--color-muted)] leading-relaxed">{s.desc}</p>
-                    <span className="mt-3 inline-block text-xs font-semibold" style={{ color: "var(--color-orange)" }}>
+                    <span className="mt-3 inline-block text-xs font-semibold lsc-arrow-nudge transition-transform duration-300 group-hover:translate-x-1" style={{ color: "var(--color-orange)" }}>
                       Pré-commander →
                     </span>
                   </Card>
                 </button>
-              </Reveal>
+              </RevealItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -170,25 +173,29 @@ export default function Services() {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 bg-[var(--color-cream)]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 bg-[var(--color-cream)] overflow-hidden">
+        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="FAQ"
             title={<><Scissors className="inline w-8 h-8 mr-2" />Vos questions</>}
           />
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {FAQ.map((f, i) => (
-              <Reveal key={f.q} delay={i * 0.05}>
+              <Reveal key={f.q} delay={i * 0.06}>
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
-                  className="w-full text-left bg-white rounded-2xl border border-[var(--color-line)] px-5 py-4 hover:border-[var(--color-citron)] transition-colors"
+                  className="lsc-card-sheen lsc-hemline w-full text-left bg-white rounded-2xl border border-[var(--color-line)] px-5 py-4 hover:border-[var(--color-gold-thread)]/60 transition-colors shadow-sm hover:shadow-md"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-semibold text-sm md:text-base">{f.q}</span>
-                    <ChevronDown
-                      className="w-4 h-4 transition-transform shrink-0"
-                      style={{ transform: open === i ? "rotate(180deg)" : "rotate(0)" }}
-                    />
+                    <motion.span
+                      animate={{ rotate: open === i ? 180 : 0 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                      className="shrink-0 inline-flex"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.span>
                   </div>
                   <AnimatePresence initial={false}>
                     {open === i && (
@@ -196,6 +203,7 @@ export default function Services() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 210, damping: 26 }}
                         className="overflow-hidden"
                       >
                         <p className="pt-3 text-sm text-[var(--color-ink-soft)] leading-relaxed">{f.a}</p>
@@ -208,6 +216,7 @@ export default function Services() {
           </div>
         </div>
       </section>
+      <StitchDivider className="max-w-4xl mx-auto px-6 pb-8" accent label="Fait main, avec amour" />
     </>
   );
 }

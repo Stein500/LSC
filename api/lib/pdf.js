@@ -49,7 +49,7 @@ const ATELIER_LOCATION =
   process.env.ATELIER_LOCATION ||
   "Devant l'école primaire publique TOKPOTA DAVO GROUPE ABC, Porto-Novo – Bénin";
 const ATELIER_SITE =
-  process.env.ATELIER_SITE || "https://lesservicescolombes.vercel.app";
+  process.env.ATELIER_SITE || "https://couturecolombe.vercel.app";
 
 // Couleurs (alignées sur la charte : bleu ciel dominant + marron + blanc + noir + vert citron)
 const C = {
