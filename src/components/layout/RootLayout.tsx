@@ -4,8 +4,6 @@ import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { WhatsAppFab } from "@/components/notifications/WhatsAppFab";
-import { SmartInstallPrompt } from "@/components/notifications/SmartInstallPrompt";
-import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { useRouteTracking } from "@/hooks/useTrack";
 import { useSessionTracking } from "@/hooks/useSession";
 import { useScrollMemory } from "@/hooks/useScrollMemory";
@@ -17,6 +15,8 @@ import { ErrorBoundary } from "@/components/system/ErrorBoundary";
 import { getPendingTickets, updateTicket } from "@/utils/tickets";
 import { trackFormSubmit } from "@/utils/api";
 import { onSuccessSmartToast } from "@/hooks/useSmartToasts";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 /**
  * Layout racine — structure globale :
@@ -26,7 +26,6 @@ import { onSuccessSmartToast } from "@/hooks/useSmartToasts";
  *   ├──────────────────────────────────────────┤
  *   │ Nav (fixed top-0, z-40, ~64-72px)        │  ← bandeau header
  *   ├──────────────────────────────────────────┤
- *   │ OfflineBanner                            │
  *   ├──────────────────────────────────────────┤
  *   │ <main> padding-top: 80px (mobile)        │  ← ne cache RIEN
  *   │          padding-top: 88px (desktop)     │
@@ -35,7 +34,7 @@ import { onSuccessSmartToast } from "@/hooks/useSmartToasts";
  *   │ Footer                                   │
  *   └──────────────────────────────────────────┘
  *   MobileBottomNav (fixed bottom-0)
- *   WhatsAppFAB + PWAInstallPrompt
+ *   WhatsAppFAB
  *
  * L'idée-clé : la Nav est `fixed` mais ne doit JAMAIS masquer le contenu
  * quand on scrolle.
@@ -93,17 +92,18 @@ export function RootLayout() {
     >
       <SkipToContent />
       <SplashScreen />
+      <ScrollProgress />
       <Nav />
-      <OfflineBanner />
       <main id="main-content" tabIndex={-1} className={`flex-1 ${NAV_PADDING}`}>
         <ErrorBoundary>
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </ErrorBoundary>
       </main>
       <Footer />
       <MobileBottomNav />
       <WhatsAppFab />
-      <SmartInstallPrompt />
       <Toaster
         position="top-center"
         richColors

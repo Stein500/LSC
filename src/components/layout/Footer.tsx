@@ -1,168 +1,156 @@
-
 import { Link } from "react-router-dom";
-import { Phone, MapPin, MessageCircle, Clock, Mail, Heart } from "lucide-react";
-import { CONTACT, TESTIMONIALS } from "@/data/content";
+import { Phone, MapPin, MessageCircle, Mail, Clock, Heart, Facebook, Instagram, Music2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { CONTACT } from "@/data/content";
 import { env } from "@/utils/env";
 import { buildWhatsAppUrl } from "@/utils/whatsapp";
 import { trackPhone, trackWhatsapp } from "@/utils/api";
 import { SmartImage } from "@/components/ui/SmartImage";
-import { WorldClock } from "@/components/ui/WorldClock";
-import { Masonry } from "@/components/ui/Masonry";
-import { PROFILES } from "@/data/profiles";
 
 const SUPPORT_EMAIL = env.atelierEmail.trim();
-const HAS_SUPPORT_EMAIL = SUPPORT_EMAIL.length > 0;
+
+type FooterAction = {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  external?: boolean;
+  onClick?: () => void;
+};
+
+const MAILTO = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+  "Demande d'information - Les Services Colombes"
+)}&body=${encodeURIComponent("Bonjour,\n\nJe souhaite obtenir des informations supplémentaires.\n\nMerci.")}`;
 
 export function Footer() {
+  const year = new Date().getFullYear();
+
+  const actions: FooterAction[] = [
+    { label: "Appeler", href: `tel:${CONTACT.phone1Raw}`, icon: Phone, onClick: () => trackPhone(CONTACT.phone1Raw) },
+    {
+      label: "WhatsApp",
+      href: buildWhatsAppUrl(CONTACT.whatsappRaw),
+      icon: MessageCircle,
+      external: true,
+      onClick: () => trackWhatsapp("footer"),
+    },
+    ...(SUPPORT_EMAIL ? [{ label: "Email", href: MAILTO, icon: Mail as LucideIcon }] : []),
+    { label: "Itinéraire", href: env.mapsUrl, icon: MapPin, external: true },
+    ...(env.facebookUrl ? [{ label: "Facebook", href: env.facebookUrl, icon: Facebook as LucideIcon, external: true }] : []),
+    ...(env.instagramUrl ? [{ label: "Instagram", href: env.instagramUrl, icon: Instagram as LucideIcon, external: true }] : []),
+    ...(env.tiktokUrl ? [{ label: "TikTok", href: env.tiktokUrl, icon: Music2 as LucideIcon, external: true }] : []),
+  ];
+
+  const nav = [
+    { to: "/", label: "Accueil" },
+    { to: "/services", label: "Services" },
+    { to: "/formation", label: "Formation" },
+    { to: "/inspirations", label: "Inspirations" },
+    { to: "/contact", label: "Contact" },
+  ];
+
+  const hours = CONTACT.hours.map((h) => `${h.label} · ${h.value}`).join(" — ");
+
   return (
-    <footer className="bg-[var(--app-footer-bg)] text-white mt-24">
-      <div className="border-b border-[var(--app-footer-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-          <p
-            className="text-2xl md:text-3xl italic"
-            style={{ fontFamily: "var(--font-display)", color: "var(--color-citron)" }}
+    <footer className="relative bg-[var(--app-footer-bg)] text-white mt-24 overflow-hidden">
+      {/* Orbes aurora de nuit — discrètes */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div
+          className="absolute -top-32 left-[8%] w-72 h-72 rounded-full blur-[110px] lsc-drift"
+          style={{ backgroundColor: "rgba(191,255,0,0.09)", animationDuration: "18s" }}
+        />
+        <div
+          className="absolute -bottom-24 right-[12%] w-80 h-80 rounded-full blur-[120px] lsc-drift"
+          style={{ backgroundColor: "rgba(139,69,19,0.20)", animationDuration: "22s", animationDelay: "-8s" }}
+        />
+      </div>
+
+      <div className="relative max-w-4xl mx-auto px-6 pt-16 pb-10 md:pt-20 md:pb-12 text-center">
+        {/* Signature */}
+        <p
+          className="italic text-lg md:text-xl mb-10"
+          style={{ fontFamily: "var(--font-display)", color: "var(--color-citron)" }}
+        >
+          "Style, Élégance, Excellence."
+        </p>
+
+        {/* Marque */}
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-lg shadow-black/30"
+            style={{ border: "2px solid var(--color-citron)" }}
           >
-            "Style, Élégance, Excellence."
+            <SmartImage src="/images/logo.webp" alt="" decorative className="w-full h-full object-contain p-2" />
+          </div>
+          <div>
+            <p className="font-bold tracking-wide text-lg" style={{ fontFamily: "var(--font-display)" }}>
+              {env.schoolName}
+            </p>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-white/55 mt-1">{env.schoolTagline}</p>
+          </div>
+          <p className="text-sm text-white/65 leading-relaxed max-w-md">
+            Atelier de couture familiale à Porto-Novo depuis {env.schoolFounded}. Savoir-faire, élégance et proximité.
           </p>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-          <div>
-            <div className="flex items-center gap-3 mb-5">
-              <div
-                className="w-11 h-11 rounded-full bg-white flex items-center justify-center overflow-hidden"
-                style={{ border: "2px solid var(--color-citron)" }}
-              >
-                <SmartImage src="/images/logo.webp" alt="" decorative className="w-full h-full object-contain p-1.5" />
-              </div>
-              <div>
-                <p className="font-bold tracking-wide" style={{ fontFamily: "var(--font-display)" }}>{env.schoolName}</p>
-                <p className="text-[10px] text-white/70">{env.schoolTagline}</p>
-              </div>
-            </div>
-            <p className="text-sm text-white/70 leading-relaxed">
-              Atelier de couture familiale à Porto-Novo, Bénin, Afrique depuis {env.schoolFounded}. Savoir-faire, élégance et proximité.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider" style={{ color: "var(--color-citron)" }}>
-              Navigation
-            </h4>
-            <ul className="space-y-2 text-sm text-white/80">
-              <li><Link to="/" className="hover:text-[var(--color-citron)] transition-colors inline-flex items-center min-h-[44px]">Accueil</Link></li>
-              <li><Link to="/services" className="hover:text-[var(--color-citron)] transition-colors inline-flex items-center min-h-[44px]">Services</Link></li>
-              <li><Link to="/formation" className="hover:text-[var(--color-citron)] transition-colors inline-flex items-center min-h-[44px]">Formation</Link></li>
-              <li><Link to="/inspirations" className="hover:text-[var(--color-citron)] transition-colors inline-flex items-center min-h-[44px]">Inspirations</Link></li>
-              <li><Link to="/contact" className="hover:text-[var(--color-citron)] transition-colors inline-flex items-center min-h-[44px]">Contact</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider" style={{ color: "var(--color-citron)" }}>
-              Contact
-            </h4>
-            <ul className="space-y-3 text-sm text-white/80">
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 shrink-0" style={{ color: "var(--color-orange)" }} />
-                <span>{CONTACT.location}</span>
-              </li>
-              <li>
-                <a
-                  href={`tel:${CONTACT.phone1Raw}`}
-                  onClick={() => trackPhone(CONTACT.phone1Raw)}
-                  className="flex items-center gap-2 hover:text-[var(--color-citron)] transition-colors min-h-[44px]"
-                >
-                  <Phone className="w-4 h-4 shrink-0" style={{ color: "var(--color-orange)" }} />
-                  {CONTACT.phone1}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${CONTACT.phone2Raw}`}
-                  onClick={() => trackPhone(CONTACT.phone2Raw)}
-                  className="flex items-center gap-2 hover:text-[var(--color-citron)] transition-colors min-h-[44px]"
-                >
-                  <Phone className="w-4 h-4 shrink-0" style={{ color: "var(--color-orange)" }} />
-                  {CONTACT.phone2}
-                </a>
-              </li>
-              {HAS_SUPPORT_EMAIL ? (
-                <li className="flex items-center gap-2 break-all">
-                  <Mail className="w-4 h-4 shrink-0" style={{ color: "var(--color-orange)" }} />
-                  <a
-                    href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Demande d'information - Les Services Colombes")}&body=${encodeURIComponent(`Bonjour,
-
-Je souhaite obtenir des informations supplémentaires.
-
-Merci.`)}`}
-                    className="hover:text-[var(--color-citron)] transition-colors"
-                  >
-                    {SUPPORT_EMAIL}
-                  </a>
-                </li>
-              ) : null}
-              <li>
-                <a
-                  href={buildWhatsAppUrl(CONTACT.whatsappRaw)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackWhatsapp("footer")}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#25D366] text-white hover:opacity-90 transition-opacity"
-                >
-                  <MessageCircle className="w-3.5 h-3.5" /> WhatsApp direct
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider" style={{ color: "var(--color-citron)" }}>
-              Horaires
-            </h4>
-            <ul className="space-y-2 text-sm text-white/80 mb-5">
-              {CONTACT.hours.map((h) => (
-                <li key={h.label} className="flex items-start gap-2">
-                  <Clock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--color-orange)" }} />
-                  <span><strong className="text-white">{h.label}</strong><br />{h.value}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="text-xs text-white/70 italic" style={{ fontFamily: "var(--font-display)" }}>
-              {TESTIMONIALS[0].content}
-            </p>
-            <p className="text-xs text-white/55 mt-1">— {TESTIMONIALS[0].name}, {TESTIMONIALS[0].role}</p>
-          </div>
+        {/* Rail d'icônes d'action — chaque icône dirige */}
+        <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-5">
+          {actions.map((a) => (
+            <a
+              key={a.label}
+              href={a.href}
+              onClick={a.onClick}
+              {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="group flex flex-col items-center gap-2"
+              aria-label={a.label}
+            >
+              <span className="w-14 h-14 rounded-full grid place-items-center border border-white/15 bg-white/5 backdrop-blur-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:border-[var(--color-or)] group-hover:bg-white/10 group-hover:shadow-[0_10px_30px_-10px_rgba(201,168,124,0.45)]">
+                <a.icon className="w-5 h-5 text-white/85 transition-colors duration-300 group-hover:text-[var(--color-citron)]" />
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/50 transition-colors duration-300 group-hover:text-white/85">
+                {a.label}
+              </span>
+            </a>
+          ))}
         </div>
+
+        {/* Navigation condensée */}
+        <nav className="mt-10 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-xs uppercase tracking-[0.2em]">
+          {nav.map((item, i) => (
+            <span key={item.to} className="flex items-center gap-5">
+              {i > 0 && <span className="text-[var(--color-or)]/60">·</span>}
+              <Link to={item.to} className="text-white/60 hover:text-[var(--color-citron)] transition-colors py-2">
+                {item.label}
+              </Link>
+            </span>
+          ))}
+        </nav>
+
+        {/* Horaires + lieu en une ligne */}
+        <div className="mt-8 flex flex-col items-center gap-1.5 text-xs text-white/50">
+          <p className="flex items-center gap-2">
+            <Clock className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} />
+            {hours}
+          </p>
+          <p className="flex items-center gap-2">
+            <MapPin className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} />
+            {CONTACT.location}
+          </p>
+        </div>
+
+        {/* Fil d'or */}
+        <div className="mt-10 h-px w-44 mx-auto bg-gradient-to-r from-transparent via-[var(--color-or)]/50 to-transparent" />
       </div>
 
-      <div className="border-t border-[var(--app-footer-border)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-4 text-xs text-white/70">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p>© {new Date().getFullYear()} {env.schoolName}. Tous droits réservés.</p>
-            <p className="flex items-center gap-1.5">
-              fait avec amour à Porto-Novo, Bénin, Afrique <Heart className="w-3 h-3" style={{ color: "var(--color-orange)" }} fill="currentColor" />
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-white/85 font-semibold">Le monde nous porte</span>
-            <WorldClock cities={["porto-novo", "benin", "afrique"]} compact />
-          </div>
-          <details className="rounded-2xl bg-white/5 border border-white/10 p-4">
-            <summary className="cursor-pointer list-none text-white/90 font-semibold mb-2 flex items-center justify-between gap-3">
-              <span>Inspirations du monde</span>
-              <span className="text-xs text-white/55">ouvrir</span>
-            </summary>
-            <Masonry columns={{ sm: 2, md: 3 }} gap={8} className="text-[11px] text-white/80">
-              {PROFILES.slice(0, 6).map((profile) => (
-                <span key={profile.id} className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2 py-1 mb-2">
-                  {profile.city}
-                </span>
-              ))}
-            </Masonry>
-          </details>
+      {/* Barre finale minimale */}
+      <div className="relative border-t border-[var(--app-footer-border)]">
+        <div className="max-w-5xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[11px] text-white/50">
+          <p>© {year} {env.schoolName}. Tous droits réservés.</p>
+          <Link to="/mentions-legales" className="hover:text-[var(--color-citron)] transition-colors">
+            Mentions légales
+          </Link>
+          <p className="flex items-center gap-1.5">
+            fait avec amour à Porto-Novo <Heart className="w-3 h-3" style={{ color: "var(--color-orange)" }} fill="currentColor" />
+          </p>
         </div>
       </div>
     </footer>

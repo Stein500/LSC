@@ -293,7 +293,7 @@ export const SchemaBuilders = {
     isPartOf: {
       "@type": "WebSite",
       name: "Les Services Colombes",
-      url: "https://lesservicescolombes.vercel.app/",
+      url: "https://couturecolombe.vercel.app/",
     },
     inLanguage: "fr-FR",
     hasPart: hasPart.map((item) => ({

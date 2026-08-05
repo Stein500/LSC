@@ -22,7 +22,6 @@ import {
   type StoredTicket,
 } from "@/utils/tickets";
 import { downloadTextFile } from "@/utils/download";
-import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useTheme, type ThemeMode } from "@/hooks/useTheme";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -31,12 +30,10 @@ import { notify } from "@/utils/notify";
 import { formatDateFR } from "@/utils/format";
 
 export default function Parametres() {
-  const { canInstall, promptInstall, supported } = useInstallPrompt();
   const { items: notifications, unread, clear: clearAll } = useNotifications();
   const online = useOnlineStatus();
   const { mode, setMode } = useTheme();
   const [refreshKey, setRefreshKey] = useState(0);
-  const [installing, setInstalling] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const pending = useMemo(() => countPendingTickets(), [refreshKey]);
   const tickets = useMemo(() => getTickets(), [refreshKey]);
@@ -130,41 +127,6 @@ export default function Parametres() {
               </div>
             </Card>
 
-            <Card className="p-6 min-w-0">
-              <div className="flex items-start justify-between gap-4 mb-5">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Accès rapide</p>
-                  <h3 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>Ajouter à l’écran d’accueil</h3>
-                </div>
-                <Smartphone className="w-6 h-6 text-[var(--color-orange)]" />
-              </div>
-              <p className="text-sm text-[var(--color-ink-soft)] mb-4">
-                {supported && canInstall
-                  ? "Votre navigateur permet déjà l’installation de l’application."
-                  : "Votre navigateur ne propose pas encore l’installation directe, mais tout le reste fonctionne parfaitement."}
-              </p>
-              {canInstall ? (
-                <Button
-                  onClick={async () => {
-                    setInstalling(true);
-                    try {
-                      const ok = await promptInstall();
-                      if (ok) notify.success("Application installée");
-                    } finally {
-                      setInstalling(false);
-                    }
-                  }}
-                  loading={installing}
-                  icon={<Download className="w-4 h-4" />}
-                >
-                  Installer l'app
-                </Button>
-              ) : (
-                <p className="text-xs text-[var(--color-muted)]">
-                  Astuce : ouvrez le menu du navigateur puis choisissez « Ajouter à l’écran d’accueil ».
-                </p>
-              )}
-            </Card>
           </div>
 
           {/* === Section notifications refondue === */}

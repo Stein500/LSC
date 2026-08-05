@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
+import { Aurora } from "@/components/ui/Aurora";
 import { CONTACT } from "@/data/content";
 import { GALLERY_CONTACT_PAGES } from "@/data/galleries";
 import { buildWhatsAppUrl } from "@/utils/whatsapp";
@@ -53,8 +54,9 @@ export default function Contact() {
       />
 
       {/* 3 canaux */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-12 md:py-16 bg-white overflow-hidden">
+        <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Nous joindre"
             title={<>3 canaux <span style={{ color: "var(--color-orange)" }}>directs</span></>}
@@ -62,7 +64,7 @@ export default function Contact() {
           <div className="grid md:grid-cols-3 gap-4">
             <Reveal>
               <a href={`tel:${CONTACT.phone1Raw}`} onClick={() => trackPhone(CONTACT.phone1Raw)} className="block">
-                <Card hover={false} className="text-center h-full hover:!border-[var(--color-citron)] transition-colors">
+                <Card hover={false} className="text-center h-full">
                   <div className="w-14 h-14 rounded-2xl bg-[var(--color-citron)]/30 flex items-center justify-center mx-auto mb-4">
                     <Phone className="w-6 h-6" style={{ color: "var(--color-ink)" }} />
                   </div>
@@ -75,7 +77,7 @@ export default function Contact() {
             </Reveal>
             <Reveal delay={0.08}>
               <a href={`tel:${CONTACT.phone2Raw}`} onClick={() => trackPhone(CONTACT.phone2Raw)} className="block">
-                <Card hover={false} className="text-center h-full hover:!border-[var(--color-citron)] transition-colors">
+                <Card hover={false} className="text-center h-full">
                   <div className="w-14 h-14 rounded-2xl bg-[var(--color-citron)]/30 flex items-center justify-center mx-auto mb-4">
                     <Phone className="w-6 h-6" style={{ color: "var(--color-ink)" }} />
                   </div>
@@ -94,7 +96,7 @@ export default function Contact() {
                 onClick={() => trackWhatsapp("contact_page")}
                 className="block"
               >
-                <Card hover={false} className="text-center h-full hover:!border-[#25D366] transition-colors">
+                <Card hover={false} className="text-center h-full">
                   <div className="w-14 h-14 rounded-2xl bg-[#25D366]/15 flex items-center justify-center mx-auto mb-4">
                     <MessageCircle className="w-6 h-6 text-[#25D366]" />
                   </div>
@@ -110,8 +112,9 @@ export default function Contact() {
       </section>
 
       {/* Adresse + horaires + map */}
-      <section className="py-12 md:py-16 bg-[var(--color-cream)]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-12 md:py-16 bg-[var(--color-cream)] overflow-hidden">
+        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="L'atelier"
             title={<>Venez <span style={{ color: "var(--color-orange)" }}>nous rendre visite</span></>}
