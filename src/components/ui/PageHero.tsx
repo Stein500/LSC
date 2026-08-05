@@ -40,7 +40,7 @@ export function PageHero({
   const reduce = useReducedMotion();
 
   return (
-    <section className="relative pt-24 md:pt-28 pb-20 md:pb-28 overflow-hidden lsc-grain">
+    <section className="relative pt-32 md:pt-28 pb-20 md:pb-28 overflow-hidden lsc-grain">
       {/* Image de fond — WebP + zoom lent */}
       <div className="absolute inset-0">
         <motion.img
