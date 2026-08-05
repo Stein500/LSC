@@ -38,6 +38,7 @@ function formatDateParts(ts) {
     timestamp: d.toISOString(),
     date: new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(d),
     time: new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(d),
+    isoDate: d.toISOString().slice(0, 10),
   };
 }
 
@@ -164,263 +165,46 @@ function serializeValue(value) {
   return String(value);
 }
 
+/** Préfixe temporel commun — la colonne D est toujours « Date ISO » (filtre machine YYYY-MM-DD). */
+const TS = ["Horodatage", "Date", "Heure", "Date ISO"];
+
 export const SHEETS = {
-  Events: {
-    name: "Events",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Type d'événement",
-      "Atelier",
-      "Identifiant de session",
-      "Page",
-      "Référence",
-      "Statut",
-      "Source",
-      "Données complètes (JSON)",
-    ],
+  // 🏠 Tableau de bord — formules auto, placé à gauche (index 0)
+  Accueil: { name: "Accueil", headers: ["Tableau de bord"], dashboard: true },
+  Visites: {
+    name: "Visites",
+    headers: [...TS, "Page", "Référence", "Identifiant de session", "Source"],
   },
-  PageViews: {
-    name: "PageViews",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Page",
-      "Identifiant de session",
-      "Référence",
-      "Source",
-    ],
+  ContactsClics: {
+    name: "Clics & Contacts",
+    headers: [...TS, "Type d'action", "Canal", "Libellé", "Lien / Numéro", "Page", "Identifiant de session"],
   },
-  Clicks: {
-    name: "Clicks",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Type d'événement",
-      "Contexte",
-      "Libellé",
-      "Lien (href)",
-      "Numéro",
-      "Identifiant de session",
-      "Page",
-    ],
+  Formulaires: {
+    name: "Formulaires",
+    headers: [...TS, "Formulaire", "Étape", "Erreur", "Page", "Identifiant de session"],
   },
-  Forms: {
-    name: "Forms",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Type d'événement",
-      "Formulaire",
-      "Étape",
-      "Erreur",
-      "Identifiant de session",
-      "Page",
-    ],
-  },
-  Installs: {
-    name: "Installs",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Étape d'installation",
-      "Identifiant de session",
-      "Page",
-      "Plateforme",
-      "Source",
-    ],
-  },
-  // ---- Nouveaux onglets (analytics étendus) ----
   Sessions: {
     name: "Sessions",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Identifiant de session",
-      "Type d'événement",
-      "Page d'entrée",
-      "Page de sortie",
-      "Durée (secondes)",
-      "Pages vues",
-      "Device",
-      "Navigateur",
-      "Langue",
-      "En ligne",
-      "Référence",
-      "Source",
-    ],
+    headers: [...TS, "Type d'événement", "Page d'entrée", "Page de sortie", "Durée (s)", "Pages vues", "Appareil", "Identifiant de session"],
   },
-  Errors: {
-    name: "Errors",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Type d'événement",
-      "Catégorie",
-      "Message",
-      "Stack",
-      "Page",
-      "Identifiant de session",
-    ],
-  },
-  PWA: {
-    name: "PWA",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Type d'événement",
-      "Étape",
-      "Plateforme",
-      "Affiché",
-      "Action",
-      "Identifiant de session",
-      "Page",
-    ],
-  },
-  ScrollDepth: {
-    name: "ScrollDepth",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Page",
-      "Profondeur max (%)",
-      "Palier atteint",
-      "Identifiant de session",
-    ],
-  },
-  OutboundLinks: {
-    name: "OutboundLinks",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Libellé",
-      "URL",
-      "Type",
-      "Identifiant de session",
-      "Page",
-    ],
-  },
-  Engagement: {
-    name: "Engagement",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Type d'événement",
-      "Contexte",
-      "Valeur",
-      "Identifiant de session",
-      "Page",
-    ],
+  Messages: {
+    name: "Messages",
+    headers: [...TS, "Référence", "Nom", "Email", "Téléphone", "Sujet", "Message", "Statut"],
   },
   Formations: {
     name: "Formations",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Référence",
-      "Nom",
-      "Prénom",
-      "Âge",
-      "Téléphone",
-      "Email",
-      "Niveau actuel",
-      "Formation choisie",
-      "Disponibilités",
-      "Motivation",
-      "Motif de paiement souhaité",
-      "Identifiant de session",
-      "Statut",
-      "Source",
-      "Données complètes (JSON)",
-    ],
+    headers: [...TS, "Référence", "Nom", "Prénom", "Âge", "Téléphone", "Email", "Niveau actuel", "Formation choisie", "Disponibilités", "Motivation", "Motif de paiement souhaité", "Statut"],
   },
   Precommandes: {
-    name: "Precommandes",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Référence",
-      "Nom",
-      "Téléphone",
-      "Email",
-      "Type de tenue",
-      "Type (autre / précisé)",
-      "Couleur préférée",
-      "Taille",
-      "Date souhaitée",
-      "Budget estimé",
-      "Description du projet",
-      "Mesures fournies",
-      "Identifiant de session",
-      "Statut",
-      "Source",
-      "Données complètes (JSON)",
-    ],
+    name: "Précommandes",
+    headers: [...TS, "Référence", "Nom", "Téléphone", "Email", "Type de tenue", "Type (autre / précisé)", "Couleur préférée", "Taille", "Date souhaitée", "Budget estimé", "Description du projet", "Mesures fournies", "Statut"],
   },
-  Contacts: {
-    name: "Contacts",
+  // 🛠️ Journal technique UNIQUEMENT (erreurs js, scroll, engagement — choix atelier)
+  Events: {
+    name: "Events",
     headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Référence",
-      "Nom",
-      "Email",
-      "Téléphone",
-      "Sujet",
-      "Message",
-      "Identifiant de session",
-      "Statut",
-      "Source",
-      "Données complètes (JSON)",
-    ],
-  },
-  PushSubscriptions: {
-    name: "PushSubscriptions",
-    headers: [
-      "Horodatage",
-      "Date",
-      "Heure",
-      "Atelier",
-      "Endpoint",
-      "p256dh",
-      "auth",
-      "Content-Encoding",
-      "Expiration",
-      "Actif",
-      "User Agent",
-      "Langue",
-      "Plateforme",
-      "Device",
-      "Navigateur",
-      "Identifiant de session",
-      "Source",
+      "Horodatage", "Date", "Heure", "Type d'événement", "Atelier",
+      "Identifiant de session", "Page", "Référence", "Statut", "Source",
       "Données complètes (JSON)",
     ],
   },
@@ -460,28 +244,36 @@ export async function listTabs() {
 
 /** Crée un onglet avec en-têtes s'il n'existe pas, ou les remet à jour. */
 export async function ensureTab(name, headers) {
+  if (name === DASHBOARD_NAME) {
+    await ensureDashboard();
+    return;
+  }
   const tabs = await listTabs();
   const sheets = getClient();
 
   if (!tabs.includes(name)) {
-    await sheets.spreadsheets.batchUpdate({
+    const addRes = await sheets.spreadsheets.batchUpdate({
       spreadsheetId: SPREADSHEET_ID,
       requestBody: {
         requests: [{ addSheet: { properties: { title: name } } }],
       },
     });
     _existingTabs = null;
+    const newSheetId = addRes && addRes.data && addRes.data.replies && addRes.data.replies[0] && addRes.data.replies[0].addSheet ? addRes.data.replies[0].addSheet.properties.sheetId : null;
+    if (newSheetId != null) {
+      try { await formatTabHeader(newSheetId); } catch (e) { console.error("[sheets] formatTabHeader", e && e.message ? e.message : e); }
+    }
   }
 
   const current = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${name}!A1:ZZ1`,
+    range: `'${name}'!A1:ZZ1`,
   });
   const currentHeaders = (current.data.values && current.data.values[0]) || [];
   if (!sameHeaders(currentHeaders, headers)) {
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${name}!A1`,
+      range: `'${name}'!A1`,
       valueInputOption: "RAW",
       requestBody: { values: [headers] },
     });
@@ -503,6 +295,7 @@ function rowFor(headers, row) {
     if (normalizedHeader === "horodatage") v = tsInfo.timestamp;
     else if (normalizedHeader === "date") v = tsInfo.date;
     else if (normalizedHeader === "heure") v = tsInfo.time;
+    else if (normalizedHeader === "dateiso") v = tsInfo.isoDate;
     else if (normalizedHeader === "atelier") v = row.atelier ?? row.school;
     else if (normalizedHeader === "donneescompletesjson") v = row;
     else v = pickValue(row, normalizedIndex, h);
@@ -518,7 +311,7 @@ export async function appendRow(tabName, headers, row) {
   const values = rowFor(headers, row);
   await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${tabName}!A1`,
+    range: `'${tabName}'!A1`,
     valueInputOption: "USER_ENTERED",
     insertDataOption: "INSERT_ROWS",
     requestBody: { values: [values] },
@@ -532,7 +325,7 @@ export async function readRecords(tabName, headers) {
   const sheets = getClient();
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${tab.name}!A2:ZZ`,
+    range: `'${tab.name}'!A2:ZZ`,
   });
   const rows = res.data.values || [];
   return rows.map((row) => {
@@ -553,60 +346,33 @@ export async function readRecords(tabName, headers) {
  * Crée l'onglet + en-têtes à la volée si besoin.
  */
 export async function logEvent(payload) {
-  // 1. Détermine l'onglet cible
+  // 1. Détermine l'onglet cible — structure « qualité » (française & métier)
   let tabKey = payload.sheet;
+  const ev = payload.event || "";
   if (!tabKey) {
-    const ev = payload.event || "";
-    if (ev.endsWith("_submit")) {
+    if (ev === "page_view" || ev === "section_view") {
+      tabKey = "Visites";
+    } else if (ev.endsWith("_submit")) {
       if (ev.startsWith("formation")) tabKey = "Formations";
       else if (ev.startsWith("precommande")) tabKey = "Precommandes";
-      else if (ev.startsWith("contact")) tabKey = "Contacts";
-      else tabKey = "Forms";
+      else if (ev.startsWith("contact")) tabKey = "Messages";
+      else tabKey = "Formulaires";
     } else if (ev.startsWith("form_")) {
-      tabKey = "Forms";
-    } else if (ev.startsWith("install_pwa_")) {
-      tabKey = "Installs";
-    } else if (ev.startsWith("pwa_")) {
-      tabKey = "PWA";
-    } else if (ev === "page_view" || ev === "section_view") {
-      tabKey = "PageViews";
+      tabKey = "Formulaires";
     } else if (
-      ev === "cta_click" ||
-      ev === "whatsapp_click" ||
-      ev === "phone_click"
+      ev === "whatsapp_click" || ev === "phone_click" || ev === "tel_click" ||
+      ev === "mail_click" || ev === "mailto_click" || ev === "email_click" ||
+      ev === "maps_click" || ev === "cta_click"
     ) {
-      tabKey = "Clicks";
+      tabKey = "ContactsClics";
     } else if (
-      ev === "session_start" ||
-      ev === "session_end" ||
-      ev === "page_hidden" ||
-      ev === "page_visible"
+      ev === "session_start" || ev === "session_end" ||
+      ev === "page_hidden" || ev === "page_visible"
     ) {
       tabKey = "Sessions";
-    } else if (
-      ev === "js_error" ||
-      ev === "react_error" ||
-      ev === "api_error" ||
-      ev === "form_api_error"
-    ) {
-      // form_api_error reste sur Forms (ligne d'erreur par form), mais les
-      // erreurs runtime vont dans Errors.
-      tabKey = payload.form ? "Forms" : "Errors";
-    } else if (ev === "scroll_depth") {
-      tabKey = "ScrollDepth";
-    } else if (ev === "outbound_click" || ev === "external_link") {
-      tabKey = "OutboundLinks";
-    } else if (
-      ev === "video_play" ||
-      ev === "video_pause" ||
-      ev === "video_complete" ||
-      ev === "tab_focus" ||
-      ev === "tab_blur" ||
-      ev === "copy_clipboard" ||
-      ev === "download_file"
-    ) {
-      tabKey = "Engagement";
     } else {
+      // Erreurs js/react/api, scroll, outbound, engagement, restes pwa…
+      // → journal technique (Events), choix de l'atelier.
       tabKey = "Events";
     }
   }
@@ -621,6 +387,252 @@ export async function logEvent(payload) {
     source: payload.source || "site",
   };
 
+  // --- Enrichissements métier (les clés littérales matchent les en-têtes) ---
+  if (tabKey === "ContactsClics") {
+    enriched["Type d'action"] = ev.replace(/_/g, " ");
+    enriched["Canal"] =
+      ev === "whatsapp_click" ? "WhatsApp"
+      : ev === "phone_click" || ev === "tel_click" ? "Appel"
+      : ev === "mail_click" || ev === "mailto_click" || ev === "email_click" ? "Email"
+      : ev === "maps_click" ? "Itinéraire"
+      : "CTA";
+    enriched["Libellé"] = payload.label || payload.context || payload.text || "";
+    enriched["Lien / Numéro"] =
+      payload.href || payload.number || payload.phone || payload.tel || payload.url || "";
+  }
+  if (tabKey === "Visites") {
+    enriched["Page"] = payload.page || payload.path || "";
+  }
+  if (tabKey === "Sessions") {
+    enriched["Type d'événement"] = ev;
+    enriched["Page d'entrée"] = payload.entryPage || payload.entry || payload.page || "";
+    enriched["Page de sortie"] = payload.exitPage || payload.exit || "";
+    enriched["Durée (s)"] = payload.duration ?? payload.durationSec ?? "";
+    enriched["Pages vues"] = payload.pageViews ?? "";
+    enriched["Appareil"] = payload.device || payload.platform || "";
+  }
+  if (tabKey === "Formulaires") {
+    enriched["Formulaire"] = payload.form || (ev.endsWith("_submit") ? ev.replace(/_submit$/, "") : ev);
+    enriched["Étape"] = payload.stage || (ev.endsWith("_submit") ? "Soumission" : "");
+    enriched["Erreur"] = payload.error || "";
+  }
+  // Les 3 onglets métier : statut initial visible pour le suivi interne
+  if (tabKey === "Messages" || tabKey === "Formations" || tabKey === "Precommandes") {
+    enriched["Statut"] = payload.statut || payload.status || "🆕 Nouveau";
+  }
+
   await appendRow(tab.name, tab.headers, enriched);
+
+  // Le tableau de bord se rafraîchit derrière (max 1×/10 min par instance)
+  ensureDashboard().catch((e) => console.error("[sheets] dashboard", e?.message || e));
+
   return { ok: true, tab: tab.name };
+}
+
+
+// =============================================================
+// 🏠 TABLEAU DE BORD « Accueil » — formules auto (choix combiné)
+// =============================================================
+
+const DASHBOARD_NAME = "Accueil";
+const DASHBOARD_REFRESH_MS = 10 * 60 * 1000;
+let _dashboardAt = 0;
+
+const DASH_TABS = [
+  { label: "Visites", tab: "Visites" },
+  { label: "Clics contacts", tab: "Clics & Contacts" },
+  { label: "Sessions", tab: "Sessions" },
+  { label: "Messages", tab: "Messages" },
+  { label: "Formations", tab: "Formations" },
+  { label: "Précommandes", tab: "Précommandes" },
+];
+
+function q(tab) { return "'" + tab + "'!$D:$D"; }
+function cntToday(tab) { return "=COUNTIF(" + q(tab) + ",TEXT(TODAY(),\"YYYY-MM-DD\"))"; }
+function cntSince(tab, days) {
+  return "=COUNTIFS(" + q(tab) + ",\">=\"&TEXT(TODAY()-" + days + ",\"YYYY-MM-DD\"))";
+}
+function cntTotal(tab) { return "=MAX(0,COUNTA('" + tab + "'!$A:$A)-1)"; }
+
+async function ensureDashboard(force = false) {
+  if (!force && Date.now() - _dashboardAt < DASHBOARD_REFRESH_MS) return;
+  const sheets = getClient();
+  const tabs = await listTabs();
+
+  if (!tabs.includes(DASHBOARD_NAME)) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: {
+        requests: [
+          {
+            addSheet: {
+              properties: { title: DASHBOARD_NAME, index: 0, gridProperties: { rowCount: 14, columnCount: 8 } },
+            },
+          },
+        ],
+      },
+    });
+    _existingTabs = null;
+  }
+
+  const stamp = new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  }).format(new Date());
+
+  const rows = [
+    ["✂️ LES SERVICES COLOMBES — TABLEAU DE BORD"],
+    ["Mis à jour automatiquement — dernière écriture : " + stamp],
+    [],
+    ["Période"].concat(DASH_TABS.map(function (t) { return t.label; }), ["Demandes totales"]),
+    ["Aujourd'hui"].concat(DASH_TABS.map(function (t) { return cntToday(t.tab); }), ["=E5+F5+G5"]),
+    ["7 derniers jours"].concat(DASH_TABS.map(function (t) { return cntSince(t.tab, 6); }), ["=E6+F6+G6"]),
+    ["30 derniers jours"].concat(DASH_TABS.map(function (t) { return cntSince(t.tab, 29); }), ["=E7+F7+G7"]),
+    ["Total général"].concat(DASH_TABS.map(function (t) { return cntTotal(t.tab); }), ["=E8+F8+G8"]),
+    [],
+    ["💡 Les chiffres se recalculent seuls dès qu'une ligne arrive. Ne pas modifier les formules. Les détails vivent dans les onglets métier."],
+  ];
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: SPREADSHEET_ID,
+    range: "'" + DASHBOARD_NAME + "'!A1:H10",
+    valueInputOption: "USER_ENTERED",
+    requestBody: { values: rows },
+  });
+
+  try {
+    await formatDashboard();
+  } catch (e) {
+    console.error("[sheets] formatDashboard", e && e.message ? e.message : e);
+  }
+  _dashboardAt = Date.now();
+}
+
+let _dashFormatted = false;
+async function formatDashboard() {
+  if (_dashFormatted) return;
+  const sheets = getClient();
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+  const dash = (meta.data.sheets || []).find(function (s) { return s.properties.title === DASHBOARD_NAME; });
+  const id = dash && dash.properties ? dash.properties.sheetId : null;
+  if (id == null) return;
+
+  const brown = { red: 0x8b / 255, green: 0x45 / 255, blue: 0x13 / 255 };
+  const brownD = { red: 0x5c / 255, green: 0x2e / 255, blue: 0x0c / 255 };
+  const citron = { red: 0xbf / 255, green: 1, blue: 0 };
+  const white = { red: 1, green: 1, blue: 1 };
+  const cream = { red: 0xfb / 255, green: 0xf7 / 255, blue: 0xee / 255 };
+
+  function cell(r1, c1, r2, c2) {
+    return { sheetId: id, startRowIndex: r1, endRowIndex: r2, startColumnIndex: c1, endColumnIndex: c2 };
+  }
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SPREADSHEET_ID,
+    requestBody: {
+      requests: [
+        { mergeCells: { range: cell(0, 0, 1, 8), mergeType: "MERGE_ALL" } },
+        {
+          repeatCell: {
+            range: cell(0, 0, 1, 8),
+            cell: {
+              userEnteredFormat: {
+                backgroundColor: brownD,
+                textFormat: { foregroundColor: white, bold: true, fontSize: 13, fontFamily: "Georgia" },
+                verticalAlignment: "MIDDLE",
+                padding: { top: 8, bottom: 8, left: 12 },
+              },
+            },
+            fields: "userEnteredFormat(backgroundColor,textFormat,verticalAlignment,padding)",
+          },
+        },
+        {
+          repeatCell: {
+            range: cell(1, 0, 2, 8),
+            cell: { userEnteredFormat: { textFormat: { italic: true, foregroundColor: { red: 0.45, green: 0.35, blue: 0.25 }, fontSize: 9 }, padding: { left: 12 } } },
+            fields: "userEnteredFormat(textFormat,padding)",
+          },
+        },
+        {
+          repeatCell: {
+            range: cell(3, 0, 4, 8),
+            cell: {
+              userEnteredFormat: {
+                backgroundColor: brown,
+                textFormat: { foregroundColor: citron, bold: true, fontSize: 10 },
+                horizontalAlignment: "CENTER",
+                verticalAlignment: "MIDDLE",
+                padding: { top: 6, bottom: 6 },
+              },
+            },
+            fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment,padding)",
+          },
+        },
+        {
+          repeatCell: {
+            range: cell(4, 0, 8, 1),
+            cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 10 }, padding: { left: 12 } } },
+            fields: "userEnteredFormat(textFormat,padding)",
+          },
+        },
+        {
+          repeatCell: {
+            range: cell(4, 1, 8, 8),
+            cell: { userEnteredFormat: { horizontalAlignment: "CENTER", textFormat: { fontSize: 11 } } },
+            fields: "userEnteredFormat(horizontalAlignment,textFormat)",
+          },
+        },
+        {
+          repeatCell: {
+            range: cell(7, 0, 8, 8),
+            cell: { userEnteredFormat: { backgroundColor: cream, textFormat: { bold: true, fontSize: 11 } } },
+            fields: "userEnteredFormat(backgroundColor,textFormat)",
+          },
+        },
+        {
+          repeatCell: {
+            range: cell(4, 7, 8, 8),
+            cell: { userEnteredFormat: { textFormat: { bold: true, foregroundColor: brownD, fontSize: 11 } } },
+            fields: "userEnteredFormat(textFormat)",
+          },
+        },
+        { updateDimensionProperties: { range: { sheetId: id, dimension: "COLUMNS", startIndex: 0, endIndex: 1 }, properties: { pixelSize: 150 }, fields: "pixelSize" } },
+        { updateDimensionProperties: { range: { sheetId: id, dimension: "COLUMNS", startIndex: 1, endIndex: 8 }, properties: { pixelSize: 118 }, fields: "pixelSize" } },
+      ],
+    },
+  });
+  _dashFormatted = true;
+}
+
+/** En-tête « marque » pour les onglets de données (marron foncé + blanc, ligne gelée). */
+async function formatTabHeader(sheetId) {
+  const sheets = getClient();
+  const brownD = { red: 0x5c / 255, green: 0x2e / 255, blue: 0x0c / 255 };
+  const white = { red: 1, green: 1, blue: 1 };
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SPREADSHEET_ID,
+    requestBody: {
+      requests: [
+        {
+          updateSheetProperties: {
+            properties: { sheetId: sheetId, gridProperties: { frozenRowCount: 1 } },
+            fields: "gridProperties.frozenRowCount",
+          },
+        },
+        {
+          repeatCell: {
+            range: { sheetId: sheetId, startRowIndex: 0, endRowIndex: 1 },
+            cell: {
+              userEnteredFormat: {
+                backgroundColor: brownD,
+                textFormat: { foregroundColor: white, bold: true, fontSize: 10 },
+                verticalAlignment: "MIDDLE",
+              },
+            },
+            fields: "userEnteredFormat(backgroundColor,textFormat,verticalAlignment)",
+          },
+        },
+      ],
+    },
+  });
 }

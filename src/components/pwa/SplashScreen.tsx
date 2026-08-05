@@ -1,29 +1,44 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useSplashMemory } from "@/hooks/useSplashMemory";
+import { GALLERY_CREATIONS } from "@/data/galleries";
 
 // ============================================================================
-// SPLASH « L'ATELIER S'OUVRE » — v6 (2026)
-// Cinématique d'ouverture ~2,6 s → les rideaux de l'atelier s'écartent.
+// SPLASH « L'ATELIER S'OUVRE » — v7 « CRÉATIONS CINÉMA » (2026)
+// Cinématique d'ouverture 4 s, toutes les 2 h → les rideaux s'écartent.
+//   - Diaporama Ken Burns des créations de l'atelier (fondu + zoom lent)
 //   - Wordmark lettre par lettre (ressort) + fil d'or qui se coud
-//   - ✂ qui glisse le long du fil
-//   - Skippable (tap / bouton Passer / Échap), 1 fois par 3 h
-//   - reduced-motion : jamais affiché
+//   - Légende de chaque création en pastille verre
+//   - Skippable (tap / bouton Passer / Échap)
+//   - reduced-motion : jamais affiché · in-app Kotlin : muet (splash natif)
 // ============================================================================
 
 const SESSION_KEY = "lscolombes:splash-atelier:v1";
-const TTL_MS = 3 * 60 * 60 * 1000; // 3 h
-const HOLD_MS = 2600;              // durée d'affichage avant ouverture
+const TTL_MS = 2 * 60 * 60 * 1000; // 2 h
+const HOLD_MS = 4000;              // durée d'affichage avant ouverture
 const OPEN_MS = 900;               // durée d'ouverture des rideaux
+const SLIDE_MS = 1450;             // rythme du diaporama (0 / 1,45 / 2,9 s)
 
 const WORDMARK = "Colombes";
+const SLIDES = GALLERY_CREATIONS.slice(0, 4);
 
 export function SplashScreen() {
   const reduceMotion = useReducedMotion();
   const { shouldShow, markSeen } = useSplashMemory(SESSION_KEY, TTL_MS);
   const [visible, setVisible] = useState(false);
   const [opening, setOpening] = useState(false);
+  const [slide, setSlide] = useState(0);
   const holdTimer = useRef<number | null>(null);
+  const slideTimer = useRef<number | null>(null);
+
+  // Pré-chauffe les images dès que le splash est envisagé
+  useEffect(() => {
+    if (!shouldShow) return;
+    for (const s of SLIDES) {
+      const img = new window.Image();
+      img.src = s.src;
+    }
+  }, [shouldShow]);
 
   // Ouverture au montage
   useEffect(() => {
@@ -33,7 +48,7 @@ export function SplashScreen() {
   }, [shouldShow, reduceMotion, markSeen]);
 
   const close = useCallback(() => {
-    setOpening(true); // d'éclanche les rideaux
+    setOpening(true); // déclenche les rideaux
   }, []);
 
   // Fermeture automatique après HOLD_MS
@@ -44,6 +59,17 @@ export function SplashScreen() {
       if (holdTimer.current != null) window.clearTimeout(holdTimer.current);
     };
   }, [visible, close]);
+
+  // Diaporama : 0 → 1 → 2 → 3 pendant la fenêtre d'affichage
+  useEffect(() => {
+    if (!visible || opening) return;
+    slideTimer.current = window.setInterval(() => {
+      setSlide((s) => (s + 1) % SLIDES.length);
+    }, SLIDE_MS);
+    return () => {
+      if (slideTimer.current != null) window.clearInterval(slideTimer.current);
+    };
+  }, [visible, opening]);
 
   // Échap pour passer
   useEffect(() => {
@@ -60,6 +86,8 @@ export function SplashScreen() {
   if (reduceMotion || (typeof window !== "undefined" && (window as any).ColombesApp?.isApp?.())) {
     return null;
   }
+
+  const current = SLIDES[slide];
 
   return (
     <AnimatePresence>
@@ -86,12 +114,10 @@ export function SplashScreen() {
               if (opening) setVisible(false);
             }}
           >
-            {/* ourlet doré vertical */}
             <div
               className="absolute top-0 bottom-0 right-0 w-[3px]"
               style={{ background: "linear-gradient(180deg, transparent, rgba(201,168,124,0.6) 30%, rgba(201,168,124,0.6) 70%, transparent)" }}
             />
-            {/* plis du tissu */}
             <div className="absolute inset-0 opacity-[0.07]"
               style={{ background: "repeating-linear-gradient(90deg, transparent 0 34px, rgba(255,255,255,0.5) 34px 36px)" }} />
           </motion.div>
@@ -116,16 +142,65 @@ export function SplashScreen() {
               style={{ background: "repeating-linear-gradient(90deg, transparent 0 34px, rgba(255,255,255,0.5) 34px 36px)" }} />
           </motion.div>
 
-          {/* ================= HALO D'AMBIANCE ================= */}
+          {/* ================= CRÉATIONS — KEN BURNS ================= */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(46rem 30rem at 50% 62%, rgba(191,255,0,0.10), transparent 60%), radial-gradient(30rem 22rem at 50% 30%, rgba(201,168,124,0.12), transparent 60%)",
-            }}
             animate={opening ? { opacity: 0 } : { opacity: 1 }}
             transition={{ duration: 0.5 }}
-          />
+          >
+            <AnimatePresence>
+              <motion.img
+                key={current.src}
+                src={current.src}
+                alt=""
+                draggable={false}
+                loading="eager"
+                className="absolute inset-0 w-full h-full object-cover"
+                initial={{ opacity: 0, scale: 1 }}
+                animate={{ opacity: 1, scale: 1.12 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  opacity: { duration: 0.7, ease: "easeInOut" },
+                  scale: { duration: HOLD_MS / 1000 + 1.2, ease: "linear" },
+                }}
+              />
+            </AnimatePresence>
+            {/* Voile cinéma pour la lisibilité du wordmark */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(8,8,12,0.82) 0%, rgba(8,8,12,0.55) 45%, rgba(8,8,12,0.88) 100%)",
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(46rem 30rem at 50% 62%, rgba(191,255,0,0.10), transparent 60%), radial-gradient(30rem 22rem at 50% 30%, rgba(201,168,124,0.12), transparent 60%)",
+              }}
+            />
+          </motion.div>
+
+          {/* ================= LÉGENDE DE LA CRÉATION ================= */}
+          <motion.div
+            className="absolute left-1/2 -translate-x-1/2 bottom-16 md:bottom-20 px-4 w-full flex justify-center pointer-events-none"
+            animate={opening ? { opacity: 0 } : { opacity: 1 }}
+            transition={{ duration: 0.35 }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={current.src}
+                className="px-4 py-1.5 rounded-full text-[10px] md:text-xs uppercase tracking-[0.22em] text-white/85 bg-white/10 backdrop-blur-md border border-white/15"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4 }}
+              >
+                {current.caption}
+              </motion.p>
+            </AnimatePresence>
+          </motion.div>
 
           {/* ================= CONTENU CENTRAL ================= */}
           <motion.div
@@ -159,7 +234,10 @@ export function SplashScreen() {
             {/* wordmark lettre par lettre */}
             <h1
               className="text-6xl sm:text-7xl md:text-8xl font-bold leading-none italic text-center"
-              style={{ fontFamily: "var(--font-display)" }}
+              style={{
+                fontFamily: "var(--font-display)",
+                textShadow: "0 6px 40px rgba(0,0,0,0.55)",
+              }}
               aria-label="Les Services Colombes"
             >
               {WORDMARK.split("").map((ch, i) => (
@@ -171,7 +249,6 @@ export function SplashScreen() {
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                     color: "transparent",
-                    textShadow: "none",
                   }}
                   initial={{ opacity: 0, y: 34, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -230,7 +307,7 @@ export function SplashScreen() {
                 e.stopPropagation();
                 close();
               }}
-              className="mt-10 px-5 py-2 rounded-full text-[11px] uppercase tracking-[0.25em] text-white/60 border border-white/15 hover:text-white hover:border-white/40 transition-colors"
+              className="mt-10 px-5 py-2 rounded-full text-[11px] uppercase tracking-[0.25em] text-white/60 border border-white/15 bg-black/25 backdrop-blur-sm hover:text-white hover:border-white/40 transition-colors"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4, duration: 0.4 }}
@@ -239,7 +316,7 @@ export function SplashScreen() {
             </motion.button>
           </motion.div>
 
-          {/* ================= LIGNE DE PROGRESSION ================= */}
+          {/* ================= LIGNE DE PROGRESSION 4 s ================= */}
           <motion.div
             className="absolute bottom-0 left-0 right-0 h-[3px]"
             style={{ background: "rgba(255,255,255,0.08)" }}
