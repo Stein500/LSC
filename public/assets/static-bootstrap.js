@@ -1,51 +1,187 @@
 /* ==========================================================================
-   static-bootstrap.js — v3 (sans ?spa=1)
+   static-bootstrap.js — v4 « SPA TAKEOVER »
    Script commun aux pages HTML statiques SEO (services, formation, contact,
-   merci, mentions-legales, 404).
+   inspirations, merci, mentions-legales, 404).
 
-   Changements v3 :
-   - SUPPRIMÉ : le compte à rebours de 8s.
-   - SUPPRIMÉ : la redirection vers /index.html?spa=1&route=...
-   - SUPPRIMÉ : le bandeau d'entrée "Version complète interactive disponible".
-   - SUPPRIMÉ : la pose du cookie lsc-spa=1.
-   - SUPPRIMÉ : la réécriture des liens internes en /route?spa=1.
+   PHILOSOPHIE v4 :
 
-   À la place :
-   - On se contente de gérer les logos (vrai logo + fallback SVG inline)
-     pour les pages où /images/logo* n'est pas dispo.
-   - On initialise les liens d'ancrage (smooth scroll pour les FAQ).
-   - On annule la redirection de la bannière legacy si elle existe encore
-     (sécurité : si une page n'a pas été migrée, on évite quand même
-     d'envoyer le user sur /index.html?spa=1).
+     Sans JavaScript          → la page statique s'affiche, complète (SEO ✅).
+     Avec JavaScript (humain) → la page statique s'affiche ~200 ms puis CÈDE
+                                la place à la vraie SPA React, animée, sur la
+                                MÊME URL (F5 sur /services recharge la SPA,
+                                plus jamais la page statique).
 
-   Comportement final côté user :
-   - Sur /services : la page s'affiche instant. Tu scrolles, tu lis, tu
-     appelles, tu cliques WhatsApp. Si tu cliques "Entrer dans l'atelier",
-     tu vas à / (la SPA), pas de chaîne de redirection.
+   Les fichiers statiques ne sont PAS compromis : ils continuent d'exister,
+   crawlabl—ables par les bots, affichables en noscript, et ils servent de
+   fallback si le chargement de la SPA échoue (offline sans cache, etc.).
+
+   Mécanique :
+     1. fetch("/index.html") → le shell SPA (références hashées /assets/…)
+     2. fondu sortant 220 ms
+     3. body remplacé par <div id="root">
+     4. injection des <link> CSS + <script type="module"> du shell
+     5. history normalisé (/services.html → /services) puis React monte
+
+   Sous-offres : filets anti-?spa=1 conservés, logo fallback, ancres douces
+   (utiles si takeover échoue → on reste sur le statique).
    ========================================================================== */
 (function () {
   "use strict";
 
-  /* ---------- Filet de sécurité : annule la bannière legacy ---------- */
-  // Si une page SEO a encore l'ancien bandeau #lsc-banner, on le masque.
-  // Plus aucun countdown, plus de window.location.replace(/index.html?spa=1...).
+  /* ------------------------------------------------------------------ *
+   * 0. Conditions de retrait : pas de takeover dans ces cas             *
+   * ------------------------------------------------------------------ */
+  function shouldTakeover() {
+    try {
+      // Escape hatch debug : /services?app=0 garde la page statique
+      if (/[?&]app=0\b/.test(location.search)) return false;
+      // file:// ou preview statique pure : pas de fetch cross
+      if (location.protocol === "file:") return false;
+      if (!("fetch" in window) || !("DOMParser" in window)) return false;
+      // Le shell SPA exige les modules ES
+      if (!("noModule" in HTMLScriptElement.prototype)) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 1. Prise de contrôle par la SPA                                    *
+   * ------------------------------------------------------------------ */
+  function bootSPA() {
+    if (!shouldTakeover()) return;
+
+    var FADE_MS = 220;
+
+    function normalizeUrl() {
+      try {
+        var clean = location.pathname.replace(/\.html?$/i, "") || "/";
+        if (clean !== location.pathname) {
+          history.replaceState(null, "", clean + location.search + location.hash);
+        }
+      } catch (e) {}
+    }
+
+    function takeover(indexHtml) {
+      var parsed;
+      try {
+        parsed = new DOMParser().parseFromString(indexHtml, "text/html");
+      } catch (e) {
+        return;
+      }
+      if (!parsed || !parsed.body) return;
+
+      // --- collecte du shell SPA --------------------------------------
+      var inlineScripts = [];
+      var cssLinks = [];
+      var moduleScripts = [];
+
+      Array.prototype.forEach.call(parsed.head.querySelectorAll("script"), function (s) {
+        var type = (s.getAttribute("type") || "").toLowerCase();
+        if (type === "application/ld+json") return;          // pas de doublon JSON-LD
+        if (s.getAttribute("src")) {
+          // Le shell Vite place l'entry + les modules dans le <head>
+          moduleScripts.push({
+            src: s.getAttribute("src"),
+            type: s.getAttribute("type") || "module",
+            crossorigin: s.getAttribute("crossorigin"),
+          });
+          return;
+        }
+        if (s.textContent && s.textContent.trim()) inlineScripts.push(s.textContent);
+      });
+      Array.prototype.forEach.call(
+        parsed.head.querySelectorAll('link[rel="stylesheet"], link[rel="modulepreload"]'),
+        function (l) {
+          cssLinks.push({
+            rel: l.getAttribute("rel"),
+            href: l.getAttribute("href"),
+            crossorigin: l.getAttribute("crossorigin"),
+          });
+        }
+      );
+      Array.prototype.forEach.call(parsed.body.querySelectorAll("script[src]"), function (s) {
+        moduleScripts.push({
+          src: s.getAttribute("src"),
+          type: s.getAttribute("type") || "module",
+          crossorigin: s.getAttribute("crossorigin"),
+        });
+      });
+
+      if (moduleScripts.length === 0) return; // shell inattendu → on reste statique
+
+      // --- fondu sortant de la page statique --------------------------
+      document.documentElement.classList.add("spa-takeover");
+      try {
+        document.body.style.transition = "opacity " + FADE_MS + "ms ease";
+        document.body.style.opacity = "0";
+      } catch (e) {}
+
+      window.setTimeout(function () {
+        // --- scripts inline du shell (thème, etc.) --------------------
+        for (var i = 0; i < inlineScripts.length; i++) {
+          try {
+            var si = document.createElement("script");
+            si.textContent = inlineScripts[i];
+            document.head.appendChild(si);
+          } catch (e) {}
+        }
+
+        // --- body → socle SPA -----------------------------------------
+        document.body.innerHTML = '<div id="root"></div>';
+        document.body.removeAttribute("style");
+
+        // --- feuilles de style SPA (après le CSS statique → priorité) --
+        for (var j = 0; j < cssLinks.length; j++) {
+          var lk = document.createElement("link");
+          lk.rel = cssLinks[j].rel;
+          lk.href = cssLinks[j].href;
+          if (cssLinks[j].crossorigin !== null && cssLinks[j].crossorigin !== undefined) {
+            lk.crossOrigin = cssLinks[j].crossorigin;
+          }
+          document.head.appendChild(lk);
+        }
+
+        // --- URL normalisée (dev : /services.html → /services) --------
+        normalizeUrl();
+
+        // --- modules SPA (l'entry monte React sur #root) --------------
+        for (var k = 0; k < moduleScripts.length; k++) {
+          var sm = document.createElement("script");
+          sm.type = moduleScripts[k].type;
+          sm.src = moduleScripts[k].src;
+          if (moduleScripts[k].crossorigin !== null && moduleScripts[k].crossorigin !== undefined) {
+            sm.crossOrigin = moduleScripts[k].crossorigin;
+          }
+          document.body.appendChild(sm);
+        }
+      }, FADE_MS);
+    }
+
+    fetch("/index.html", { credentials: "same-origin" })
+      .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+      .then(takeover)
+      .catch(function () {
+        // Offline / shell indisponible → la page statique reste, c'est prévu.
+      });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 2. Filets de sécurité (utiles si takeover échoue)                  *
+   * ------------------------------------------------------------------ */
   function neutralizeLegacyBanner() {
     var banner = document.getElementById("lsc-banner");
     if (banner) {
       banner.style.display = "none";
       banner.setAttribute("aria-hidden", "true");
     }
-    // Le bouton "Entrer" devient un <a href="/"> côté HTML.
-    // S'il a été oublié en <button>, on le rend inerte pour ne pas
-    // déclencher la chaîne de redirection qui plante.
     var legacyButtons = document.querySelectorAll(
       '[data-lsc-enter], #lsc-enter, #lsc-enter-bottom, #lsc-enter-2, .lsc-enter'
     );
     for (var i = 0; i < legacyButtons.length; i++) {
       var b = legacyButtons[i];
       if (b.tagName === "BUTTON") {
-        // On le transforme en <a href="/"> pour préserver le click user
-        // (ne casse pas la navigation même si la page n'a pas été migrée).
         var a = document.createElement("a");
         a.href = "/";
         a.className = b.className;
@@ -59,8 +195,6 @@
         b.parentNode.replaceChild(a, b);
       }
     }
-    // Filet anti-redirection : si jamais un script externe tente de
-    // faire window.location.replace(/index.html?spa=1...), on bloque.
     try {
       var origReplace = window.location.replace.bind(window.location);
       Object.defineProperty(window.location, "replace", {
@@ -68,7 +202,6 @@
           try {
             var u = String(url);
             if (u.indexOf("?spa=1") !== -1 || u.indexOf("&spa=1") !== -1) {
-              console.warn("[LSC] redirect ?spa=1 bloqué → /");
               return origReplace("/");
             }
           } catch (e) {}
@@ -77,107 +210,49 @@
         writable: false,
         configurable: true,
       });
-    } catch (e) {
-      /* si defineProperty échoue (page non migrée, autre script a déjà
-         patché), on laisse passer. */
-    }
+    } catch (e) {}
   }
 
-  /* ---------- Logo : vrai logo + fallback inline ---------- */
-
-  // SVG stylisé "ciseaux + monogramme SC" — affiché si /images/logo*
-  // ne charge pas. Pas de dépendance réseau, rendu net.
-  var LOGO_FALLBACK_SVG =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" ' +
-    'role="img" aria-label="Les Services Colombes" ' +
-    'style="width:70%;height:70%;display:block">' +
-    '<circle cx="32" cy="32" r="30" fill="#ffffff" stroke="#000000" stroke-width="2.5"/>' +
-    '<g stroke="#8B4513" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
-    '<circle cx="22" cy="44" r="4" fill="#8B4513"/>' +
-    '<circle cx="42" cy="44" r="4" fill="#8B4513"/>' +
-    '<line x1="24.5" y1="40.5" x2="44" y2="18"/>' +
-    '<line x1="39.5" y1="40.5" x2="20" y2="18"/>' +
-    '<line x1="20" y1="18" x2="20" y2="22"/>' +
-    '<line x1="44" y1="18" x2="44" y2="22"/>' +
-    "</g>" +
-    "</svg>";
-
-  function injectLogoInto(container) {
-    if (!container || container.dataset.lscLogoReady === "1") return;
-    container.dataset.lscLogoReady = "1";
-
-    var img = document.createElement("img");
-    img.src = "/images/logo.webp";
-    img.alt = container.getAttribute("data-logo-alt") || "Les Services Colombes";
-    img.loading = "eager";
-    img.decoding = "async";
-    img.className = "lsc-logo-img";
-    img.style.cssText = "width:100%;height:100%;object-fit:contain;display:block;";
-
-    var fb = document.createElement("span");
-    fb.className = "lsc-logo-fallback";
-    fb.setAttribute("aria-hidden", "true");
-    fb.innerHTML = LOGO_FALLBACK_SVG;
-    fb.style.cssText =
-      "position:absolute;inset:0;display:none;align-items:center;justify-content:center;";
-
-    img.addEventListener("error", function () {
-      img.style.display = "none";
-      fb.style.display = "flex";
-    });
-    if (img.complete && img.naturalWidth === 0) {
-      img.dispatchEvent(new Event("error"));
-    }
-
-    var original = container.innerHTML;
-    container.innerHTML = "";
-    container.style.position = "relative";
-    container.appendChild(img);
-    container.appendChild(fb);
-    setTimeout(function () {
-      var imgRect = img.getBoundingClientRect();
-      var fbRect = fb.getBoundingClientRect();
-      if (imgRect.width === 0 && fbRect.width === 0 && original) {
-        container.innerHTML = original;
-      }
-    }, 600);
-  }
-
+  /* ---------- Logos : vrai logo + fallback SVG inline ---------- */
   function setupLogos() {
-    var headerMark = document.querySelector(".lsc-logo .lsc-logo-mark");
-    if (headerMark) injectLogoInto(headerMark);
-    var footerLogoSlot = document.querySelector(
-      ".lsc-footer [data-lsc-footer-logo]"
-    );
-    if (footerLogoSlot) injectLogoInto(footerLogoSlot);
-  }
-
-  /* ---------- FAQ : smooth scroll + accessibilité ---------- */
-  function setupFAQ() {
-    var details = document.querySelectorAll("details");
-    for (var i = 0; i < details.length; i++) {
-      // Animation simple à l'ouverture
-      details[i].addEventListener("toggle", function () {
-        if (this.open) {
-          this.style.transition = "background 0.2s ease";
-          this.style.background = "rgba(191, 255, 0, 0.10)";
-        } else {
-          this.style.background = "";
-        }
-      });
+    var imgs = document.querySelectorAll("[data-lsc-logo]");
+    for (var i = 0; i < imgs.length; i++) {
+      (function (img) {
+        img.addEventListener("error", function () {
+          img.style.display = "none";
+          var wrapper = img.closest("[data-logo-alt]");
+          if (wrapper) wrapper.dataset.logoFailed = "1";
+        });
+      })(imgs[i]);
     }
   }
 
-  /* ---------- Init ---------- */
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      neutralizeLegacyBanner();
-      setupLogos();
-      setupFAQ();
+  /* ---------- Ancres douces (FAQ etc.) ---------- */
+  function setupAnchors() {
+    document.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      var id = a.getAttribute("href").slice(1);
+      if (!id) return;
+      var el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 3. Démarrage                                                       *
+   * ------------------------------------------------------------------ */
+  neutralizeLegacyBanner();
+  setupLogos();
+  setupAnchors();
+
+  // Takeover dès que le DOM est prêt (defer ⇒ déjà le cas au parsing ici,
+  // mais on sécurise quand même l'ordre).
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootSPA);
   } else {
-    neutralizeLegacyBanner();
-    setupLogos();
-    setupFAQ();
+    bootSPA();
   }
 })();

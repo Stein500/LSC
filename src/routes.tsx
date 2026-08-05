@@ -14,7 +14,6 @@ const Notifications = lazy(() => import("@/pages/Notifications/Notifications"));
 const Parametres = lazy(() => import("@/pages/Parametres/Parametres"));
 const Mentions = lazy(() => import("@/pages/Legal/Mentions"));
 const NotFound = lazy(() => import("@/pages/NotFound/NotFound"));
-const Offline = lazy(() => import("@/pages/Offline/Offline"));
 const Inspirations = lazy(() => import("@/pages/Inspirations/Inspirations"));
 
 function RouteErrorView() {
@@ -65,7 +64,6 @@ export const router = createBrowserRouter([
       { path: "notifications", element: withSuspense(Notifications) },
       { path: "parametres", element: withSuspense(Parametres) },
       { path: "mentions-legales", element: withSuspense(Mentions) },
-      { path: "offline", element: withSuspense(Offline) },
       { path: "inspirations", element: withSuspense(Inspirations) },
       { path: "404", element: withSuspense(NotFound) },
       { path: "*", element: <Navigate to="/404" replace /> },

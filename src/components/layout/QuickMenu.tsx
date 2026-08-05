@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Bell, Download, Info, Menu, Settings2, Tickets, X } from "lucide-react";
+import { Bell, Info, Menu, Settings2, Tickets, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/utils/cn";
-import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
 type QuickMenuProps = {
   className?: string;
@@ -15,7 +14,6 @@ type QuickMenuProps = {
 
 export function QuickMenu({ className, triggerLabel = "Menu", align = "bottom", buttonClassName, triggerIcon: TriggerIcon = Menu }: QuickMenuProps) {
   const [open, setOpen] = useState(false);
-  const { canInstall, promptInstall } = useInstallPrompt();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,16 +40,6 @@ export function QuickMenu({ className, triggerLabel = "Menu", align = "bottom", 
 
   const items = useMemo(
     () => [
-      canInstall
-        ? {
-            label: "Installer l'app",
-            icon: Download,
-            onClick: async () => {
-              const ok = await promptInstall();
-              if (ok) setOpen(false);
-            },
-          }
-        : null,
       {
         label: "Mes notifications",
         icon: Bell,
@@ -73,7 +61,7 @@ export function QuickMenu({ className, triggerLabel = "Menu", align = "bottom", 
         onClick: () => navigate("/parametres#about"),
       },
     ].filter(Boolean) as Array<{ label: string; icon: LucideIcon; onClick: () => void | Promise<void> }>,
-    [canInstall, navigate, promptInstall],
+    [navigate],
   );
 
   return (
