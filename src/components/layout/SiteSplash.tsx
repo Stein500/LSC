@@ -66,7 +66,10 @@ export function SiteSplash() {
             </div>
 
             <div className="rounded-[2rem] border border-white/70 bg-white/85 px-6 py-8 shadow-[0_30px_80px_rgba(26,26,26,0.12)]">
-              <div className="mx-auto mb-4 h-20 w-20 overflow-hidden rounded-3xl border-2 border-[var(--color-citron)] bg-white p-2 shadow-sm">
+              <div
+                className="mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full"
+                style={{ border: "3px solid var(--color-citron)", boxShadow: "0 10px 26px rgba(92,46,12,0.30), 0 0 0 3px rgba(201,168,124,0.40)" }}
+              >
                 <SmartImage src="/images/logo.webp" alt={env.schoolName} className="h-full w-full object-cover" />
               </div>
 

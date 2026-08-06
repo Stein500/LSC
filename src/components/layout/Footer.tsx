@@ -76,10 +76,10 @@ export function Footer() {
         {/* Marque */}
         <div className="flex flex-col items-center gap-3">
           <div
-            className="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-lg shadow-black/30"
-            style={{ border: "2px solid var(--color-citron)" }}
+            className="w-20 h-20 rounded-full overflow-hidden shadow-lg shadow-black/40"
+            style={{ border: "3px solid var(--color-citron)", boxShadow: "0 8px 22px rgba(0,0,0,0.45), 0 0 0 3px rgba(201,168,124,0.35)" }}
           >
-            <SmartImage src="/images/logo.webp" alt="" decorative className="w-full h-full object-cover p-[2px]" />
+            <SmartImage src="/images/logo.webp" alt="" decorative className="w-full h-full object-cover" />
           </div>
           <div>
             <p className="font-bold tracking-wide text-lg" style={{ fontFamily: "var(--font-display)" }}>

@@ -55,15 +55,22 @@ export function Nav() {
           <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group min-w-0">
             <div
               className={cn(
-                "rounded-full bg-white flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 group-hover:scale-105",
-                scrolled ? "w-11 h-11" : "w-12 h-12 sm:w-[52px] sm:h-[52px]",
+                "relative rounded-full overflow-hidden shrink-0 transition-all duration-300 group-hover:scale-105",
+                // 🛡️ Badge royal : grand médaillon qui dépasse sous le bandeau,
+                // puis se resserre joliment dès qu'on défile.
+                scrolled
+                  ? "w-11 h-11 sm:w-12 sm:h-12"
+                  : "w-[60px] h-[60px] sm:w-16 sm:h-16 -mb-7 sm:-mb-9",
               )}
-              style={{ border: "2.5px solid var(--color-citron)", boxShadow: "0 4px 16px rgba(92,46,12,0.28), 0 0 0 3px rgba(201,168,124,0.35)" }}
+              style={{
+                border: "3px solid var(--color-citron)",
+                boxShadow: "0 8px 22px rgba(92,46,12,0.38), 0 0 0 3px rgba(201,168,124,0.45)",
+              }}
             >
               <SmartImage
                 src="/images/logo.webp"
                 alt="Les Services Colombes"
-                className="w-full h-full object-cover p-[2px]"
+                className="w-full h-full object-cover"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   el.style.display = "none";

@@ -19,9 +19,8 @@
  * plus aucune injection regex — fini les débris d'attributs dans Gmail).
  */
 
-import fs from "node:fs";
-import path from "node:path";
 import nodemailer from "nodemailer";
+import { LOGO_PNG_BUFFER } from "./logo.js";
 
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
@@ -43,9 +42,6 @@ const ATELIER_WA = process.env.ATELIER_WA || "2290167409408";
 const ATELIER_LOCATION =
   process.env.ATELIER_LOCATION ||
   "Devant l'école primaire publique TOKPOTA DAVO GROUPE ABC, Porto-Novo – Bénin";
-const ATELIER_SITE = process.env.ATELIER_SITE || "https://couturecolombe.vercel.app";
-const ATELIER_LOGO_URL = process.env.ATELIER_LOGO_URL || `${ATELIER_SITE.replace(/\/$/, "")}/images/logo.webp`;
-
 // ── Palette (identique au site — ne jamais dériver) ─────────────────────────
 const C = {
   noir: "#0B0B12",
@@ -151,45 +147,21 @@ function profilFor(type) {
 }
 
 // =============================================================
-// Logo (pièce jointe CID + fallback SVG inline)
+// Logo — médaillon CID embarqué (PNG 512, coins transparents)
+// Universel : Gmail, Outlook, Apple Mail. Zéro lecture disque,
+// zéro URL externe (le blason voyage DANS le mail).
 // =============================================================
 
 const LOGO_CID = "lsc-logo";
 
-function buildLogoSvg() {
-  return `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="${escHtml(ATELIER_NAME)}">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#BFFF00"/>
-        <stop offset="100%" stop-color="#8FBF00"/>
-      </linearGradient>
-    </defs>
-    <rect width="128" height="128" rx="30" fill="#FFFFFF"/>
-    <circle cx="64" cy="64" r="51" fill="#FFFFFF" stroke="url(#g)" stroke-width="6"/>
-    <g fill="none" stroke="#8B4513" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M47 50c7 7 16 14 26 22" />
-      <path d="M51 47l-8-8" />
-      <path d="M72 45c3 4 6 8 10 12" />
-      <path d="M58 58c-6 6-11 13-15 21" />
-      <path d="M78 44c3-3 7-3 10 0" />
-      <path d="M67 69c5 5 11 11 18 14" />
-    </g>
-    <circle cx="64" cy="64" r="3.7" fill="#8B4513"/>
-  </svg>`;
-}
-
 function getLogoAttachment() {
-  const webpPath = path.join(process.cwd(), "public", "images", "logo.webp");
-  const svgPath = path.join(process.cwd(), "public", "images", "logo.svg");
-
-  if (fs.existsSync(webpPath)) {
-    return { filename: "logo.webp", path: webpPath, contentType: "image/webp", cid: LOGO_CID };
-  }
-  if (fs.existsSync(svgPath)) {
-    return { filename: "logo.svg", path: svgPath, contentType: "image/svg+xml", cid: LOGO_CID };
-  }
-  return { filename: "logo.svg", content: buildLogoSvg(), contentType: "image/svg+xml", cid: LOGO_CID };
+  return {
+    filename: "logo.png",
+    content: LOGO_PNG_BUFFER,
+    contentType: "image/png",
+    cid: LOGO_CID,
+    contentDisposition: "inline",
+  };
 }
 
 // =============================================================
