@@ -20,8 +20,19 @@ object AppConfig {
     /** Slogan. */
     const val SLOGAN = "Atelier de Couture d'Exception — Porto-Novo"
 
-    /** Téléphone de l'atelier (remplace avec le vrai numéro). */
-    const val CONTACT_PHONE = "+22900000000"
+    /** Numéros de l'atelier (appels ET WhatsApp). */
+    const val CONTACT_PHONE_1 = "+2290167409408"
+    const val CONTACT_PHONE_2 = "+2290195763601"
+
+    /** Numéro principal (utilisé par défaut pour les appels). */
+    const val CONTACT_PHONE = CONTACT_PHONE_1
+
+    /** Liens WhatsApp directs (dérivés des numéros, sans le "+"). */
+    val WHATSAPP_1: String by lazy { "https://wa.me/" + CONTACT_PHONE_1.removePrefix("+") }
+    val WHATSAPP_2: String by lazy { "https://wa.me/" + CONTACT_PHONE_2.removePrefix("+") }
+
+    /** Tous les numéros (utile pour un sélecteur de contact). */
+    val CONTACT_PHONES: List<String> by lazy { listOf(CONTACT_PHONE_1, CONTACT_PHONE_2) }
 
     /** Host autorisé pour la navigation interne (dérivé de HOME_URL). */
     val HOME_HOST: String by lazy {

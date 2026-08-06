@@ -6,6 +6,7 @@
     <string name="offline_message">Vérifie ta connexion et réessaie.</string>
     <string name="offline_retry">Réessayer</string>
     <string name="offline_call">Appeler l\'atelier</string>
+    <string name="offline_whatsapp">WhatsApp</string>
     <string name="tap_to_continue">Appuie pour continuer</string>
     <string name="connection_interrupted">La connexion a été interrompue</string>
     <string name="download_ticket">Ticket reçu</string>

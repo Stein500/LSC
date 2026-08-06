@@ -33,10 +33,23 @@ class OfflineFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.btnRetry.setOnClickListener { onRetry?.invoke() }
         binding.btnCall.setOnClickListener {
-            runCatching {
-                startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${AppConfig.CONTACT_PHONE}")))
-            }
+            openTel()
         }
+        binding.btnWhatsapp.setOnClickListener {
+            openWhatsApp()
+        }
+    }
+
+    /** Ouvre le téléphone avec le numéro principal. */
+    private fun openTel() {
+        val chooser = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${AppConfig.CONTACT_PHONE}"))
+        runCatching { startActivity(chooser) }
+    }
+
+    /** Ouvre WhatsApp sur le numéro principal. */
+    private fun openWhatsApp() {
+        val wa = Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.WHATSAPP_1))
+        runCatching { startActivity(wa) }
     }
 
     override fun onDestroyView() {
