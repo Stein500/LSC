@@ -82,6 +82,22 @@ export const GALLERY_CREATIONS: GalleryImage[] = [
     alt: "Finitions et détails d'une tenue sur mesure",
     caption: "Les finitions — la signature d'un travail bien fait",
   },
+  // ======= LES TENUES DE LA SEMAINE (wax tendance, élégance mature) =======
+  {
+    src: "/images/gallery/tenue-semaine-01.jpg",
+    alt: "Femme africaine élégante et mature en robe wax citron et bleu ciel, coupe moderne",
+    caption: "Tenue de la semaine — la robe wax, prestance sourire",
+  },
+  {
+    src: "/images/gallery/tenue-semaine-02.jpg",
+    alt: "Femme africaine mature en ensemble wax jupe longue et haut assorti, tons marron et or",
+    caption: "Jupe & haut wax — l'allure des grandes occasions",
+  },
+  {
+    src: "/images/gallery/tenue-semaine-03.jpg",
+    alt: "Femme africaine majestueuse en grande robe wax bleu ciel et citron près d'une fenêtre lumineuse",
+    caption: "La grande robe wax — majesté au quotidien",
+  },
 ];
 
 // ======================= GALERIE 4 — CONTACT (mini galerie) =======================
