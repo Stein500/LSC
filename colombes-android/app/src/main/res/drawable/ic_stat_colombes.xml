@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Petite icône de notification (blanche, monochrome) : une bobine de fil + une aiguille -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Corps de la bobine -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M6,3 h12 v3 h-12 z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M5,8 h14 v9 h-14 z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,19 h16 v2 h-16 z" />
+    <!-- Fil -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M18,5 C21,8 21,10 18,13 C21,12 22,10 22,8 C22,6 20,5 18,5 z" />
+</vector>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palette officielle du site -->
+    <color name="sky_blue">#87CEEB</color>
+    <color name="citron">#BFFF00</color>
+    <color name="citron_dark">#8FBF00</color>
+    <color name="marron">#8B4513</color>
+    <color name="marron_dark">#5C2E0C</color>
+    <color name="or">#C9A87C</color>
+    <color name="or_clair">#F4E3C9</color>
+    <color name="or_vif">#F4B860</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colombes_paper">#FFFFFF</color>
+
+    <!-- Splash -->
+    <color name="splash_bg">#0B0B12</color>
+</resources>
