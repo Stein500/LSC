@@ -59,6 +59,19 @@
             android:textStyle="italic" />
     </LinearLayout>
 
+    <!-- Statut de synchronisation -->
+    <TextView
+        android:id="@+id/splash_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="48dp"
+        android:alpha="0.85"
+        android:fontFamily="sans-serif"
+        android:text="@string/splash_status_loading"
+        android:textColor="#66FFFFFF"
+        android:textSize="12sp" />
+
     <!-- Barre de progression -->
     <View
         android:id="@+id/progress_bar"
@@ -72,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="22dp"
         android:fontFamily="sans-serif"
         android:text="@string/tap_to_continue"
         android:textColor="#55FFFFFF"

@@ -9,6 +9,8 @@
     <string name="offline_whatsapp">WhatsApp</string>
     <string name="choose_number">Choisir un numéro</string>
     <string name="tap_to_continue">Appuie pour continuer</string>
+    <string name="splash_status_loading">L\'atelier s\'ouvre…</string>
+    <string name="splash_status_ready">Prêt ✓</string>
     <string name="connection_interrupted">La connexion a été interrompue</string>
     <string name="download_ticket">Ticket reçu</string>
 </resources>

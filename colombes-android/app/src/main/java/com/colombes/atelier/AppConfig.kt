@@ -13,6 +13,9 @@ object AppConfig {
     /** URL d'accueil (jamais affichée dans l'UI). */
     const val HOME_URL = "https://couturecolombe.vercel.app/"
 
+    /** Manifest de version du site (détection des mises à jour). */
+    const val MANIFEST_URL = "https://couturecolombe.vercel.app/app-manifest.json"
+
     /** Version de l'application (source unique : le Gradle `versionName`). */
     val APP_VERSION: String = BuildConfig.VERSION_NAME
 

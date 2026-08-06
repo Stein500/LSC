@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.colombes.atelier.web.ColombesWebView
-            android:id="@+id/web_view"
+        <FrameLayout
+            android:id="@+id/engine_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -31,6 +31,12 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!-- Splash cinématique synchronisé (par-dessus le moteur, caché par défaut) -->
+    <include
+        android:id="@+id/splash_overlay"
+        layout="@layout/view_splash_overlay"
         android:visibility="gone" />
 
 </FrameLayout>

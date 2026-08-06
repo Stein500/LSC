@@ -58,14 +58,14 @@ cd colombes-android
 ./gradlew :app:assembleDebug
 ```
 
-APK produit : `app/build/outputs/apk/debug/colombes-atelier-1.0.0-debug.apk`
+APK produit : `app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
 (et `-release.apk` pour une version signée).
 
 ### Installer sur un téléphone
 
 - **Envoi de fichier** : télécharger l'APK depuis le Codespace puis l'ouvrir
   sur le téléphone (autoriser « Sources inconnues »).
-- **Via USB + adb** : `adb install app/build/outputs/apk/debug/colombes-atelier-1.0.0-debug.apk`
+- **Via USB + adb** : `adb install app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
 
 ## 🔔 Notifications
 

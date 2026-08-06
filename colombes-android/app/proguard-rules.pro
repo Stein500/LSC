@@ -7,3 +7,7 @@
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
+
+# WorkManager instancie le Worker par réflexion
+-keep class com.colombes.atelier.sync.** { *; }
+-keep class com.colombes.atelier.notifications.** { *; }

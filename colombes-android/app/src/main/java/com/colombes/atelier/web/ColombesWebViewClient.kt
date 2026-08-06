@@ -18,7 +18,8 @@ import com.colombes.atelier.AppConfig
  */
 class ColombesWebViewClient(
     private val context: Context,
-    private val onMainError: () -> Unit
+    private val onMainError: () -> Unit,
+    private val onHomeLoaded: (() -> Unit)? = null
 ) : WebViewClient() {
 
     @Deprecated("Deprecated in API 24")
@@ -96,6 +97,10 @@ class ColombesWebViewClient(
         super.onPageFinished(view, url)
         // Injecte l'observateur d'événements (formulaires, appels, WhatsApp)
         view?.let { JsInjector.inject(it, url) }
+        // Notifie que la page d'accueil est prête (synchro du splash)
+        if (onHomeLoaded != null && url?.startsWith(AppConfig.HOME_URL) == true) {
+            onHomeLoaded()
+        }
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
