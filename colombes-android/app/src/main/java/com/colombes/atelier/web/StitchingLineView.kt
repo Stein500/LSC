@@ -32,18 +32,19 @@ class StitchingLineView @JvmOverloads constructor(
     private var animator: ValueAnimator? = null
 
     /** Lance l'animation de couture. */
-    fun sew(duration: Long = 900) {
+    fun sew(sewDuration: Long = 900) {
         animator?.cancel()
-        animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = duration
+        val anim = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = sewDuration
             interpolator = DecelerateInterpolator()
-            addUpdateListener { anim ->
-                progress = anim.animatedValue as Float
+            addUpdateListener { a ->
+                progress = a.animatedValue as Float
                 phase = progress * 24f
                 invalidate()
             }
             start()
         }
+        animator = anim
     }
 
     override fun onDraw(canvas: Canvas) {
