@@ -56,14 +56,14 @@ export function Nav() {
             <div
               className={cn(
                 "rounded-full bg-white flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 group-hover:scale-105",
-                scrolled ? "w-10 h-10" : "w-11 h-11 sm:w-12 sm:h-12",
+                scrolled ? "w-11 h-11" : "w-12 h-12 sm:w-[52px] sm:h-[52px]",
               )}
-              style={{ border: "2px solid var(--color-citron)", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+              style={{ border: "2.5px solid var(--color-citron)", boxShadow: "0 4px 16px rgba(92,46,12,0.28), 0 0 0 3px rgba(201,168,124,0.35)" }}
             >
               <SmartImage
                 src="/images/logo.webp"
                 alt="Les Services Colombes"
-                className="w-full h-full object-contain p-1.5"
+                className="w-full h-full object-cover p-[2px]"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   el.style.display = "none";

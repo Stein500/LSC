@@ -79,7 +79,7 @@ export function Footer() {
             className="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-lg shadow-black/30"
             style={{ border: "2px solid var(--color-citron)" }}
           >
-            <SmartImage src="/images/logo.webp" alt="" decorative className="w-full h-full object-contain p-2" />
+            <SmartImage src="/images/logo.webp" alt="" decorative className="w-full h-full object-cover p-[2px]" />
           </div>
           <div>
             <p className="font-bold tracking-wide text-lg" style={{ fontFamily: "var(--font-display)" }}>
