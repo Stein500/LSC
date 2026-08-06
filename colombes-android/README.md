@@ -24,12 +24,13 @@ colombes-android/
         ├── AndroidManifest.xml
         ├── java/com/colombes/atelier/
         │   ├── AppConfig.kt              ← URL définie UNE seule fois
-        │   ├── SplashActivity.kt          ← splash animé (rideaux + logo + fil doré)
-        │   ├── MainActivity.kt            ← WebView + réseau + téléchargements
+        │   ├── MainActivity.kt            ← activité unique (splash synchro + moteur + hors-ligne)
         │   ├── web/ColombesWebView.kt
         │   ├── web/ColombesWebViewClient.kt
         │   ├── web/ColombesWebChromeClient.kt
         │   ├── web/ColombesJsBridge.kt    ← pont JavaScript "ColombesApp"
+        │   ├── sync/UpdateChecker.kt     ← détection auto des mises à jour
+        │   ├── sync/UpdateWorker.kt      ← WorkManager (toutes les 6 h)
         │   ├── web/DownloadHelper.kt
         │   ├── web/StitchingLineView.kt
         │   └── offline/OfflineFragment.kt
@@ -67,11 +68,20 @@ APK produit : `app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
   sur le téléphone (autoriser « Sources inconnues »).
 - **Via USB + adb** : `adb install app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
 
+## 🎬 Splash synchronisé
+
+L'app est **une seule activité**. Le splash cinématique (rideaux + wordmark +
+fil doré) reste affiché **jusqu'à ce que la page d'accueil soit réellement
+rendue** (`onPageFinished`), puis ouvre les rideaux en fondu : aucune impression
+de « site qui charge », transition parfaitement fluide avec le site.
+
 ## 🔔 Notifications
 
 - **Programmées** : matin 08h00 et soir 19h00 (heure locale) via AlarmManager.
 - **Événements du site** captés par la WebView (formulaires, appels, WhatsApp,
   tickets PDF) → notification locale élégante.
+- **Mises à jour auto** : WorkManager vérifie `app-manifest.json` toutes les 6 h
+  et notifie « ✨ Nouveautés » quand le site change.
 - **Jamais** d'URL du site dans une notification.
 - Permission demandée au 1er lancement ; alarme exacte si accordée, sinon repli.
 
