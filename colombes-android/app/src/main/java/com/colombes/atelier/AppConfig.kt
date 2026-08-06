@@ -1,5 +1,7 @@
 package com.colombes.atelier
 
+import com.colombes.atelier.BuildConfig
+
 /**
  * Configuration centrale de l'application.
  *
@@ -11,8 +13,8 @@ object AppConfig {
     /** URL d'accueil (jamais affichée dans l'UI). */
     const val HOME_URL = "https://couturecolombe.vercel.app/"
 
-    /** Version de l'application (exposée via le pont JS). */
-    const val APP_VERSION = "1.0.0"
+    /** Version de l'application (source unique : le Gradle `versionName`). */
+    val APP_VERSION: String = BuildConfig.VERSION_NAME
 
     /** Nom affiché. */
     const val BRAND = "Colombes"

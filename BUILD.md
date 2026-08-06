@@ -72,6 +72,25 @@ pour un usage personnel).
 
 ---
 
+## 🐧 Codespace sur Alpine (si le setup auto ne tourne pas)
+
+Parfois le Codespace démarre sur l'image **Alpine** (au lieu de mon `.devcontainer`
+Ubuntu), donc Java + SDK ne sont pas installés automatiquement. Dans ce cas,
+**une seule commande** reconfigure tout :
+
+```bash
+bash colombes-android/setup-alpine.sh
+```
+
+Puis compile :
+
+```bash
+cd colombes-android && ./gradlew :app:assembleDebug
+```
+
+Le script est idempotent : après `gh codespace stop` (disque conservé), il ne
+réinstalle que ce qui manque.
+
 ## ♻️ Persistance & arrêt (point 3)
 
 - **`gh codespace stop`** **arrête** le Codespace : le disque (SDK + Gradle +

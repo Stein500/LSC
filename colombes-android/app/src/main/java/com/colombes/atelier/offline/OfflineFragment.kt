@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.colombes.atelier.AppConfig
+import com.colombes.atelier.R
 import com.colombes.atelier.databinding.FragmentOfflineBinding
 
 /**
@@ -40,16 +42,28 @@ class OfflineFragment : Fragment() {
         }
     }
 
-    /** Ouvre le téléphone avec le numéro principal. */
-    private fun openTel() {
-        val chooser = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${AppConfig.CONTACT_PHONE}"))
-        runCatching { startActivity(chooser) }
+    /** Propose de choisir le numéro puis lance l'action correspondante. */
+    private fun showNumberChooser(action: (String) -> Unit) {
+        val numbers = AppConfig.CONTACT_PHONES.toTypedArray()
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.choose_number)
+            .setItems(numbers) { _, which -> action(numbers[which]) }
+            .show()
     }
 
-    /** Ouvre WhatsApp sur le numéro principal. */
+    /** Ouvre le téléphone (choix du numéro). */
+    private fun openTel() {
+        showNumberChooser { num ->
+            runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$num"))) }
+        }
+    }
+
+    /** Ouvre WhatsApp (choix du numéro). */
     private fun openWhatsApp() {
-        val wa = Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.WHATSAPP_1))
-        runCatching { startActivity(wa) }
+        showNumberChooser { num ->
+            val wa = "https://wa.me/${num.removePrefix("+")}"
+            runCatching { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(wa))) }
+        }
     }
 
     override fun onDestroyView() {
