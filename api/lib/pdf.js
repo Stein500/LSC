@@ -48,8 +48,11 @@ const ATELIER_WA = process.env.ATELIER_WA || "2290167409408";
 const ATELIER_LOCATION =
   process.env.ATELIER_LOCATION ||
   "Devant l'école primaire publique TOKPOTA DAVO GROUPE ABC, Porto-Novo – Bénin";
+// Conservée pour compat éventuelle, mais JAMAIS affichée sur les tickets
+// (demande client : l'URL d'hébergement reste invisible partout).
 const ATELIER_SITE =
-  process.env.ATELIER_SITE || "https://lesservicescolombes.vercel.app";
+  process.env.ATELIER_SITE || "https://couturecolombe.vercel.app";
+void ATELIER_SITE;
 
 // Couleurs (alignées sur la charte : bleu ciel dominant + marron + blanc + noir + vert citron)
 const C = {
@@ -64,6 +67,8 @@ const C = {
   line: rgb(176 / 255, 221 / 255, 240 / 255),     // #B0DDF0 ligne bleu ciel
   paper: rgb(1, 1, 1),                            // #FFFFFF blanc
   rose: rgb(214 / 255, 96 / 255, 96 / 255),       // #D66060 — petite touche féminine
+  gold: rgb(201 / 255, 168 / 255, 124 / 255),     // #C9A87C fil d'or — cadre « patron »
+  goldD: rgb(155 / 255, 122 / 255, 82 / 255),     // doré foncé — ciseaux du cadre
 };
 
 // =============================================================
@@ -457,6 +462,29 @@ export async function buildSubmissionPdf(type, data) {
   const { width, height } = page.getSize();
   const margin = 42;
 
+  // ============== CADRE « PATRON À DÉCOUPER » ==============
+  // Pourtour en pointillés dorés, comme la marge de coupe d'un patron —
+  // signature visuelle de l'atelier, reprise du fil de couture du site.
+  const FRAME_INSET = 16;
+  page.drawRectangle({
+    x: FRAME_INSET,
+    y: FRAME_INSET,
+    width: width - FRAME_INSET * 2,
+    height: height - FRAME_INSET * 2,
+    borderColor: C.gold,
+    borderWidth: 1.1,
+    borderDashArray: [7, 4],
+  });
+  // Petits ciseaux vectoriels sur le bord gauche, à mi-hauteur
+  (function drawScissors(cx, cy) {
+    const s = 7; // ouverture des branches
+    const arm = 11; // longueur des branches
+    page.drawCircle({ x: cx - s / 2, y: cy - s / 2 - 3, size: 2.6, borderColor: C.goldD, borderWidth: 1 });
+    page.drawCircle({ x: cx + s / 2, y: cy - s / 2 - 3, size: 2.6, borderColor: C.goldD, borderWidth: 1 });
+    page.drawLine({ start: { x: cx - s / 2, y: cy - s / 2 - 1 }, end: { x: cx + arm * 0.55, y: cy + arm }, thickness: 1.1, color: C.goldD });
+    page.drawLine({ start: { x: cx + s / 2, y: cy - s / 2 - 1 }, end: { x: cx - arm * 0.55, y: cy + arm }, thickness: 1.1, color: C.goldD });
+  })(FRAME_INSET, Math.round(height / 2));
+
   // ============== HEADER (bande tissée + logo + ref) ==============
   // Bande tissée 3 traits façon pagne — 4px de haut total
   rect(page, 0, height - 4, width, 1.2, C.orange);
@@ -777,12 +805,14 @@ export async function buildSubmissionPdf(type, data) {
     font: fontBold,
     color: C.ink,
   });
-  const siteW = font.widthOfTextAtSize(ATELIER_SITE, 8);
-  page.drawText(ATELIER_SITE, {
-    x: width - margin - siteW,
+  // À droite : une phrase chaleureuse — JAMAIS l'URL du site (discrétion marque).
+  const rightNote = "Présentez ce ticket lors de votre passage à l'atelier";
+  const rightNoteW = fontItalic.widthOfTextAtSize(rightNote, 8);
+  page.drawText(rightNote, {
+    x: width - margin - rightNoteW,
     y: footerY + 8,
     size: 8,
-    font,
+    font: fontItalic,
     color: C.citronD,
   });
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Copy, ExternalLink, RotateCcw, Trash2, MessageCircle } from "lucide-react";
+import { CheckCircle2, Copy, RotateCcw, Trash2, MessageCircle } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -16,14 +16,12 @@ import {
   getTicketLabel,
   getTicketStatusLabel,
   getTicketStatusTone,
-  ticketsToCSV,
   openTicketWhatsApp,
   updateTicket,
   type StoredTicket,
 } from "@/utils/tickets";
 import { trackFormSubmit } from "@/utils/api";
 import { toast } from "sonner";
-import { downloadTextFile } from "@/utils/download";
 
 function summarize(ticket: StoredTicket) {
   const entries = Object.entries(ticket.data).filter(([, value]) => value !== undefined && value !== "");
@@ -64,10 +62,6 @@ export default function Tickets() {
     }
   };
 
-  const handleExport = () => {
-    downloadTextFile(ticketsToCSV(tickets), "tickets.csv", "text/csv");
-  };
-
   return (
     <>
       <SEO title="Mes demandes" description="Vos demandes gardées en mémoire et faciles à retrouver." path="/tickets" />
@@ -101,7 +95,6 @@ export default function Tickets() {
           </div>
 
           <div className="flex flex-wrap gap-3 mb-6">
-            <Button onClick={handleExport} variant="outline" icon={<ExternalLink className="w-4 h-4" />}>Exporter CSV</Button>
             <Button
               variant="ghost"
               icon={<Trash2 className="w-4 h-4" />}

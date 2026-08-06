@@ -50,37 +50,50 @@ export const GALLERY_ATELIER: GalleryImage[] = [
 ];
 
 // ======================= GALERIE 2 — LES CRÉATIONS =======================
-// Insérée sur la page Services, après la grille des prestations
+// ======================= GALERIE 2 — LES CRÉATIONS =======================
+// Insérée sur la page Accueil (CreationStrip) et la page Services.
+// 8 visuels signature GÉNÉRÉS pour la maison & SIGNÉS au vrai logo
+// (médaillon blanc fil d'or en bas à droite) — identité citron/bleu ciel/marron.
 export const GALLERY_CREATIONS: GalleryImage[] = [
   {
-    src: "/images/gallery/creation-afrique-01.webp",
-    alt: "Tenue africaine béninoise sur mesure",
-    caption: "Boubous et ensembles — l'élégance africaine",
+    src: "/images/gallery/tenue-semaine-01.jpg",
+    alt: "Femme africaine élégante et mature en robe wax citron et bleu ciel, coupe moderne",
+    caption: "Tenue de la semaine — la robe wax, prestance sourire",
   },
   {
-    src: "/images/gallery/creation-afrique-02.webp",
-    alt: "Robe moderne en pagne tissé",
-    caption: "Pagne tissé — pour des cérémonies uniques",
+    src: "/images/gallery/tenue-semaine-02.jpg",
+    alt: "Femme africaine mature en ensemble wax jupe longue et haut assorti, tons marron et or",
+    caption: "Jupe & haut wax — l'allure des grandes occasions",
   },
   {
-    src: "/images/gallery/creation-afrique-03.webp",
-    alt: "Création en bazin chic",
-    caption: "Bazin chic — raffinement et prestance",
+    src: "/images/gallery/tenue-semaine-03.jpg",
+    alt: "Femme africaine majestueuse en grande robe wax bleu ciel et citron près d'une fenêtre lumineuse",
+    caption: "La grande robe wax — majesté au quotidien",
   },
   {
-    src: "/images/gallery/creation-afrique-04.webp",
-    alt: "Robe africaine moderne et fluide",
-    caption: "Robes modernes — entre tradition et contemporain",
+    src: "/images/gallery/jeune-fille-02.jpg",
+    alt: "Adolescente élégante en robe wax marron et or près d'une fenêtre de l'atelier",
+    caption: "Jeunes filles — la tendance wax bien coupée",
   },
   {
-    src: "/images/gallery/creation-afrique-05.webp",
-    alt: "Ensemble layette pour nouveau-né",
-    caption: "Layette — la douceur pour les tout-petits",
+    src: "/images/gallery/jeune-fille-01.jpg",
+    alt: "Petite fille joyeuse en robe wax citron et bleu ciel qui tourbillonne",
+    caption: "Petites princesses — le wax qui fait danser",
   },
   {
-    src: "/images/gallery/creation-afrique-06.webp",
-    alt: "Finitions et détails d'une tenue sur mesure",
-    caption: "Les finitions — la signature d'un travail bien fait",
+    src: "/images/gallery/layette-bebe-02.jpg",
+    alt: "Bébé adorable en petite robe wax bleu ciel avec bandeau assorti, assise sur un fauteuil crème",
+    caption: "Layette — la douceur dès le premier âge",
+  },
+  {
+    src: "/images/gallery/layette-bebe-01.jpg",
+    alt: "Bébé souriant en barboteuse garnie de wax avec bonnet assorti dans l'atelier",
+    caption: "Barboteuses & bonnets — cousus avec tendresse",
+  },
+  {
+    src: "/images/gallery/famille-trio-01.jpg",
+    alt: "Trois générations — grand-mère, maman et bébé — en tenues wax assorties",
+    caption: "Trois générations, un même fil — les ensembles assortis",
   },
 ];
 
