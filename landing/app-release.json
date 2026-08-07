@@ -1,0 +1,15 @@
+{
+  "appName": "Colombes",
+  "available": false,
+  "version": null,
+  "file": null,
+  "sizeBytes": null,
+  "minAndroid": "8.0",
+  "updatedAt": null,
+  "githubReleases": null,
+  "waitlist": {
+    "whatsapp": "2290167409408",
+    "message": "Bonjour Les Services Colombes ! Je souhaite être informé(e) dès que l'application Colombes est disponible."
+  },
+  "_comment": "Ne PAS éditer à la main. Ce fichier est régénéré par `node scripts/update-app-release.mjs` à chaque fois qu'un APK est déposé dans downloads/. Voir DEPLOIEMENT.md."
+}

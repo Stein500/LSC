@@ -1,0 +1,22 @@
+# =============================================================
+# Robots.txt — Les Services Colombes (page officielle de
+# téléchargement de l'application Colombes)
+# https://lesservicescolombes.vercel.app
+# =============================================================
+
+User-agent: *
+Allow: /
+Disallow: /scripts/
+
+# Sitemap officiel
+Sitemap: https://lesservicescolombes.vercel.app/sitemap.xml
+
+# Bots des moteurs : accès explicite
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /

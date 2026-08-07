@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Page unique : téléchargement de l'application Colombes -->
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/og-image.jpg</image:loc>
+      <image:title>L'atelier est désormais une application — Les Services Colombes</image:title>
+      <image:caption>Visuel officiel de lancement de l'application Colombes</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/og-image-collage.jpg</image:loc>
+      <image:title>Les Services Colombes — robe wax, tenue traditionnelle et petite fille</image:title>
+      <image:caption>Créations de l'atelier de couture à Porto-Novo</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/logo.webp</image:loc>
+      <image:title>Logo Les Services Colombes — colombe rouge</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/galerie-atelier.webp</image:loc>
+      <image:title>Atelier Les Services Colombes à Porto-Novo — couturières à l'œuvre</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/galerie-famille.webp</image:loc>
+      <image:title>Trois générations en tenues assorties — atelier Colombes Porto-Novo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/galerie-robe.webp</image:loc>
+      <image:title>Robe africaine sur mesure en pagne wax — Les Services Colombes</image:title>
+    </image:image>
+  </url>
+</urlset>
