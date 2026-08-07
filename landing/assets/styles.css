@@ -60,13 +60,9 @@ h1, h2, h3 {
   font-family: var(--serif);
   font-weight: 700;
   color: var(--noir);
-  line-height: 1.15;
+  line-height: 1.12;
   letter-spacing: -0.01em;
-}
-
-h1 em, h2 em {
-  font-style: italic;
-  font-weight: 600;
+  text-wrap: balance;
 }
 
 a { color: inherit; }
@@ -138,8 +134,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
 .brand-text strong {
   font-family: var(--serif);
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   color: var(--noir);
+  white-space: nowrap;
 }
 .brand-text small {
   font-size: 0.68rem;
@@ -330,10 +327,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   position: relative;
   display: flex;
   justify-content: center;
+  padding: 14px 10px;
 }
 .phone-card {
   border-radius: 28px;
   overflow: hidden;
+  border: 1px solid var(--ligne);
   box-shadow:
     0 40px 80px -30px rgba(10, 10, 10, 0.35),
     0 0 0 1px rgba(10, 10, 10, 0.05);
@@ -352,11 +351,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   border-radius: 999px;
   box-shadow: 0 14px 30px -10px rgba(10,10,10,0.4);
   white-space: nowrap;
+  z-index: 2;
   animation: float 5.5s ease-in-out infinite;
 }
-.float-badge-1 { top: 12%; left: -4%; animation-delay: 0s; }
-.float-badge-2 { top: 46%; right: -6%; animation-delay: 1.8s; }
-.float-badge-3 { bottom: 9%; left: 2%; animation-delay: 3.4s; }
+.float-badge-1 { top: 4%; left: 0; animation-delay: 0s; }
+.float-badge-2 { top: 44%; right: 0; animation-delay: 1.8s; }
+.float-badge-3 { bottom: 5%; left: 3%; animation-delay: 3.4s; }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -418,30 +418,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 .section-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.7rem); margin-bottom: 14px; }
 .section-sub { color: var(--gris); font-weight: 300; }
-
-/* ================= ANNONCE ================= */
-.annonce { padding: 110px 0; background: var(--blanc); text-align: center; }
-.statement {
-  font-size: clamp(1.8rem, 4.2vw, 3rem);
-  font-weight: 600;
-  line-height: 1.28;
-  margin-bottom: 34px;
-}
-.statement em { color: var(--rouge); }
-.rule {
-  width: 84px; height: 3px;
-  margin: 0 auto 34px;
-  background: linear-gradient(90deg, var(--rouge), var(--or));
-  border-radius: 99px;
-}
-.exergue {
-  color: var(--gris);
-  font-weight: 300;
-  font-size: 1.05rem;
-  max-width: 36rem;
-  margin: 0 auto;
-}
-.exergue strong { color: var(--noir); font-weight: 600; }
 
 /* ================= FEATURES ================= */
 .features { padding: 100px 0 110px; background: var(--douce); border-block: 1px solid var(--ligne); }
@@ -616,6 +592,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 .gallery-grid figure:hover figcaption { opacity: 1; transform: translateY(0); }
 
+/* Écrans tactiles : pas de survol → couleur + légendes visibles d'emblée */
+@media (hover: none) {
+  .gallery-grid img { filter: none; transform: scale(1.01); }
+  .gallery-grid figcaption { opacity: 1; transform: none; }
+}
+
 /* ================= FAQ ================= */
 .faq { padding: 100px 0; background: var(--douce); border-block: 1px solid var(--ligne); }
 .faq-list {
@@ -773,10 +755,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1020px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-  .hero { padding: 64px 0 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero { padding: 56px 0 84px; }
   .hero-visual { order: -1; }
-  .phone-card { max-width: 400px; margin: 0 auto; }
+  .phone-card { max-width: 340px; margin: 0 auto; }
   .download-band { grid-template-columns: 1fr; }
   .download-visual { min-height: 240px; order: -1; }
   .cards { grid-template-columns: repeat(2, 1fr); }
@@ -784,12 +766,19 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 @media (max-width: 720px) {
   .main-nav { display: none; }
+  .header-inner { gap: 12px; }
+  .brand-text strong { font-size: 0.94rem; }
+  .brand-text small { display: none; }
+  .btn-header { padding: 9px 16px; font-size: 0.8rem; flex: none; }
+  .brand img { width: 36px; height: 36px; }
+  .hero { padding: 44px 0 72px; }
+  .hero h1 { font-size: clamp(2.15rem, 9vw, 2.9rem); }
+  .phone-card { max-width: 300px; border-radius: 22px; }
+  .float-badge { font-size: 0.7rem; padding: 7px 12px; }
   .cards, .gallery-grid, .footer-grid { grid-template-columns: 1fr; }
-  .gallery-grid figure { aspect-ratio: 4 / 3; }
+  .gallery-grid figure { aspect-ratio: 4 / 3.4; }
   .download-copy { padding: 40px 26px; }
-  .annonce, .features, .download, .gallery, .faq { padding-block: 72px; }
-  .float-badge-1 { left: 0; }
-  .float-badge-2 { right: 0; }
+  .features, .download, .gallery, .faq { padding-block: 72px; }
   .hero-actions .btn { width: 100%; justify-content: center; }
   .btn-stack { align-items: center; }
   .final-actions .btn { width: 100%; }

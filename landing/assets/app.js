@@ -81,6 +81,7 @@
     boutons.forEach(function (btn) {
       var label = btn.querySelector("[data-btn-label]");
       var sub = btn.querySelector("[data-btn-sub]");
+      var compact = btn.classList.contains("btn-header"); /* bouton d'en-tête : libellé court */
       btn.classList.remove("attente");
 
       if (dispo) {
@@ -89,7 +90,7 @@
         btn.removeAttribute("target");
         btn.setAttribute("download", "");
         btn.setAttribute("rel", "noopener");
-        if (label) label.textContent = "Télécharger l'app Colombes";
+        if (label) label.textContent = compact ? "Télécharger" : "Télécharger l'app Colombes";
         if (sub) {
           var morceaux = [];
           if (version) morceaux.push("v" + version);
@@ -105,7 +106,7 @@
         btn.setAttribute("target", "_blank");
         btn.removeAttribute("download");
         btn.classList.add("attente");
-        if (label) label.textContent = "Être informé(e) du lancement";
+        if (label) label.textContent = compact ? "Être notifié·e" : "Être informé·e du lancement";
         if (sub) sub.textContent = "Bientôt disponible — via WhatsApp";
       }
     });
