@@ -11,12 +11,13 @@
 landing/
 ├── index.html               → la page marketing (une seule page, ultra rapide)
 ├── app-release.json         → manifeste lu par la page (généré, ne pas éditer)
+├── google345f448c750dcad8.html → JETON Search Console (conservé, déjà en ligne)
 ├── manifest.webmanifest     → identité "app" de la page
 ├── robots.txt               → SEO : laisse tout indexer
 ├── sitemap.xml              → SEO : la page + images
 ├── vercel.json              → config Vercel (anciennes versions d'APK, caches)
 ├── assets/                  → styles.css, app.js, favicons
-├── images/                  → logo, hero, galerie, og-image.jpg (×2 variantes)
+├── images/                  → logo, hero, galerie, og-image.jpg (×2 variantes, WebP optimisés)
 ├── downloads/               → C'EST ICI QUE TU DÉPOSES L'APK
 └── scripts/
     └── update-app-release.mjs → détecte la version de l'APK automatiquement
@@ -77,13 +78,16 @@ Connecte un dépôt contenant ce dossier ; dans les réglages du projet Vercel :
 C'est le point essentiel pour que Google « avale » le changement de nature du site.
 
 ### Étape 1 — Vérifier la propriété du NOUVEAU domaine
+✅ **Le fichier de vérification de l'ancien site (`google345f448c750dcad8.html`)
+est DÉJÀ INCLUS à la racine de cette landing** — le jeton de vérification HTML
+est lié à ton compte Google, pas au domaine. Donc :
 1. Ouvre <https://search.google.com/search-console> et ajoute une propriété
    **“Préfixe d'URL”** → `https://lesservicescolombes.vercel.app`.
-2. Choisis la méthode **“Fichier HTML”** : Google te donne un fichier
-   `googleXXXXXXXX.html` → **dépose-le à la racine de `landing/`** (à côté de
-   `index.html`), redéploie, puis clique **“Valider”**.
-   *(Alternative : la méthode “Balise Meta” — colle la balise dans le `<head>`
-   de `index.html`, à l'endroit indiqué par le commentaire HTML prévu.)*
+2. Choisis la méthode **“Fichier HTML”** → clique directement **“Valider”** :
+   le fichier étant déjà en ligne, la vérification passe **instantanément**.
+   *(Si Google te propose un AUTRE jeton un jour, remplace simplement le fichier
+   ou ajoute la balise meta dans le `<head>` de `index.html`, à l'endroit
+   indiqué par le commentaire HTML prévu.)*
 
 ### Étape 2 — Soumettre le sitemap
 Dans Search Console → **Sitemaps** → ajoute :
@@ -139,7 +143,8 @@ d'og:image, repasse par le debugger Facebook pour “re-gratter”.
 ## 6. ✅ Checklist finale
 
 - [ ] Domaine Vercel = `lesservicescolombes` (vérifier l'URL)
-- [ ] Fichier/meta de vérification Search Console en ligne
+- [x] Fichier de vérification Search Console en ligne *(déjà inclus)*
+- [ ] Propriété GSC validée (clique « Valider » → instantané)
 - [ ] Sitemap soumis + statut “Opération réussie”
 - [ ] “Demander une indexation” faite sur l'accueil
 - [ ] Ancien domaine : redirections 301 ou Removals

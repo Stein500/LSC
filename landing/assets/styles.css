@@ -13,6 +13,9 @@
   --douce: #f6f4f0;
   --rouge: #c8102e;
   --or: #b98a2f;
+  /* Couleurs de l'ancien site, utilisées en touches subtiles */
+  --citron: #bfff00;
+  --fil-dor: #c9a87c;
   --vert-wa: #25d366;
   --ray: 18px;
   --max: 1180px;
@@ -38,6 +41,20 @@ body {
 }
 
 img { max-width: 100%; height: auto; display: block; }
+
+/* Sélection de texte : le citron signature du site */
+::selection { background: var(--citron); color: var(--noir); }
+
+/* Barre de progression de lecture (citron) */
+.progress-lecture {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--citron), var(--fil-dor));
+  z-index: 150;
+  transition: width 0.08s linear;
+}
 
 h1, h2, h3 {
   font-family: var(--serif);
@@ -352,6 +369,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   overflow: hidden;
   padding: 16px 0;
   border-top: 1px solid #1e1e1e;
+  border-bottom: 3px solid var(--citron); /* clin d'œil au site d'origine */
 }
 .marquee-track {
   display: flex;
@@ -379,6 +397,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   text-transform: uppercase;
   color: var(--gris);
   margin-bottom: 16px;
+}
+.section-kicker::before,
+.section-kicker.light::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--citron);
+  margin-right: 12px;
+  vertical-align: 3px;
+  box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.18); /* lisible sur blanc comme sur noir */
 }
 .section-kicker.light { color: rgba(255,255,255,0.6); }
 .section-head {
@@ -432,7 +462,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   border-color: var(--noir);
   box-shadow: 0 26px 44px -22px rgba(10, 10, 10, 0.28);
 }
+.card:hover .card-icon {
+  background: var(--citron);
+  color: var(--noir);
+}
 .card-icon {
+  transition: background 0.3s ease, color 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -506,7 +541,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   font-family: var(--serif);
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--or);
+  color: var(--citron);
 }
 .steps strong { display: block; font-weight: 600; margin-bottom: 2px; }
 .steps p { color: rgba(255,255,255,0.6); font-weight: 300; font-size: 0.9rem; }
@@ -631,7 +666,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 /* ================= CTA FINAL ================= */
 .final-cta {
   background:
-    radial-gradient(900px 420px at 50% -30%, rgba(185, 138, 47, 0.16), transparent 65%),
+    radial-gradient(900px 420px at 50% -30%, rgba(201, 168, 124, 0.18), transparent 65%),
+    radial-gradient(700px 340px at 110% 130%, rgba(191, 255, 0, 0.07), transparent 60%),
+    radial-gradient(700px 340px at -10% 130%, rgba(191, 255, 0, 0.07), transparent 60%),
     var(--noir);
   color: var(--blanc);
   text-align: center;

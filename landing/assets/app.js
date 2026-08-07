@@ -8,11 +8,18 @@
 (function () {
   "use strict";
 
-  /* ---------- 1. Header ombré au scroll ---------- */
+  /* ---------- 1. Header ombré + barre de progression citron ---------- */
   var header = document.querySelector(".site-header");
+  var barre = document.createElement("div");
+  barre.className = "progress-lecture";
+  barre.setAttribute("aria-hidden", "true");
+  document.body.prepend(barre);
+
   function onScroll() {
-    if (!header) return;
-    header.classList.toggle("scrolled", window.scrollY > 12);
+    if (header) header.classList.toggle("scrolled", window.scrollY > 12);
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    barre.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
