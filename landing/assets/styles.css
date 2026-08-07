@@ -42,6 +42,11 @@ body {
 
 img { max-width: 100%; height: auto; display: block; }
 
+[hidden] { display: none !important; }
+
+/* Ceinture + bretelles anti-débordement horizontal */
+main { overflow-x: clip; }
+
 /* Sélection de texte : le citron signature du site */
 ::selection { background: var(--citron); color: var(--noir); }
 
@@ -469,12 +474,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   border-radius: 30px;
-  overflow: hidden;
+  overflow: hidden; /* rien ne déborde du cadre noir */
   background: var(--noir);
   color: var(--blanc);
   box-shadow: 0 44px 90px -40px rgba(10, 10, 10, 0.55);
 }
-.download-copy { padding: 56px 52px; }
+.download-copy { padding: 56px 52px; min-width: 0; }
 .download-copy h2 { color: var(--blanc); font-size: clamp(1.7rem, 3vw, 2.3rem); margin-bottom: 12px; }
 .band-sub { color: rgba(255,255,255,0.65); font-weight: 300; margin-bottom: 34px; }
 .app-id-card {
@@ -488,10 +493,25 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   margin-bottom: 40px;
   flex-wrap: wrap;
 }
-.app-id-card img { border-radius: 50%; background: var(--blanc); }
-.app-id-card > div { display: flex; flex-direction: column; line-height: 1.3; margin-right: auto; }
+.app-id-card img { border-radius: 50%; background: var(--blanc); flex: none; }
+.app-id-card > div { display: flex; flex-direction: column; line-height: 1.3; margin-right: auto; min-width: 0; }
+.app-id-row { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .app-id-card strong { font-size: 1.1rem; font-family: var(--serif); }
-.app-id-card small { color: rgba(255,255,255,0.55); font-size: 0.8rem; }
+.app-id-card small { color: rgba(255,255,255,0.55); font-size: 0.8rem; overflow-wrap: anywhere; }
+
+/* Pastille de version — bien visible, citron du site */
+.version-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--citron);
+  color: var(--noir);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  padding: 3px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
 
 .steps {
   list-style: none;
@@ -536,8 +556,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   border-top: 1px solid rgba(255,255,255,0.12);
   padding-top: 22px;
 }
+.security-note span {
+  min-width: 0;          /* le texte peut rétrécir et passer à la ligne */
+  overflow-wrap: anywhere;
+}
 .security-note svg { flex: none; margin-top: 2px; color: var(--or); }
-.security-note strong { color: rgba(255,255,255,0.85); font-weight: 500; }
+.security-note strong { color: rgba(255,255,255,0.85); font-weight: 500; overflow-wrap: anywhere; }
 
 .download-visual { position: relative; min-height: 380px; }
 .download-visual img {
@@ -767,7 +791,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 @media (max-width: 720px) {
   .main-nav { display: none; }
   .header-inner { gap: 12px; }
-  .brand-text strong { font-size: 0.94rem; }
+  .brand-text strong { font-size: 0.94rem; overflow: hidden; text-overflow: ellipsis; max-width: 44vw; }
   .brand-text small { display: none; }
   .btn-header { padding: 9px 16px; font-size: 0.8rem; flex: none; }
   .brand img { width: 36px; height: 36px; }

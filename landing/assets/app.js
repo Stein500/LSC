@@ -72,6 +72,7 @@
     var boutons = document.querySelectorAll("[data-download-btn]");
     var meta = document.querySelectorAll("[data-release-meta]");
     var note = document.querySelector("[data-release-note]");
+    var puces = document.querySelectorAll("[data-version-chip]");
 
     var dispo = data && data.available && data.file;
     var version = dispo && data.version ? String(data.version) : null;
@@ -124,10 +125,26 @@
     });
 
     if (note) {
-      note.textContent = dispo
-        ? "APK signé · téléchargement direct depuis notre domaine officiel"
-        : "Lancement imminent — l'APK arrivera ici, sur le domaine officiel, et nulle part ailleurs";
+      if (dispo) {
+        var infos = [];
+        if (version) infos.push("Version " + version);
+        if (taille) infos.push(taille);
+        infos.push("APK signé, servi depuis notre domaine officiel");
+        note.textContent = infos.join(" · ");
+      } else {
+        note.textContent = "Lancement imminent — l'APK arrivera ici, sur le domaine officiel, et nulle part ailleurs";
+      }
     }
+
+    /* Pastille de version à côté du nom « Colombes » (carte de téléchargement) */
+    puces.forEach(function (el) {
+      if (dispo && (version || taille)) {
+        el.textContent = (version ? "v" + version : "APK") + (taille ? " · " + taille : "");
+        el.removeAttribute("hidden");
+      } else {
+        el.setAttribute("hidden", "");
+      }
+    });
   }
 
   /* Lecture du manifeste de version (régénéré à chaque nouvel APK) */
