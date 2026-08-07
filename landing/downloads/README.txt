@@ -2,29 +2,24 @@
  DOWNLOADS — DÉPÔT DE L'APK « COLOMBES »
 =============================================================
 
-👉 DÉPOSE ICI le fichier APK de l'application, en le nommant
-   avec sa version, par exemple :
+👉 DÉPOSE ICI ton APK — n'importe quel nom convient :
 
-       colombes-1.0.0.apk
-       colombes-1.2.3.apk       (quand tu publies la 1.2.3)
+       colombes-1.0.0.apk    → la page affichera « v1.0.0 · 23 Mo »
+       colombes.apk          → la page affichera « 23 Mo · APK Android »
+       app-release-final.apk → idem, ça marche aussi.
 
-👉 ENSUITE, régénère le manifeste de version :
+👉 ENSUITE (une seule commande, jamais de code) :
 
        node scripts/update-app-release.mjs
 
    (ou laisse Vercel le faire tout seul : il tourne au build,
     voir vercel.json → buildCommand)
 
-👉 La page affiche alors automatiquement, sans toucher au code :
-
-       « Télécharger l'app Colombes — v1.0.0 · 24,3 Mo »
-       avec le bon lien de téléchargement.
-
 ⚠️  RÈGLES :
    - UN SEUL APK à la fois dans ce dossier (retire l'ancien),
-   - ne JAMAIS mettre de lien vers un dépôt GitHub privé ici,
-   - ce dossier est public : n'y mets rien d'autre que l'APK.
+   - extension .apk uniquement,
+   - ce dossier est public : n'y mets rien d'autre.
 
 Tant que ce dossier est VIDE, la page bascule toute seule en
-mode « Être informé(e) du lancement » (bouton → WhatsApp).
+mode « Être informé·e du lancement » (bouton → WhatsApp).
 =============================================================

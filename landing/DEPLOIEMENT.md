@@ -27,18 +27,18 @@ landing/
 
 ## 2. 📦 Publier (ou mettre à jour) l'APK — à chaque fois
 
-1. Dépose le fichier dans `downloads/` en le nommant avec sa version :
-   **`colombes-1.0.0.apk`**, puis `colombes-1.1.0.apk`, etc.
-   *(Un seul APK à la fois — retire l'ancien.)*
+1. Dépose **n'importe quel APK, avec n'importe quel nom** dans `downloads/`.
+   → Mets la version dans le nom pour un affichage élégant : **`colombes-1.0.0.apk`**
+   affichera « v1.0.0 · 23 Mo ». Sans numéro (`colombes.apk`), la page affiche
+   simplement « 23 Mo · APK Android ». *(Un seul APK à la fois — retire l'ancien.)*
 2. Régénère le manifeste :
 
    ```bash
    node scripts/update-app-release.mjs
    ```
 
-   → Affiche `✅ APK détecté : colombes-1.0.0.apk — version 1.0.0 · 24,3 Mo`
-3. Redéploie (voir §3). La page affichera **automatiquement** :
-   **« Télécharger l'app Colombes — v1.0.0 · 24,3 Mo »**.
+3. Redéploie (voir §3). **Tu ne touches JAMAIS au code** : la page lit
+   `app-release.json` et adapte boutons, version, taille et date toute seule.
 
 > 💡 **Astuce Vercel :** le `vercel.json` fourni exécute le script tout seul au
 > build (`buildCommand`). Si tu déploies via Git, tu n'as donc **rien à lancer

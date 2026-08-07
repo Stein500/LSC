@@ -42,7 +42,7 @@ const ANCRE_CAP = {
 };
 
 /* Extrait une version du nom de fichier :
-   colombes-1.0.0.apk → "1.0.0" ; Colombes_v2.1.apk → "2.1" */
+   colombes-1.0.0.apk → "1.0.0" ; Colombes_v2.1.apk → "2.1" ; sinon null */
 function extraireVersion(nomFichier) {
   const m = nomFichier.match(/(\d+(?:\.\d+){1,3})/);
   return m ? m[1] : null;
@@ -80,12 +80,19 @@ function main() {
       const stats = statSync(join(dossierDownloads, f));
       return {
         nom: f,
-        version: extraireVersion(f) ?? "0.0.0",
+        version: extraireVersion(f), // null si aucun numéro dans le nom — OK
         sizeBytes: stats.size,
         mtime: stats.mtime,
       };
     })
-    .sort((a, b) => compareVersions(b.version, a.version) || b.mtime - a.mtime);
+    /* Priorité : version la plus haute ; les APK sans version passent après ;
+       à égalité, le plus récent gagne. */
+    .sort((a, b) => {
+      if (a.version && b.version) return compareVersions(b.version, a.version) || b.mtime - a.mtime;
+      if (a.version && !b.version) return -1;
+      if (!a.version && b.version) return 1;
+      return b.mtime - a.mtime;
+    });
 
   const precedent = lireManifesteActuel();
 
@@ -125,8 +132,12 @@ function main() {
 
   const mo = (dernier.sizeBytes / 1048576).toFixed(1);
   console.log(`✅ APK détecté : ${dernier.nom}`);
-  console.log(`   version : ${dernier.version}  ·  taille : ${mo} Mo`);
-  console.log(`   → la page affichera « Télécharger l'app Colombes — v${dernier.version} · ${mo} Mo »`);
+  console.log(`   version : ${dernier.version ?? "(aucune dans le nom — la page affichera juste la taille)"}  ·  taille : ${mo} Mo`);
+  console.log(
+    dernier.version
+      ? `   → la page affichera « Télécharger l'app Colombes — v${dernier.version} · ${mo} Mo »`
+      : `   → la page affichera « Télécharger l'app Colombes — ${mo} Mo · APK Android »`
+  );
   if (apks.length > 1) {
     console.log("ℹ️  Anciens APK présents — pense à les retirer de downloads/ :");
     apks.slice(1).forEach((a) => console.log(`     - ${a.nom}`));
