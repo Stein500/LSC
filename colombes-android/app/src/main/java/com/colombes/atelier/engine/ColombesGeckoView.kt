@@ -155,9 +155,13 @@ class ColombesGeckoView @JvmOverloads constructor(
                 prompt: GeckoSession.PromptDelegate.FilePrompt
             ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse> {
                 val result = GeckoResult<Uri?>()
-                val accept = prompt.mimeTypes.firstOrNull { it.isNotBlank() } ?: "*/*"
-                onFileChooser?.let { it(accept) } ?: result.complete(null)
                 filePromptResult = result
+                val accept = prompt.mimeTypes.firstOrNull { it.isNotBlank() } ?: "*/*"
+                if (onFileChooser != null) {
+                    onFileChooser!!(accept)
+                } else {
+                    result.complete(null)
+                }
                 return result.map { uri ->
                     if (uri != null) prompt.confirm(context, uri)
                     else prompt.dismiss()

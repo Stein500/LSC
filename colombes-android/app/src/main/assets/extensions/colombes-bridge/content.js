@@ -4,6 +4,8 @@
   if (window.__colombesBridgeInjected) return;
   window.__colombesBridgeInjected = true;
 
+  // --- Pont synchrone défini immédiatement (document_start) ---
+  // Le site vérifie `ColombesApp?.isApp?.()` au rendu pour couper SON splash.
   window.ColombesApp = {
     isApp: function () { return true; },
     getAppVersion: function () {
@@ -19,6 +21,21 @@
       browser.runtime.sendMessage({ type: 'notify', title: title, body: body });
     }
   };
+
+  // --- Évite le "double splash" : masque les overlays de splash du site ---
+  // Le SplashScreen du site porte role=dialog + aria-modal + aria-label connu.
+  // On l'injecte dès document_start pour qu'il s'applique avant le rendu.
+  (function maskSiteSplash() {
+    try {
+      var style = document.createElement('style');
+      style.id = 'colombes-mask-splash';
+      style.textContent =
+        'div[aria-modal="true"],' +
+        'div[aria-label="Ouverture de l\'atelier"]' +
+        '{ display:none !important; visibility:hidden !important; }';
+      (document.head || document.documentElement).appendChild(style);
+    } catch (e) {}
+  })();
 
   function notify(title, body) {
     try { window.ColombesApp.notify(title, body); } catch (e) {}

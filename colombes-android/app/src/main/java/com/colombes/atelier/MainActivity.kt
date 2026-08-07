@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     private var splashOpened = false
     private var pageReady = false
     private var minSplashElapsed = false
+    private var splashForceOpen = false
     private val curtainInterpolator = PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f)
     private val goldRamp = intArrayOf(
         Color.parseColor("#F4E3C9"), Color.parseColor("#F0D9B0"),
@@ -168,6 +169,12 @@ class MainActivity : AppCompatActivity() {
             minSplashElapsed = true
             maybeOpenSplash()
         }, 3200)
+
+        // Garde-temps max : ne jamais bloquer sur le splash (hors connexion, lenteur)
+        handler.postDelayed({
+            splashForceOpen = true
+            maybeOpenSplash()
+        }, 6000)
     }
 
     private fun setupCurtains() {
@@ -237,7 +244,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun maybeOpenSplash() {
         if (splashOpened) return
-        if (minSplashElapsed && pageReady) openSplash()
+        if (splashForceOpen || (minSplashElapsed && pageReady)) openSplash()
     }
 
     private fun openSplash() {

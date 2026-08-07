@@ -11,6 +11,9 @@ export function SiteSplash() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Dans l'app Android (bridge ColombesApp), l'app a SON propre splash :
+    // on ne montre pas le voile du site pour éviter un double splash.
+    if ((window as any).ColombesApp?.isApp?.()) return;
     if (sessionStorage.getItem(SPLASH_KEY)) return;
 
     sessionStorage.setItem(SPLASH_KEY, "1");
