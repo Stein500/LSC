@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
     // Splash cinématique synchronisé
     // ------------------------------------------------------------------
     private fun startSplash() {
-        val overlay = binding.splashOverlay
+        val overlay = binding.splashOverlay.root
         overlay.visibility = View.VISIBLE
 
         setupCurtains()
@@ -264,14 +264,14 @@ class MainActivity : AppCompatActivity() {
         if (splashOpened) return
         splashOpened = true
 
-        val width = binding.splashOverlay.width.toFloat()
+        val width = binding.splashOverlay.root.width.toFloat()
         binding.splashOverlay.leftCurtain.animate()
             .translationX(-width).setDuration(520).setInterpolator(curtainInterpolator).start()
         binding.splashOverlay.rightCurtain.animate()
             .translationX(width).setDuration(520).setInterpolator(curtainInterpolator).start()
 
         handler.postDelayed({
-            binding.splashOverlay.visibility = View.GONE
+            binding.splashOverlay.root.visibility = View.GONE
         }, 560)
     }
 
