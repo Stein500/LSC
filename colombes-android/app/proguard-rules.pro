@@ -11,3 +11,7 @@
 # WorkManager instancie le Worker par réflexion
 -keep class com.colombes.atelier.sync.** { *; }
 -keep class com.colombes.atelier.notifications.** { *; }
+
+# GeckoView / pont
+-keep class com.colombes.atelier.engine.** { *; }
+-keep class org.mozilla.geckoview.** { *; }

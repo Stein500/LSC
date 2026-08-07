@@ -25,15 +25,16 @@ colombes-android/
         ├── java/com/colombes/atelier/
         │   ├── AppConfig.kt              ← URL définie UNE seule fois
         │   ├── MainActivity.kt            ← activité unique (splash synchro + moteur + hors-ligne)
-        │   ├── web/ColombesWebView.kt
-        │   ├── web/ColombesWebViewClient.kt
-        │   ├── web/ColombesWebChromeClient.kt
-        │   ├── web/ColombesJsBridge.kt    ← pont JavaScript "ColombesApp"
-        │   ├── sync/UpdateChecker.kt     ← détection auto des mises à jour
-        │   ├── sync/UpdateWorker.kt      ← WorkManager (toutes les 6 h)
-        │   ├── web/DownloadHelper.kt
+        │   ├── engine/ColombesGeckoView.kt ← moteur GeckoView embarqué (autonome)
+        │   ├── engine/GeckoRuntimeHolder.kt
+        │   ├── engine/GeckoJsBridge.kt     ← pont "ColombesApp"
+        │   ├── engine/BridgeInstaller.kt   ← WebExtension (bridge)
+        │   ├── sync/UpdateChecker.kt      ← détection auto des mises à jour
+        │   ├── sync/UpdateWorker.kt       ← WorkManager (toutes les 6 h)
+        │   ├── web/DownloadHelper.kt      ← tickets PDF
         │   ├── web/StitchingLineView.kt
         │   └── offline/OfflineFragment.kt
+        └── assets/extensions/colombes-bridge/  ← WebExtension (content + background)
         └── res/                           ← layouts, palette, icônes, logo
 ```
 
@@ -59,21 +60,21 @@ cd colombes-android
 ./gradlew :app:assembleDebug
 ```
 
-APK produit : `app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
+APK produit : `app/build/outputs/apk/debug/colombes-atelier-2.1.0-debug.apk`
 (et `-release.apk` pour une version signée).
 
 ### Installer sur un téléphone
 
 - **Envoi de fichier** : télécharger l'APK depuis le Codespace puis l'ouvrir
   sur le téléphone (autoriser « Sources inconnues »).
-- **Via USB + adb** : `adb install app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
+- **Via USB + adb** : `adb install app/build/outputs/apk/debug/colombes-atelier-2.1.0-debug.apk`
 
 ## 🎬 Splash synchronisé
 
-L'app est **une seule activité**. Le splash cinématique (rideaux + wordmark +
-fil doré) reste affiché **jusqu'à ce que la page d'accueil soit réellement
-rendue** (`onPageFinished`), puis ouvre les rideaux en fondu : aucune impression
-de « site qui charge », transition parfaitement fluide avec le site.
+L'app est **une seule activité** sur **GeckoView** (moteur embarqué, autonome,
+indépendant du WebView/Chrome système → rendu identique sur tous les téléphones).
+Le splash cinématique (rideaux + wordmark + fil doré) reste affiché **jusqu'à ce
+que la page d'accueil soit réellement rendue**, puis ouvre les rideaux en fondu.
 
 ## 🔔 Notifications
 

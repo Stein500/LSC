@@ -50,14 +50,14 @@ Résultat :
 
 ```bash
 ls -lh app/build/outputs/apk/debug/*.apk
-# → app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk
+# → app/build/outputs/apk/debug/colombes-atelier-2.1.0-debug.apk
 ```
 
 ## 4) Récupérer l'APK
 
 Dans l'**Explorateur** de fichiers du Codespace :
 
-- Clic droit sur `colombes-android/app/build/outputs/apk/debug/colombes-atelier-2.0.0-debug.apk`
+- Clic droit sur `colombes-android/app/build/outputs/apk/debug/colombes-atelier-2.1.0-debug.apk`
 - → **Download**.
 - Puis envoie/installe ce fichier sur ton téléphone (autoriser « Sources inconnues »).
 

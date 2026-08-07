@@ -1,10 +1,8 @@
 package com.colombes.atelier
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -35,31 +33,28 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.colombes.atelier.databinding.ActivityMainBinding
+import com.colombes.atelier.engine.BridgeInstaller
+import com.colombes.atelier.engine.ColombesGeckoView
+import com.colombes.atelier.engine.GeckoJsBridge
+import com.colombes.atelier.engine.GeckoRuntimeHolder
 import com.colombes.atelier.notifications.NotificationHelper
 import com.colombes.atelier.notifications.NotificationScheduler
 import com.colombes.atelier.offline.OfflineFragment
 import com.colombes.atelier.sync.UpdateWorker
-import com.colombes.atelier.web.ColombesJsBridge
-import com.colombes.atelier.web.ColombesWebChromeClient
-import com.colombes.atelier.web.ColombesWebView
-import com.colombes.atelier.web.ColombesWebViewClient
-import com.colombes.atelier.web.DownloadHelper
 import java.util.concurrent.TimeUnit
 
 /**
- * Activité unique « Colombes ».
+ * Activité unique « Colombes » basée sur **GeckoView** (moteur embarqué,
+ * autonome, indépendant du WebView/Chrome système).
  *
- * Héberge le moteur (WebView), le splash cinématique SYNCHRONISÉ (l'overlay reste
- * affiché jusqu'à ce que la page d'accueil soit réellement rendue, puis ouvre les
- * rideaux : aucune impression de « site qui charge »), l'écran hors connexion et
- * les notifications.
+ * Splash cinématique synchronisé : l'overlay reste affiché jusqu'au rendu
+ * réel de la page d'accueil, puis ouvre les rideaux — aucune impression de
+ * « site qui charge ».
  */
-@SuppressLint("SetJavaScriptEnabled")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var chromeClient: ColombesWebChromeClient
-    private lateinit var webView: ColombesWebView
+    private lateinit var gecko: ColombesGeckoView
     private var offlineFragment: OfflineFragment? = null
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
@@ -79,22 +74,26 @@ class MainActivity : AppCompatActivity() {
     private val notificationPermissionLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
+    private var pendingGrant: (() -> Unit)? = null
+    private var pendingReject: (() -> Unit)? = null
+    private val androidPermissionsLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            val allGranted = results.values.all { it }
+            if (allGranted) pendingGrant?.invoke() else pendingReject?.invoke()
+            pendingGrant = null
+            pendingReject = null
+        }
+
     private val fileChooserLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val callback = chromeClient.filePathCallback
-            if (callback != null) {
-                val data = result.data
-                val uris: Array<Uri>? = when {
-                    result.resultCode == RESULT_OK && data?.clipData != null -> {
-                        val clip = data.clipData!!
-                        Array(clip.itemCount) { i -> clip.getItemAt(i).uri }
-                    }
-                    result.resultCode == RESULT_OK && data?.data != null -> arrayOf(data.data!!)
-                    else -> null
-                }
-                callback.onReceiveValue(uris)
-                chromeClient.filePathCallback = null
+            val uri = when {
+                result.resultCode == RESULT_OK && result.data?.clipData != null ->
+                    result.data!!.clipData!!.getItemAt(0).uri
+                result.resultCode == RESULT_OK && result.data?.data != null -> result.data!!.data
+                else -> null
             }
+            gecko.filePromptResult?.complete(uri)
+            gecko.filePromptResult = null
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,64 +101,49 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        GeckoRuntimeHolder.ensure(this)
         setupEngine()
+        BridgeInstaller.install(this, GeckoJsBridge(this))
+
         registerNetworkMonitor()
         setupNotifications()
 
-        // Splash cinématique uniquement au démarrage à froid
         if (savedInstanceState == null) {
             startSplash()
-            loadHomeWithSplash()
+            gecko.loadHome()
         } else {
-            loadHome()
+            gecko.loadHome()
         }
 
         scheduleUpdateCheck()
     }
 
-    // ------------------------------------------------------------------
-    // Moteur (WebView)
-    // ------------------------------------------------------------------
     private fun setupEngine() {
-        webView = ColombesWebView(this)
+        gecko = ColombesGeckoView(this)
         binding.engineContainer.addView(
-            webView,
+            gecko,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
         )
 
-        chromeClient = ColombesWebChromeClient(
-            onProgressChanged = { progress -> updateProgress(progress) },
-            onFileChooser = { acceptType -> openFileChooser(acceptType) }
-        )
-        val webViewClient = ColombesWebViewClient(
-            context = this,
-            onMainError = { showOffline() },
-            onHomeLoaded = { onHomePageReady() }
-        )
-        webView.webChromeClient = chromeClient
-        webView.webViewClient = webViewClient
+        gecko.onProgress = { progress -> updateProgress(progress) }
+        gecko.onHomeLoaded = { onHomePageReady() }
+        gecko.onMainError = { showOffline() }
+        gecko.onScrollYChanged = { scrollY -> binding.swipeRefresh.isEnabled = scrollY == 0 }
+        gecko.onFileChooser = { accept -> openFileChooser(accept) }
+        gecko.onAndroidPermissionsRequest = { permissions, grant, reject ->
+            pendingGrant = grant
+            pendingReject = reject
+            androidPermissionsLauncher.launch(permissions)
+        }
 
-        webView.addJavascriptInterface(ColombesJsBridge(this), "ColombesApp")
+        gecko.setup(GeckoRuntimeHolder.runtime)
 
         binding.swipeRefresh.setColorSchemeResources(R.color.marron)
-        binding.swipeRefresh.setOnRefreshListener { webView.reload() }
-        webView.onScrollYChanged = { scrollY -> binding.swipeRefresh.isEnabled = scrollY == 0 }
-
-        webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->
-            if (url.startsWith("data:application/pdf;base64,")) {
-                val base64 = url.removePrefix("data:application/pdf;base64,")
-                DownloadHelper.saveBase64Pdf(this, base64, "ticket.pdf")
-            } else {
-                DownloadHelper.enqueueDownload(this, url, userAgent, contentDisposition, mimetype)
-            }
-        }
+        binding.swipeRefresh.setOnRefreshListener { gecko.session.reload() }
     }
-
-    private fun loadHome() = webView.loadHome()
-    private fun loadHomeWithSplash() = webView.loadHome()
 
     // ------------------------------------------------------------------
     // Splash cinématique synchronisé
@@ -178,10 +162,8 @@ class MainActivity : AppCompatActivity() {
         binding.splashOverlay.tapHint.alpha = 0f
         binding.splashOverlay.tapHint.animate().alpha(1f).setStartDelay(700).setDuration(400).start()
 
-        // Skip au tap
         overlay.setOnClickListener { openSplash() }
 
-        // Durée minimale cinématique (premium) avant ouverture
         handler.postDelayed({
             minSplashElapsed = true
             maybeOpenSplash()
@@ -245,7 +227,6 @@ class MainActivity : AppCompatActivity() {
         binding.splashOverlay.splashStatus.text = text
     }
 
-    /** Appelé quand la page d'accueil est rendue (onPageFinished). */
     private fun onHomePageReady() {
         pageReady = true
         runOnUiThread {
@@ -254,7 +235,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** N'ouvre que si la durée min est écoulée ET la page prête. */
     private fun maybeOpenSplash() {
         if (splashOpened) return
         if (minSplashElapsed && pageReady) openSplash()
@@ -295,8 +275,8 @@ class MainActivity : AppCompatActivity() {
         try {
             fileChooserLauncher.launch(intent)
         } catch (e: ActivityNotFoundException) {
-            chromeClient.filePathCallback?.onReceiveValue(null)
-            chromeClient.filePathCallback = null
+            gecko.filePromptResult?.complete(null)
+            gecko.filePromptResult = null
         }
     }
 
@@ -345,7 +325,7 @@ class MainActivity : AppCompatActivity() {
             binding.fragmentContainer.visibility = View.VISIBLE
             if (offlineFragment == null) {
                 offlineFragment = OfflineFragment().apply {
-                    onRetry = { if (isOnline()) { hideOffline(); webView.loadHome() } }
+                    onRetry = { if (isOnline()) { hideOffline(); gecko.loadHome() } }
                 }
             }
             if (offlineFragment?.isAdded != true) {
@@ -377,7 +357,7 @@ class MainActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 runOnUiThread {
                     if (binding.fragmentContainer.visibility == View.VISIBLE) {
-                        hideOffline(); webView.loadHome()
+                        hideOffline(); gecko.loadHome()
                     }
                 }
             }
@@ -389,7 +369,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         when {
             binding.fragmentContainer.visibility == View.VISIBLE -> finish()
-            webView.canGoBack() -> webView.goBack()
+            gecko.canGoBack() -> gecko.goBack()
             else -> finish()
         }
     }
@@ -398,7 +378,6 @@ class MainActivity : AppCompatActivity() {
         networkCallback?.let {
             runCatching { getSystemService(ConnectivityManager::class.java)?.unregisterNetworkCallback(it) }
         }
-        webView.removeJavascriptInterface("ColombesApp")
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
