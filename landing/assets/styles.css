@@ -128,6 +128,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  min-width: 0;
 }
 .brand img {
   width: 44px;
@@ -135,6 +136,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   border-radius: 50%;
   border: 1px solid var(--ligne);
   background: var(--blanc);
+  flex: none;
 }
 .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
 .brand-text strong {
@@ -195,10 +197,13 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   background: var(--noir);
   color: var(--blanc);
   border-color: var(--noir);
-  padding: 10px 20px;
+  padding: 8px 18px;
   font-size: 0.85rem;
+  line-height: 1.15;
   white-space: nowrap;
+  flex: none;
 }
+.btn-header .btn-stack small { font-size: 0.68rem; opacity: 0.72; }
 .btn-header:hover { box-shadow: 0 12px 26px -12px rgba(10,10,10,0.5); transform: translateY(-1px); }
 .btn-primary {
   background: var(--noir);
@@ -787,6 +792,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .download-visual { min-height: 240px; order: -1; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 420px) {
+  /* Très petits écrans : logo seul, la place va au bouton versionné */
+  .brand-text { display: none; }
 }
 @media (max-width: 720px) {
   .main-nav { display: none; }

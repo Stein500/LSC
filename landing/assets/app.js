@@ -82,22 +82,32 @@
     boutons.forEach(function (btn) {
       var label = btn.querySelector("[data-btn-label]");
       var sub = btn.querySelector("[data-btn-sub]");
-      var compact = btn.classList.contains("btn-header"); /* bouton d'en-tête : libellé court */
+      var compact = btn.classList.contains("btn-header"); /* bouton d'en-tête : libellés courts */
       btn.classList.remove("attente");
 
       if (dispo) {
         /* ===== Mode TÉLÉCHARGEMENT DIRECT ===== */
         btn.href = data.file;
-        btn.removeAttribute("target");
         btn.setAttribute("download", "");
         btn.setAttribute("rel", "noopener");
+        btn.setAttribute(
+          "aria-label",
+          "Télécharger l'app Colombes" + (version ? " version " + version : "") + (taille ? " (" + taille + ")" : "") + " — APK Android"
+        );
         if (label) label.textContent = compact ? "Télécharger" : "Télécharger l'app Colombes";
         if (sub) {
-          var morceaux = [];
-          if (version) morceaux.push("v" + version);
-          if (taille) morceaux.push(taille);
-          morceaux.push("APK Android");
-          sub.textContent = morceaux.join(" · ");
+          if (compact) {
+            var bits = [];
+            if (version) bits.push("v" + version);
+            if (taille) bits.push(taille);
+            sub.textContent = bits.length ? bits.join(" · ") : "APK Android";
+          } else {
+            var morceaux = [];
+            if (version) morceaux.push("v" + version);
+            if (taille) morceaux.push(taille);
+            morceaux.push("APK Android");
+            sub.textContent = morceaux.join(" · ");
+          }
         }
       } else {
         /* ===== Mode LISTE D'ATTENTE (pas encore d'APK en ligne) ===== */
@@ -106,9 +116,10 @@
         btn.href = "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg);
         btn.setAttribute("target", "_blank");
         btn.removeAttribute("download");
+        btn.setAttribute("aria-label", "Être informé·e du lancement de l'app Colombes via WhatsApp");
         btn.classList.add("attente");
         if (label) label.textContent = compact ? "Être notifié·e" : "Être informé·e du lancement";
-        if (sub) sub.textContent = "Bientôt disponible — via WhatsApp";
+        if (sub) sub.textContent = compact ? "Bientôt" : "Bientôt disponible — via WhatsApp";
       }
     });
 
