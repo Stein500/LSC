@@ -19,8 +19,7 @@ object GeckoRuntimeHolder {
         if (_runtime != null) return
         val settings = GeckoRuntimeSettings.Builder()
             .remoteDebuggingEnabled(false)
-            .allowInsecureConnections(GeckoRuntimeSettings.ALLOW_INSECURE_NONE)
-            .aboutConfigEnabled(false)
+            .allowInsecureConnections(0) // ALLOW_INSECURE_NONE
             .build()
         _runtime = GeckoRuntime.create(context.applicationContext, settings)
     }

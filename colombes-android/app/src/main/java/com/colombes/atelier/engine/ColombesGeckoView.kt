@@ -48,8 +48,6 @@ class ColombesGeckoView @JvmOverloads constructor(
 
         val settings = session.settings
         settings.allowJavascript = true
-        settings.useWideViewPort = true
-        settings.loadWithOverviewMode = true
 
         session.open(runtime)
         setSession(session)
@@ -87,7 +85,7 @@ class ColombesGeckoView @JvmOverloads constructor(
             override fun onLocationChange(
                 session: GeckoSession,
                 uri: String?,
-                permissions: MutableList<GeckoSession.PermissionDelegate.ContentPermission>,
+                permissions: List<GeckoSession.PermissionDelegate.ContentPermission>,
                 navigationType: Int
             ) {
                 // navigation interne acceptée
