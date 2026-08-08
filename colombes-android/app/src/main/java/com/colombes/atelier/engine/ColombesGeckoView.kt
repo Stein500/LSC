@@ -21,7 +21,7 @@ class ColombesGeckoView @JvmOverloads constructor(
     attrs: android.util.AttributeSet? = null
 ) : GeckoView(context, attrs) {
 
-    lateinit var session: GeckoSession
+    lateinit var geckoSession: GeckoSession
 
     private var canGoBackFlag = false
     private var currentUrl: String? = null
@@ -45,19 +45,19 @@ class ColombesGeckoView @JvmOverloads constructor(
     var onAndroidPermissionsRequest: ((permissions: Array<String>, grant: () -> Unit, reject: () -> Unit) -> Unit)? = null
 
     fun setup(runtime: org.mozilla.geckoview.GeckoRuntime) {
-        session = GeckoSession()
+        geckoSession = GeckoSession()
 
-        session.settings.allowJavascript = true
+        geckoSession.settings.allowJavascript = true
 
-        session.open(runtime)
-        setSession(session)
+        geckoSession.open(runtime)
+        setSession(geckoSession)
 
         attachDelegates()
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
     }
 
     private fun attachDelegates() {
-        session.progressDelegate = object : GeckoSession.ProgressDelegate {
+        geckoSession.progressDelegate = object : GeckoSession.ProgressDelegate {
             override fun onProgressChange(session: GeckoSession, progress: Int) {
                 onProgress?.invoke(progress)
             }
@@ -74,7 +74,7 @@ class ColombesGeckoView @JvmOverloads constructor(
             }
         }
 
-        session.navigationDelegate = object : GeckoSession.NavigationDelegate {
+        geckoSession.navigationDelegate = object : GeckoSession.NavigationDelegate {
             override fun onLoadRequest(
                 session: GeckoSession,
                 request: GeckoSession.NavigationDelegate.LoadRequest
@@ -95,7 +95,7 @@ class ColombesGeckoView @JvmOverloads constructor(
             }
         }
 
-        session.permissionDelegate = object : GeckoSession.PermissionDelegate {
+        geckoSession.permissionDelegate = object : GeckoSession.PermissionDelegate {
             override fun onAndroidPermissionsRequest(
                 session: GeckoSession,
                 permissions: Array<String>?,
@@ -110,7 +110,7 @@ class ColombesGeckoView @JvmOverloads constructor(
             }
         }
 
-        session.promptDelegate = object : GeckoSession.PromptDelegate {
+        geckoSession.promptDelegate = object : GeckoSession.PromptDelegate {
             override fun onFilePrompt(
                 session: GeckoSession,
                 prompt: GeckoSession.PromptDelegate.FilePrompt
@@ -173,17 +173,22 @@ class ColombesGeckoView @JvmOverloads constructor(
     /** Charge la page d'accueil. */
     fun loadHome() {
         val loader = GeckoSession.Loader().uri(AppConfig.HOME_URL)
-        session.load(loader)
+        geckoSession.load(loader)
     }
 
     /** Charge une URL donnée. */
     fun loadUrl(url: String) {
-        session.load(GeckoSession.Loader().uri(url))
+        geckoSession.load(GeckoSession.Loader().uri(url))
     }
 
     /** Navigue en arrière si possible. */
     fun goBack() {
-        session.goBack()
+        geckoSession.goBack()
+    }
+
+    /** Recharge la page courante. */
+    fun reload() {
+        geckoSession.reload()
     }
 
     fun canGoBack(): Boolean = canGoBackFlag

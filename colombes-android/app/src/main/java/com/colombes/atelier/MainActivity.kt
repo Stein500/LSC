@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         gecko.requestFocus()
 
         binding.swipeRefresh.setColorSchemeResources(R.color.marron)
-        binding.swipeRefresh.setOnRefreshListener { gecko.session.reload() }
+        binding.swipeRefresh.setOnRefreshListener { gecko.reload() }
     }
 
     // ------------------------------------------------------------------
