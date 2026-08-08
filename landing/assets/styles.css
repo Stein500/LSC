@@ -796,16 +796,19 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .cards { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 560px) {
-  /* Mobile : logo seul + bouton versionné — zéro chevauchement, jamais */
-  .brand-text { display: none; }
-}
 @media (max-width: 720px) {
   .main-nav { display: none; }
-  .header-inner { gap: 12px; }
-  .brand-text strong { font-size: 0.94rem; overflow: hidden; text-overflow: ellipsis; max-width: 44vw; }
+  .header-inner { gap: 10px; padding-left: 16px; padding-right: 16px; }
+  /* Le nom reste VISIBLE, en signature 2-3 lignes : on coupe aux ESPACES,
+     jamais au milieu d'un mot (pas d'overflow hidden ici) */
+  .brand-text strong {
+    font-size: 0.95rem;
+    white-space: normal;
+    max-width: 7.2em;
+    line-height: 1.12;
+  }
   .brand-text small { display: none; }
-  .btn-header { padding: 9px 16px; font-size: 0.8rem; flex: none; }
+  .btn-header { padding: 9px 14px; font-size: 0.78rem; flex: none; }
   .brand img { width: 36px; height: 36px; }
   .hero { padding: 44px 0 72px; }
   .hero h1 { font-size: clamp(2.15rem, 9vw, 2.9rem); }
