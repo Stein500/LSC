@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { Phone, MapPin, MessageCircle, Mail, Clock, Heart, Facebook, Instagram, Music2 } from "lucide-react";
+import { Phone, MapPin, MessageCircle, Mail, Clock, Heart, Facebook, Instagram, Music2, Smartphone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { CONTACT } from "@/data/content";
 import { env } from "@/utils/env";
 import { buildWhatsAppUrl } from "@/utils/whatsapp";
-import { trackPhone, trackWhatsapp } from "@/utils/api";
+import { trackPhone, trackWhatsapp, trackCtaClick } from "@/utils/api";
 import { SmartImage } from "@/components/ui/SmartImage";
 
 const SUPPORT_EMAIL = env.atelierEmail.trim();
@@ -35,6 +35,7 @@ export function Footer() {
     },
     ...(SUPPORT_EMAIL ? [{ label: "Email", href: MAILTO, icon: Mail as LucideIcon }] : []),
     { label: "Itinéraire", href: env.mapsUrl, icon: MapPin, external: true },
+    { label: "App", href: env.appUpdateUrl, icon: Smartphone, external: true, onClick: () => trackCtaClick("app_update_footer") },
     ...(env.facebookUrl ? [{ label: "Facebook", href: env.facebookUrl, icon: Facebook as LucideIcon, external: true }] : []),
     ...(env.instagramUrl ? [{ label: "Instagram", href: env.instagramUrl, icon: Instagram as LucideIcon, external: true }] : []),
     ...(env.tiktokUrl ? [{ label: "TikTok", href: env.tiktokUrl, icon: Music2 as LucideIcon, external: true }] : []),

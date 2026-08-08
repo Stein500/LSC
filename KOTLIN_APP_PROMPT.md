@@ -187,17 +187,23 @@ tourner **manuellement** pour que je récupère l'APK depuis l'onglet Actions.
 
 Génère le projet complet, prêt à compiler dans Codespaces, avec un court README d'utilisation (comment builder l'APK et l'installer sur un téléphone Android via `adb install` ou envoi du fichier).
 
-### 14. Badge « Mettre à jour l'App » — permutation header & ouverture externe
+### 14. Le Messager « Mettre à jour l'App » — 3 visages, ouverture externe
 
-Le site affiche dans le **header** un mécanisme de secours : toutes les **5 minutes** (première apparition 2 min après l'arrivée), un badge rond « 📱 APP » prend **exactement la place du logo** pendant **60 secondes** (flip doux, zéro déplacement de mise en page), puis le logo revient. Ce badge invite à télécharger la **nouvelle version de l'app corrigée** quand l'application actuelle pose problème.
+Le site invite à télécharger la **version corrigée de l'app** quand l'application actuelle pose problème, via un messager à trois visages (composant `AppUpdateMessenger`) :
+
+1. **🪡 Carte toast parchemin** — glisse du bas de l'écran quand le visiteur est en haut de page ; visible ~12 s, bouton « Mettre à jour », croix = silence pour la session.
+2. **🫧 Bulle flottante** — pastille or/citron au-dessus du bouton WhatsApp quand le visiteur est descendu dans la page (en lecture) ; visible ~60 s.
+3. **📱 Icône « App » permanente** — dans le rail d'icônes du footer, toujours disponible.
+
+Rythme : première apparition 2 min après l'arrivée, puis toutes les 5 minutes. Le logo du header ne permute PAS avec ce messager — le header reste stable.
 
 **Règles strictes pour l'app Android :**
 
-1. **Ne jamais masquer ni détourner ce badge** — il fait partie du système de secours de la maison.
-2. **Ouverture en navigateur EXTERNE obligatoire** (Chrome, Firefox…) pour ce lien ainsi que pour tout `target="_blank"` / `window.open` du site :
-   - `WebChromeClient.onCreateWindow()` : créer une WebView temporaire dont le `WebViewClient` capture l'URL dans `shouldOverrideUrlLoading`, lance immédiatement `context.startActivity(Intent(Intent.ACTION_VIEW, uri))`, détruit la WebView temporaire et retourne `true`.
+1. **Ne jamais masquer ni détourner ce messager** — c'est le système de secours de la maison.
+2. **Ouverture en navigateur EXTERNE obligatoire** (Chrome, Firefox…) pour ce lien et tout `target="_blank"` / `window.open` du site :
+   - `WebChromeClient.onCreateWindow()` : WebView temporaire dont le `WebViewClient` capture l'URL dans `shouldOverrideUrlLoading`, lance immédiatement `Intent(Intent.ACTION_VIEW, uri)`, se détruit, et retourner `true`.
    - `WebViewClient.shouldOverrideUrlLoading()` : tout hôte différent de l'hébergement courant, ou schémas `tel:`, `mailto:`, `whatsapp:`, `https://wa.me`, `geo:`, `intent:` → `Intent(ACTION_VIEW)` externe avec `try/catch` + fallback silencieux.
-3. **L'URL de mise à jour ne s'affiche JAMAIS en clair** — ni dans l'UI, ni dans un Toast/Snackbar/dialogue, ni dans la barre de titre. Elle vit uniquement dans le `href` du badge côté web et dans les constantes privées de l'app.
-4. Si l'utilisateur clique le badge **depuis l'app déjà installée**, on ouvre quand même le navigateur externe (c'est précisément le but : récupérer l'APK corrigé hors de l'app défaillante).
+3. **L'URL de mise à jour ne s'affiche JAMAIS en clair** — ni dans l'UI, ni dans un Toast/Snackbar/dialogue, ni dans la barre de titre. Elle vit uniquement dans la configuration (`VITE_APP_UPDATE_URL` côté web, constante privée côté app).
+4. Même **depuis l'app installée**, le clic ouvre le navigateur externe : c'est le but (récupérer l'APK corrigé hors de l'app défaillante).
 
 ## ══════════════ FIN DU PROMPT ══════════════

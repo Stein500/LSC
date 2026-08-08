@@ -8,6 +8,7 @@ import { useRouteTracking } from "@/hooks/useTrack";
 import { useSessionTracking } from "@/hooks/useSession";
 import { useScrollMemory } from "@/hooks/useScrollMemory";
 import { SplashScreen } from "@/components/pwa/SplashScreen";
+import { AppUpdateMessenger } from "@/components/messaging/AppUpdateMessenger";
 import { Toaster } from "sonner";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { A11yAnnouncer } from "@/components/a11y/A11yAnnouncer";
@@ -104,6 +105,7 @@ export function RootLayout() {
       <Footer />
       <MobileBottomNav />
       <WhatsAppFab />
+      <AppUpdateMessenger />
       <Toaster
         position="top-center"
         richColors
