@@ -53,7 +53,8 @@ class ColombesGeckoView @JvmOverloads constructor(
         setSession(geckoSession)
 
         attachDelegates()
-        setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        // NOTE : NE PAS forcer setLayerType(HARDWARE) ici — GeckoView gère sa
+        // propre surface de rendu ; forcer un layer type provoque un écran blanc.
     }
 
     private fun attachDelegates() {

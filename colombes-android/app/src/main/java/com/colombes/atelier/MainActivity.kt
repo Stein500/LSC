@@ -175,8 +175,12 @@ class MainActivity : AppCompatActivity() {
             maybeOpenSplash()
         }, 3200)
 
-        // Garde-temps max : ne jamais bloquer sur le splash (hors connexion, lenteur)
+        // Garde-temps max : si la page n'est toujours pas rendue (hors connexion
+        // ou lenteur), on affiche l'écran hors-connexion au lieu d'un écran blanc.
         handler.postDelayed({
+            if (!pageReady && !splashOpened) {
+                showOffline()
+            }
             splashForceOpen = true
             maybeOpenSplash()
         }, 6000)
