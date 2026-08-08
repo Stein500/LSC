@@ -84,11 +84,11 @@ class ColombesGeckoView @JvmOverloads constructor(
 
             override fun onLocationChange(
                 session: GeckoSession,
-                uri: String?,
-                permissions: List<GeckoSession.PermissionDelegate.ContentPermission>,
-                navigationType: Int
+                url: String?,
+                perms: List<GeckoSession.PermissionDelegate.ContentPermission>,
+                hasUserGesture: Boolean
             ) {
-                this@ColombesGeckoView.currentUrl = uri
+                this@ColombesGeckoView.currentUrl = url
             }
 
             override fun onCanGoBack(session: GeckoSession, canGoBack: Boolean) {
@@ -97,38 +97,39 @@ class ColombesGeckoView @JvmOverloads constructor(
         }
 
         session.permissionDelegate = object : GeckoSession.PermissionDelegate {
-            override fun onContentPermissionRequest(
+            override fun onAndroidPermissionsRequest(
                 session: GeckoSession,
-                uri: String?,
-                type: Int,
+                permissions: Array<String>?,
                 callback: GeckoSession.PermissionDelegate.Callback
             ) {
-                // Caméra/micro : on demande la permission Android correspondante
-                when (type) {
-                    GeckoSession.PermissionDelegate.PERMISSION_CAMERA -> {
-                        onAndroidPermissionsRequest?.invoke(
-                            arrayOf(android.Manifest.permission.CAMERA),
-                            { callback.grant() }, { callback.reject() }
-                        ) ?: callback.reject()
-                    }
-                    GeckoSession.PermissionDelegate.PERMISSION_AUDIO_CAPTURE -> {
-                        onAndroidPermissionsRequest?.invoke(
-                            arrayOf(android.Manifest.permission.RECORD_AUDIO),
-                            { callback.grant() }, { callback.reject() }
-                        ) ?: callback.reject()
-                    }
-                    else -> callback.reject()
+                val perms = permissions ?: emptyArray()
+                if (onAndroidPermissionsRequest != null) {
+                    onAndroidPermissionsRequest!!(perms, { callback.grant() }, { callback.reject() })
+                } else {
+                    callback.reject()
                 }
             }
 
-            override fun onAndroidPermissionsRequest(
+            override fun onMediaPermissionRequest(
                 session: GeckoSession,
-                permissions: Array<out String>?,
-                callback: GeckoSession.PermissionDelegate.Callback
+                uri: String?,
+                video: Array<GeckoSession.PermissionDelegate.MediaSource>?,
+                audio: Array<GeckoSession.PermissionDelegate.MediaSource>?,
+                callback: GeckoSession.PermissionDelegate.MediaCallback
             ) {
-                val perms = permissions?.map { it }?.toTypedArray() ?: emptyArray()
+                val perms = mutableListOf<String>()
+                if (video != null) perms.add(android.Manifest.permission.CAMERA)
+                if (audio != null) perms.add(android.Manifest.permission.RECORD_AUDIO)
+                if (perms.isEmpty()) {
+                    callback.reject()
+                    return
+                }
                 if (onAndroidPermissionsRequest != null) {
-                    onAndroidPermissionsRequest!!(perms, { callback.grant() }, { callback.reject() })
+                    onAndroidPermissionsRequest!!(
+                        perms.toTypedArray(),
+                        { callback.grant(video, audio) },
+                        { callback.reject() }
+                    )
                 } else {
                     callback.reject()
                 }
