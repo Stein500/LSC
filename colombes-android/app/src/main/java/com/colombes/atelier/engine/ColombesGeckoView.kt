@@ -85,8 +85,7 @@ class ColombesGeckoView @JvmOverloads constructor(
             override fun onLocationChange(
                 session: GeckoSession,
                 url: String?,
-                perms: List<GeckoSession.PermissionDelegate.ContentPermission>,
-                hasUserGesture: Boolean
+                perms: List<GeckoSession.PermissionDelegate.ContentPermission>
             ) {
                 this@ColombesGeckoView.currentUrl = url
             }
@@ -124,10 +123,12 @@ class ColombesGeckoView @JvmOverloads constructor(
                     callback.reject()
                     return
                 }
+                val videoSource = video?.firstOrNull()
+                val audioSource = audio?.firstOrNull()
                 if (onAndroidPermissionsRequest != null) {
                     onAndroidPermissionsRequest!!(
                         perms.toTypedArray(),
-                        { callback.grant(video, audio) },
+                        { callback.grant(videoSource, audioSource) },
                         { callback.reject() }
                     )
                 } else {
@@ -143,7 +144,7 @@ class ColombesGeckoView @JvmOverloads constructor(
             ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse> {
                 val result = GeckoResult<Uri?>()
                 filePromptResult = result
-                val accept = prompt.mimeTypes.firstOrNull { it.isNotBlank() } ?: "*/*"
+                val accept = prompt.mimeTypes?.firstOrNull { it.isNotBlank() } ?: "*/*"
                 if (onFileChooser != null) {
                     onFileChooser!!(accept)
                 } else {
