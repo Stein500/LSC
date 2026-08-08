@@ -17,21 +17,10 @@ android {
         // APK name: colombes-atelier-2.1.0-debug.apk / -release.apk
         setProperty("archivesBaseName", "colombes-atelier-${versionName}")
 
-        // Restreindre aux architectures réelles des téléphones (exclut x86/x86_64
-        // réservés aux émulateurs) → réduit fortement la taille de l'APK.
+        // Restreindre à l'architecture réelle du téléphone (arm64-v8a) →
+        // GeckoView n'inclut que le moteur arm64, APK nettement plus léger.
         ndk {
             abiFilters += listOf("arm64-v8a")
-        }
-    }
-
-    // Génère un APK PAR architecture (au lieu d'un seul énorme) → chaque APK
-    // ne contient que le moteur pour le CPU du téléphone (~1/2 voire 1/4 du poids).
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a")
-            isUniversalApk = false
         }
     }
 
