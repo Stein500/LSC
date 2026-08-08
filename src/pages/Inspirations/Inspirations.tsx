@@ -1,6 +1,7 @@
 
 import { SEO, SchemaBuilders } from '@/components/seo/SEO';
 import { PageHeaderBand } from '@/components/ui/PageHeaderBand';
+import { Aurora } from '@/components/ui/Aurora';
 import { PageHero } from '@/components/ui/PageHero';
 import { Card } from '@/components/ui/Card';
 import { Reveal } from '@/components/ui/Reveal';
@@ -33,10 +34,10 @@ export default function Inspirations() {
           SchemaBuilders.collectionPage({
             name: 'Inspirations du monde',
             description: 'Profils multiculturels et inspirations couture de l\'atelier Les Services Colombes',
-            url: 'https://lesservicescolombes.vercel.app/inspirations',
+            url: 'https://couturecolombe.vercel.app/inspirations',
             hasPart: PROFILES.map((p) => ({
               name: `${p.name} — ${p.city}`,
-              url: `https://lesservicescolombes.vercel.app/inspirations#${p.id}`,
+              url: `https://couturecolombe.vercel.app/inspirations#${p.id}`,
               image: '/images/logo.webp',
             })),
           }),
@@ -65,22 +66,22 @@ export default function Inspirations() {
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed">
-              Chez Les Services Colombes, chaque tenue raconte une ville et une matière. Cette galerie réunit{' '}
+            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed italic" style={{ fontFamily: 'var(--font-display)' }}>
               <span style={{ fontFamily: 'var(--font-display)', color: 'var(--color-orange)' }}>
                 {PROFILES.length} visages
               </span>
-              , du Bénin à l'Afrique de l'Ouest, du Maghreb à l'Europe et l'Asie — tous passés par le même atelier, à Porto-Novo.
+              , un même fil — du pagne béninois au kimono revisité.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-[var(--color-cream)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-12 md:py-16 bg-[var(--color-cream)] overflow-hidden">
+        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Profils"
-            title={<>Profils inspirants</>}
+            title={<>Profils <span className="lsc-text-silk">inspirants</span></>}
             align="left"
           />
           <Masonry columns={{ sm: 1, md: 2, lg: 3 }} gap={16}>

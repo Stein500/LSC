@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { devApiPlugin } from "./scripts/vite-plugin-dev-api";
 
 // ⚠️ OPTION SEO ACTIVÉE : vite-plugin-singlefile est désactivé.
 //
@@ -25,11 +26,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), devApiPlugin(__dirname)],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
     },
+  },
+  // Dev / preview : accepter les hôtes de tunnel (sandbox, Vercel preview locale)
+  // pour que le site soit accessible depuis n'importe quel proxy.
+  server: {
+    host: "0.0.0.0",
+    allowedHosts: true,
+    cors: true,
+  },
+  preview: {
+    host: "0.0.0.0",
+    allowedHosts: true,
   },
   build: {
     target: "es2020",

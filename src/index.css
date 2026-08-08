@@ -165,6 +165,11 @@ html, body, #root {
 
 body {
   background-color: var(--app-bg);
+  background-image:
+    radial-gradient(38rem 26rem at 12% -6%, rgba(255, 255, 255, 0.85), transparent 62%),
+    radial-gradient(30rem 22rem at 88% 4%, rgba(191, 255, 0, 0.10), transparent 60%),
+    radial-gradient(34rem 30rem at 50% 110%, rgba(139, 69, 19, 0.08), transparent 65%),
+    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 88%, #ffffff 12%) 0%, var(--app-bg) 34%, var(--app-bg) 100%);
   color: var(--color-ink);
   margin: 0;
   font-size: 16px;
@@ -172,6 +177,15 @@ body {
   font-weight: 400;
   letter-spacing: 0.005em;
   overflow-x: hidden;
+}
+
+html[data-theme="dark"] body,
+html[data-theme="amoled"] body {
+  background-image:
+    radial-gradient(38rem 26rem at 12% -6%, rgba(255, 255, 255, 0.05), transparent 62%),
+    radial-gradient(30rem 22rem at 88% 4%, rgba(191, 255, 0, 0.05), transparent 60%),
+    radial-gradient(34rem 30rem at 50% 110%, rgba(217, 154, 102, 0.06), transparent 65%),
+    linear-gradient(180deg, var(--app-bg) 0%, var(--app-bg) 100%);
 }
 
 /* Hiérarchie typographique — chaque niveau a sa voix */
@@ -413,4 +427,385 @@ input, textarea, select, button {
     transparent 100%
   );
   opacity: 0.9;
+}
+
+/* ============================================================
+   ✨ COUCHE RAFFINEMENT — « L'Atelier d'Exception »
+   Même palette (bleu ciel / marron / citron / noir / blanc),
+   application plus couture : verre, soie, fil d'or, mouvement.
+   ============================================================ */
+
+/* ---------- Surfaces verre & soie ---------- */
+.lsc-glass-strong {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.80));
+  backdrop-filter: blur(22px) saturate(1.35);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 30px -12px rgba(60, 38, 20, 0.18);
+}
+html[data-theme="dark"] .lsc-glass-strong,
+html[data-theme="amoled"] .lsc-glass-strong {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 30px -12px rgba(0, 0, 0, 0.6);
+}
+
+.lsc-card-sheen {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease;
+}
+.lsc-card-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 32%);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+.lsc-card-sheen::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.35) 50%, transparent 58%);
+  transform: translateX(-120%) rotate(0.001deg);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lsc-card-sheen:hover::after {
+  transform: translateX(120%) rotate(0.001deg);
+}
+html[data-theme="dark"] .lsc-card-sheen::before,
+html[data-theme="amoled"] .lsc-card-sheen::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 32%);
+}
+html[data-theme="dark"] .lsc-card-sheen::after,
+html[data-theme="amoled"] .lsc-card-sheen::after {
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.08) 50%, transparent 58%);
+}
+
+/* Liseré supérieur d'une carte — comme un ourlet */
+.lsc-hemline {
+  position: relative;
+}
+.lsc-hemline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-citron) 30%, var(--color-gold-thread) 70%, transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.lsc-hemline:hover::before {
+  opacity: 1;
+}
+
+/* ---------- Texte dégradé animé (soie irisée) ---------- */
+@keyframes lsc-silk-slide {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.lsc-text-silk {
+  background-image: linear-gradient(
+    110deg,
+    var(--color-orange) 0%,
+    #C97C2E 22%,
+    var(--color-gold-thread) 45%,
+    var(--color-orange) 70%,
+    var(--color-orange-d) 100%
+  );
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: lsc-silk-slide 7s ease-in-out infinite;
+}
+html[data-theme="dark"] .lsc-text-silk,
+html[data-theme="amoled"] .lsc-text-silk {
+  background-image: linear-gradient(110deg, #EBB483 0%, #F4B860 28%, #EBB483 55%, #D99A66 100%);
+}
+
+/* ---------- Marquee (ruban défilant) ---------- */
+@keyframes lsc-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.lsc-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: lsc-marquee var(--marquee-duration, 36s) linear infinite;
+  will-change: transform;
+}
+.lsc-marquee:hover .lsc-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes lsc-marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.lsc-marquee-track--reverse {
+  animation-name: lsc-marquee-reverse;
+}
+
+/* ---------- Fil & points de couture (stitch) ---------- */
+@keyframes lsc-stitch-flow {
+  to { stroke-dashoffset: -28; }
+}
+.lsc-stitch-line {
+  stroke-linecap: round;
+  animation: lsc-stitch-flow 1.4s linear infinite;
+}
+
+/* ---------- Orbes / dérive douce ---------- */
+@keyframes lsc-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(3%, -4%, 0) scale(1.06); }
+  66% { transform: translate3d(-3%, 3%, 0) scale(0.96); }
+}
+.lsc-drift {
+  animation: lsc-drift var(--drift-duration, 14s) ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes lsc-spin-slow {
+  to { transform: rotate(360deg); }
+}
+.lsc-spin-slow {
+  animation: lsc-spin-slow 22s linear infinite;
+}
+
+/* ---------- Onde de brillance sur les boutons ---------- */
+@keyframes lsc-shine-sweep {
+  0% { transform: translateX(-140%) skewX(-18deg); }
+  60%, 100% { transform: translateX(240%) skewX(-18deg); }
+}
+.lsc-shine-sweep::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-140%) skewX(-18deg);
+  animation: lsc-shine-sweep 3.6s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+/* ---------- Anneau aurora (halo couture) ---------- */
+.lsc-aurora-ring {
+  position: relative;
+  isolation: isolate;
+}
+.lsc-aurora-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--aurora-angle, 0deg),
+    var(--color-citron),
+    var(--color-gold-thread),
+    var(--color-orange),
+    var(--color-citron)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+@property --aurora-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.lsc-aurora-ring:hover::before {
+  opacity: 1;
+  animation: lsc-spin-slow 5s linear infinite;
+  animation-name: lsc-aurora-rotate;
+}
+@keyframes lsc-aurora-rotate {
+  to { --aurora-angle: 360deg; }
+}
+
+/* ---------- Icône flèche qui « coud » vers la droite ---------- */
+.lsc-arrow-nudge svg,
+.lsc-arrow-nudge .lucide {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.lsc-arrow-nudge:hover svg,
+.lsc-arrow-nudge:hover .lucide {
+  transform: translateX(4px);
+}
+
+/* ---------- Reveal : voile qui se lève ---------- */
+.lsc-veil {
+  will-change: transform, opacity, filter;
+}
+
+/* ---------- Scrollbar couture ---------- */
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6FB6D6, #4D92B4);
+  border: 3px solid var(--app-bg);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8fbcdd, #5ea2c4);
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb,
+html[data-theme="amoled"] ::-webkit-scrollbar-thumb {
+  background: #2A3F4D;
+}
+@supports (scrollbar-width: thin) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #4D92B4 transparent;
+  }
+}
+
+/* ---------- Grain photographique ultra-fin ---------- */
+.lsc-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- Ligne de titre renforcée ---------- */
+.lsc-title-rule {
+  position: relative;
+}
+.lsc-title-rule::after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 5.5rem;
+  margin-top: 1rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-citron), var(--color-gold-thread), transparent);
+}
+.lsc-title-rule--center::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------- Lien animé (souligné qui s'étire) ---------- */
+.lsc-link-underline {
+  position: relative;
+}
+.lsc-link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lsc-link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- Badge « couds-moi » : pulse couture ---------- */
+@keyframes lsc-badge-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(191, 255, 0, 0.35); }
+  50% { box-shadow: 0 0 0 7px rgba(191, 255, 0, 0); }
+}
+.lsc-badge-breathe {
+  animation: lsc-badge-breathe 2.8s ease-in-out infinite;
+}
+
+/* ---------- Compteur de section "01 —" ---------- */
+.lsc-section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.lsc-section-kicker::before,
+.lsc-section-kicker::after {
+  content: "";
+  height: 1px;
+  width: 2rem;
+  background: linear-gradient(90deg, transparent, var(--color-gold-thread));
+}
+.lsc-section-kicker::after {
+  background: linear-gradient(90deg, var(--color-gold-thread), transparent);
+}
+
+/* ---------- Tap feedback global (mobile) ---------- */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Transitions de page ---------- */
+.lsc-page {
+  will-change: opacity, transform, filter;
+}
+
+/* ---------- Halo souris (spotlight couture) ---------- */
+.lsc-spotlight {
+  position: relative;
+}
+.lsc-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    340px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(255, 255, 255, 0.5),
+    rgba(191, 255, 0, 0.10) 32%,
+    transparent 62%
+  );
+  transition: opacity 0.4s ease;
+}
+.lsc-spotlight:hover::before {
+  opacity: 1;
+}
+html[data-theme="dark"] .lsc-spotlight::before,
+html[data-theme="amoled"] .lsc-spotlight::before {
+  background: radial-gradient(
+    340px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(255, 255, 255, 0.08),
+    rgba(191, 255, 0, 0.06) 32%,
+    transparent 62%
+  );
 }

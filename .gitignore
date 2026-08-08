@@ -2,3 +2,12 @@ dist/
 node_modules/
 .DS_Store
 *.log
+
+# Secrets / config locale — JAMAIS commités (les valeurs vont sur Vercel)
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Artefact de build TypeScript
+tsconfig.tsbuildinfo

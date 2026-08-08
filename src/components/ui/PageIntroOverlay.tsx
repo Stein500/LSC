@@ -142,13 +142,13 @@ export function PageIntroOverlay({
 
               <div className="relative flex items-center gap-3.5">
                 {/* Logo / picto ciseaux — plus visible */}
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl overflow-hidden border-2 border-white shadow-sm"
-                  style={{ background: "linear-gradient(135deg, rgba(191,255,0,0.5) 0%, rgba(191,255,0,0.15) 100%)" }}>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full overflow-hidden shadow-sm"
+                  style={{ border: "2.5px solid var(--color-citron)", boxShadow: "0 4px 14px rgba(92,46,12,0.28)" }}>
                   <SmartImage
                     src="/images/logo.webp"
                     alt=""
                     decorative
-                    className="h-full w-full object-contain p-1.5"
+                    className="h-full w-full object-cover"
                     onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = "none")}
                   />
                 </div>

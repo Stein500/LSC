@@ -50,8 +50,12 @@ export const GALLERY_ATELIER: GalleryImage[] = [
 ];
 
 // ======================= GALERIE 2 — LES CRÉATIONS =======================
-// Insérée sur la page Services, après la grille des prestations
-export const GALLERY_CREATIONS: GalleryImage[] = [
+// ======================= GALERIE 2 — LES CRÉATIONS =======================
+// Insérée sur la page Accueil (CreationStrip) et la page Services.
+// ==================== GALERIE 2 — NOS CRÉATIONS (page Services) ====================
+// Les 6 classiques de la maison, restaurés du commit initial — ils n'auraient
+// JAMAIS dû partir. Affichés sur la page Services (carrousel 4:3 paysage).
+export const GALLERY_SERVICES: GalleryImage[] = [
   {
     src: "/images/gallery/creation-afrique-01.webp",
     alt: "Tenue africaine béninoise sur mesure",
@@ -81,6 +85,52 @@ export const GALLERY_CREATIONS: GalleryImage[] = [
     src: "/images/gallery/creation-afrique-06.webp",
     alt: "Finitions et détails d'une tenue sur mesure",
     caption: "Les finitions — la signature d'un travail bien fait",
+  },
+];
+
+// ============== GALERIE 3 — CRÉATIONS SIGNATURE (accueil uniquement) ==============
+// 8 visuels signature GÉNÉRÉS pour la maison & SIGNÉS au vrai logo
+// (cachet colombe cerclé d'or en bas à droite) — accueil → section Créations.
+export const GALLERY_CREATIONS: GalleryImage[] = [
+  {
+    src: "/images/gallery/tenue-semaine-01.webp",
+    alt: "Femme africaine élégante et mature en robe wax citron et bleu ciel, coupe moderne",
+    caption: "Tenue de la semaine — la robe wax, prestance sourire",
+  },
+  {
+    src: "/images/gallery/tenue-semaine-02.webp",
+    alt: "Femme africaine mature en ensemble wax jupe longue et haut assorti, tons marron et or",
+    caption: "Jupe & haut wax — l'allure des grandes occasions",
+  },
+  {
+    src: "/images/gallery/tenue-semaine-03.webp",
+    alt: "Femme africaine majestueuse en grande robe wax bleu ciel et citron près d'une fenêtre lumineuse",
+    caption: "La grande robe wax — majesté au quotidien",
+  },
+  {
+    src: "/images/gallery/jeune-fille-02.webp",
+    alt: "Adolescente élégante en robe wax marron et or près d'une fenêtre de l'atelier",
+    caption: "Jeunes filles — la tendance wax bien coupée",
+  },
+  {
+    src: "/images/gallery/jeune-fille-01.webp",
+    alt: "Petite fille joyeuse en robe wax citron et bleu ciel qui tourbillonne",
+    caption: "Petites princesses — le wax qui fait danser",
+  },
+  {
+    src: "/images/gallery/layette-bebe-02.webp",
+    alt: "Bébé adorable en petite robe wax bleu ciel avec bandeau assorti, assise sur un fauteuil crème",
+    caption: "Layette — la douceur dès le premier âge",
+  },
+  {
+    src: "/images/gallery/layette-bebe-01.webp",
+    alt: "Bébé souriant en barboteuse garnie de wax avec bonnet assorti dans l'atelier",
+    caption: "Barboteuses & bonnets — cousus avec tendresse",
+  },
+  {
+    src: "/images/gallery/famille-trio-01.webp",
+    alt: "Trois générations — grand-mère, maman et bébé — en tenues wax assorties",
+    caption: "Trois générations, un même fil — les ensembles assortis",
   },
 ];
 

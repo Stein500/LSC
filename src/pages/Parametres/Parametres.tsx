@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, CheckCircle2, Download, ExternalLink, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Smartphone, Sun, Tickets } from "lucide-react";
+import { Bell, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Sun, Tickets } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -18,11 +18,8 @@ import {
   getTicketStatusTone,
   getTickets,
   openTicketWhatsApp,
-  ticketsToCSV,
   type StoredTicket,
 } from "@/utils/tickets";
-import { downloadTextFile } from "@/utils/download";
-import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useTheme, type ThemeMode } from "@/hooks/useTheme";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -31,12 +28,10 @@ import { notify } from "@/utils/notify";
 import { formatDateFR } from "@/utils/format";
 
 export default function Parametres() {
-  const { canInstall, promptInstall, supported } = useInstallPrompt();
   const { items: notifications, unread, clear: clearAll } = useNotifications();
   const online = useOnlineStatus();
   const { mode, setMode } = useTheme();
   const [refreshKey, setRefreshKey] = useState(0);
-  const [installing, setInstalling] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const pending = useMemo(() => countPendingTickets(), [refreshKey]);
   const tickets = useMemo(() => getTickets(), [refreshKey]);
@@ -130,41 +125,6 @@ export default function Parametres() {
               </div>
             </Card>
 
-            <Card className="p-6 min-w-0">
-              <div className="flex items-start justify-between gap-4 mb-5">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Accès rapide</p>
-                  <h3 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>Ajouter à l’écran d’accueil</h3>
-                </div>
-                <Smartphone className="w-6 h-6 text-[var(--color-orange)]" />
-              </div>
-              <p className="text-sm text-[var(--color-ink-soft)] mb-4">
-                {supported && canInstall
-                  ? "Votre navigateur permet déjà l’installation de l’application."
-                  : "Votre navigateur ne propose pas encore l’installation directe, mais tout le reste fonctionne parfaitement."}
-              </p>
-              {canInstall ? (
-                <Button
-                  onClick={async () => {
-                    setInstalling(true);
-                    try {
-                      const ok = await promptInstall();
-                      if (ok) notify.success("Application installée");
-                    } finally {
-                      setInstalling(false);
-                    }
-                  }}
-                  loading={installing}
-                  icon={<Download className="w-4 h-4" />}
-                >
-                  Installer l'app
-                </Button>
-              ) : (
-                <p className="text-xs text-[var(--color-muted)]">
-                  Astuce : ouvrez le menu du navigateur puis choisissez « Ajouter à l’écran d’accueil ».
-                </p>
-              )}
-            </Card>
           </div>
 
           {/* === Section notifications refondue === */}
@@ -178,8 +138,7 @@ export default function Parametres() {
             </div>
 
             <p className="text-sm text-[var(--color-ink-soft)] mb-4 break-words">
-              Vos pré-commandes, demandes de formation et messages de contact restent bien rangés ici, dans une lecture simple et chic.
-              {unread > 0 && ` Vous avez ${unread} alerte${unread > 1 ? "s" : ""} à découvrir.`}
+              {unread > 0 ? `Vous avez ${unread} alerte${unread > 1 ? "s" : ""} à découvrir.` : "Vos alertes restent rangées ici, simplement."}
             </p>
 
             <div className="rounded-2xl border border-[var(--color-line)] divide-y divide-[var(--color-line)] overflow-hidden min-w-0">
@@ -276,21 +235,12 @@ export default function Parametres() {
                 <Tickets className="w-6 h-6 text-[var(--color-orange)]" />
               </div>
               <p className="text-sm text-[var(--color-ink-soft)] mb-4 break-words">
-                Retrouvez ici vos demandes, avec la possibilité de les renvoyer sur WhatsApp ou de les actualiser.
-                Même sans connexion, tout reste à portée de main.
+                Vos demandes restent à portée de main, même sans connexion.
               </p>
 
               <div className="flex flex-wrap gap-2 mb-4 min-w-0">
                 <Button
                   variant="outline"
-                  size="sm"
-                  icon={<ExternalLink className="w-3.5 h-3.5" />}
-                  onClick={() => downloadTextFile(ticketsToCSV(), "demandes.csv", "text/csv")}
-                >
-                  Exporter
-                </Button>
-                <Button
-                  variant="ghost"
                   size="sm"
                   icon={<RotateCw className="w-3.5 h-3.5" />}
                   onClick={handleResync}
@@ -365,20 +315,6 @@ export default function Parametres() {
             </div>
           </Card>
 
-          <Card className="p-6 min-w-0">
-            <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">À propos</p>
-            <h3 className="text-2xl font-bold mb-3 break-words" style={{ fontFamily: "var(--font-display)" }}>Les Services Colombes</h3>
-            <ul className="space-y-2 text-sm text-[var(--color-ink-soft)] break-words">
-              <li>Version : 2.1.0</li>
-              <li>{CONTACT.location}</li>
-            </ul>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <a href="/" className="inline-flex"><Button variant="secondary" icon={<CheckCircle2 className="w-4 h-4" />}>Accueil</Button></a>
-              <a href={env.siteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex">
-                <Button variant="outline" icon={<ExternalLink className="w-4 h-4" />}>Visiter le site complet</Button>
-              </a>
-            </div>
-          </Card>
         </div>
       </section>
     </>

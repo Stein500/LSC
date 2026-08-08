@@ -1,27 +1,26 @@
 /**
- * api/lib/mailer.js
+ * api/lib/mailer.js — v2 « COUTURE PREMIUM » (2026)
  *
- * SMTP Gmail via nodemailer — envoi auto aux formulaires Colombes.
+ * SMTP Gmail via nodemailer. DEUX modèles distincts, pensés différemment :
  *
- * Design :
- *  - Bloc en-tête "couture africaine" : couleurs du site (citron, orange, terre),
- *    logo / nom de l'atelier, liserés façon pagne tissé.
- *  - Bloc "Message de traitement" (côté destinataire) : "Votre demande est sous
- *    traitement, nous vous reviendrons sous 48h".
- *  - Bloc "NOTE ADMIN" (côté équipe) : "Veuillez lui répondre".
- *  - Tableau complet des informations saisies par le visiteur / client /
- *    postulant — tous les champs du formulaire sont listés explicitement
- *    pour qu'aucune information ne soit perdue.
+ *   💌 MAIL CLIENTE (« glamour »)
+ *      Confirmation envoyée à la cliente après sa demande : crème parchemin,
+ *      en-tête noir fil d'or wordmark « Colombes », carte TICKET bordure or
+ *      pointillée (écho au PDF), récapitulatif zébré, grand bouton WhatsApp,
+ *      étapes numérotées, signature chaleureuse. AUCUNE URL du site n'y
+ *      figure (volonté de l'atelier : l'adresse d'hébergement reste invisible).
  *
- * Profils traités :
- *  - formation  → "postulant·e"
- *  - precommande → "client·e"
- *  - contact    → "visiteur / visiteuse"
+ *   ⚡ MAIL ATELIER (« efficace »)
+ *      Notification interne lisible en 5 secondes : qui, quoi, téléphone
+ *      cliquable, boutons d'action [Appeler] [WhatsApp] [Email] avec lien
+ *      wa.me pré-rempli (n° de ticket inclus), tableau compact, badge réf.
+ *
+ * Les deux reçoivent le PDF récapitulatif en pièce jointe (bandeau natif,
+ * plus aucune injection regex — fini les débris d'attributs dans Gmail).
  */
 
-import fs from "node:fs";
-import path from "node:path";
 import nodemailer from "nodemailer";
+import { LOGO_PNG_BUFFER } from "./logo.js";
 
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
@@ -43,15 +42,29 @@ const ATELIER_WA = process.env.ATELIER_WA || "2290167409408";
 const ATELIER_LOCATION =
   process.env.ATELIER_LOCATION ||
   "Devant l'école primaire publique TOKPOTA DAVO GROUPE ABC, Porto-Novo – Bénin";
-const ATELIER_SITE = process.env.ATELIER_SITE || "https://lesservicescolombes.vercel.app";
-const ATELIER_LOGO_URL = process.env.ATELIER_LOGO_URL || `${ATELIER_SITE.replace(/\/$/, "")}/images/logo.webp`;
+// ── Palette (identique au site — ne jamais dériver) ─────────────────────────
+const C = {
+  noir: "#0B0B12",
+  citron: "#BFFF00",
+  citronD: "#8FBF00",
+  marron: "#8B4513",
+  marronD: "#5C2E0C",
+  or: "#C9A87C",
+  orL: "#F4E3C9",
+  creme: "#FBF7EE",
+  parchemin: "#F4EEE4",
+  encre: "#2B1B0E",
+  wa: "#25D366",
+};
 
 let _transport = null;
 function getTransport() {
   if (_transport) return _transport;
+
   if (!SMTP_USER || !SMTP_PASS) {
-    throw new Error("SMTP_USER ou SMTP_PASS manquant");
+    throw new Error("SMTP_USER / SMTP_PASS manquants (variables d'env serveur)");
   }
+
   _transport = nodemailer.createTransport({
     host: SMTP_HOST,
     port: SMTP_PORT,
@@ -62,16 +75,21 @@ function getTransport() {
 }
 
 // =============================================================
-// Utilitaires
+// Petits utilitaires
 // =============================================================
 
 function escHtml(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return String(s ?? "").replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[c],
+  );
 }
 
 function formatDispo(dispo) {
@@ -85,24 +103,22 @@ function formatDispo(dispo) {
   return dispo.map((d) => labels[d] || d).join(", ");
 }
 
-/**
- * Reformule les valeurs brutes des <select> en libellés français propres.
- */
+/** Reformule les valeurs brutes des <select> en libellés français propres. */
 function labelNiveau(v) {
   return v === "debutant"
     ? "Débutant(e)"
     : v === "intermediaire"
-    ? "Intermédiaire"
-    : v || "—";
+      ? "Intermédiaire"
+      : v || "—";
 }
 function labelFormationChoisie(v) {
   return v === "courte"
     ? "Formation Courte"
     : v === "specialisee"
-    ? "Formation Spécialisée"
-    : v === "indecis"
-    ? "Pas encore décidé"
-    : v || "—";
+      ? "Formation Spécialisée"
+      : v === "indecis"
+        ? "Pas encore décidé"
+        : v || "—";
 }
 function labelSujet(v) {
   return (
@@ -111,15 +127,17 @@ function labelSujet(v) {
       devis: "Demande de devis",
       reclamation: "Réclamation",
       autre: "Autre",
-    }[v] || v || "—"
+    }[v] ||
+    v ||
+    "—"
   );
 }
 
 /**
  * Profil destinataire (= contexte du formulaire côté client)
- *   - formation  → postulant
+ *   - formation   → postulant
  *   - precommande → client·e
- *   - contact    → visiteur / visiteuse
+ *   - contact     → visiteur / visiteuse
  */
 function profilFor(type) {
   if (type === "formation") return "postulant";
@@ -129,59 +147,33 @@ function profilFor(type) {
 }
 
 // =============================================================
-// Blocs HTML réutilisables (couleurs du site : #BFFF00 / #8FBF00 / #8B4513 / #E6F4FB)
+// Logo — médaillon CID embarqué (PNG 512, coins transparents)
+// Universel : Gmail, Outlook, Apple Mail. Zéro lecture disque,
+// zéro URL externe (le blason voyage DANS le mail).
 // =============================================================
 
 const LOGO_CID = "lsc-logo";
 
-function buildLogoSvg() {
-  return `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="${escHtml(ATELIER_NAME)}">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#BFFF00"/>
-        <stop offset="100%" stop-color="#8FBF00"/>
-      </linearGradient>
-    </defs>
-    <rect width="128" height="128" rx="30" fill="#FFFFFF"/>
-    <circle cx="64" cy="64" r="51" fill="#FFFFFF" stroke="url(#g)" stroke-width="6"/>
-    <g fill="none" stroke="#8B4513" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M47 50c7 7 16 14 26 22" />
-      <path d="M51 47l-8-8" />
-      <path d="M72 45c3 4 6 8 10 12" />
-      <path d="M58 58c-6 6-11 13-15 21" />
-      <path d="M78 44c3-3 7-3 10 0" />
-      <path d="M67 69c5 5 11 11 18 14" />
-    </g>
-    <circle cx="64" cy="64" r="3.7" fill="#8B4513"/>
-  </svg>`;
-}
-
 function getLogoAttachment() {
-  const webpPath = path.join(process.cwd(), "public", "images", "logo.webp");
-  const svgPath = path.join(process.cwd(), "public", "images", "logo.svg");
-
-  if (fs.existsSync(webpPath)) {
-    return { filename: "logo.webp", path: webpPath, contentType: "image/webp", cid: LOGO_CID };
-  }
-  if (fs.existsSync(svgPath)) {
-    return { filename: "logo.svg", path: svgPath, contentType: "image/svg+xml", cid: LOGO_CID };
-  }
-  return { filename: "logo.svg", content: buildLogoSvg(), contentType: "image/svg+xml", cid: LOGO_CID };
+  return {
+    filename: "logo.png",
+    content: LOGO_PNG_BUFFER,
+    contentType: "image/png",
+    cid: LOGO_CID,
+    contentDisposition: "inline",
+  };
 }
 
-/**
- * Mini-bande "pagne tissé" — SVG inline, universelle (Gmail, Outlook, Apple Mail).
- * Motif rayé façon wax/kente aux couleurs de l'atelier. Affichée en tête de chaque mail.
- */
+// =============================================================
+// Motifs signature de la maison (conservés — ils font la marque)
+// =============================================================
+
+/** Mini-bande "pagne tissé" — SVG inline, universelle (Gmail, Outlook, Apple Mail). */
 function pagneBandSvg() {
-  // Pattern de triangles/kentes en SVG inline. 28px de haut, 600px de large
-  // (l'image est étirée par le `width="100%"` du conteneur <td>).
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" height="28"
        preserveAspectRatio="xMidYMid slice" role="presentation" aria-hidden="true">
     <rect width="600" height="28" fill="#E6F4FB"/>
-    <!-- Bandes colorées de fond -->
     <rect x="0"   y="0"  width="600" height="6"  fill="#BFFF00"/>
     <rect x="0"   y="6"  width="600" height="4"  fill="#8B4513"/>
     <rect x="0"   y="10" width="600" height="2"  fill="#8FBF00"/>
@@ -191,7 +183,6 @@ function pagneBandSvg() {
     <rect x="0"   y="20" width="600" height="3"  fill="#BFFF00"/>
     <rect x="0"   y="23" width="600" height="3"  fill="#8FBF00"/>
     <rect x="0"   y="26" width="600" height="2"  fill="#000000"/>
-    <!-- Motif de triangles façon kente — 12 cellules -->
     <g fill="#5C2E0C" opacity="0.85">
       ${Array.from({ length: 12 }, (_, i) => {
         const x = 8 + i * 50;
@@ -204,7 +195,6 @@ function pagneBandSvg() {
         return `<polygon points="${x},0 ${x + 18},6 ${x + 36},0"/>`;
       }).join("")}
     </g>
-    <!-- Petits points dorés sur le filet central -->
     <g fill="#BFFF00">
       ${Array.from({ length: 20 }, (_, i) => {
         const x = 12 + i * 30;
@@ -214,19 +204,14 @@ function pagneBandSvg() {
   </svg>`;
 }
 
-/**
- * Liseré "fil de couture" — utilisé en pied de mail, juste avant le footer.
- * SVG inline, 8px de haut : un trait ondulé façon point de couture.
- */
+/** Liseré "fil de couture" — utilisé en pied de mail, juste avant le footer. */
 function threadStitchSvg() {
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 14" width="100%" height="14"
        preserveAspectRatio="xMidYMid slice" role="presentation" aria-hidden="true">
     <rect width="600" height="14" fill="#FFFFFF"/>
-    <!-- Fil orange (point de couture) -->
     <path d="M0 7 Q 12 1 24 7 T 48 7 T 72 7 T 96 7 T 120 7 T 144 7 T 168 7 T 192 7 T 216 7 T 240 7 T 264 7 T 288 7 T 312 7 T 336 7 T 360 7 T 384 7 T 408 7 T 432 7 T 456 7 T 480 7 T 504 7 T 528 7 T 552 7 T 576 7 T 600 7"
           fill="none" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
-    <!-- Petits points verts par-dessus -->
     ${Array.from({ length: 40 }, (_, i) => {
       const x = 4 + i * 15;
       return `<circle cx="${x}" cy="7" r="1" fill="#8FBF00" opacity="0.85"/>`;
@@ -234,282 +219,9 @@ function threadStitchSvg() {
   </svg>`;
 }
 
-function headerBlock(logoCid = LOGO_CID) {
-  const logoSrc = logoCid ? `cid:${logoCid}` : ATELIER_LOGO_URL;
-  return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-    <tr><td style="padding:0;line-height:0;font-size:0;background:#E6F4FB;">${pagneBandSvg()}</td></tr>
-  </table>
-
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-         style="background:linear-gradient(135deg,#E6F4FB 0%,#E6F4FB 100%);border-bottom:6px solid #BFFF00;">
-    <tr>
-      <td style="padding:28px 24px;text-align:center;">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:76px;height:76px;border-radius:50%;background:#FFFFFF;border:3px solid #BFFF00;box-shadow:0 4px 14px rgba(0,0,0,0.08);overflow:hidden;">
-          <img src="${escHtml(logoSrc)}" alt="${escHtml(ATELIER_NAME)}" style="display:block;width:100%;height:100%;object-fit:contain;" />
-        </div>
-        <p style="margin:14px 0 0;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:#5C2E0C;font-weight:700;">
-          ${escHtml(ATELIER_NAME)}
-        </p>
-        <h1 style="margin:6px 0 0;font-family:Georgia,'Playfair Display',serif;font-size:26px;color:#000000;font-weight:700;letter-spacing:-0.01em;">
-          ${escHtml(ATELIER_NAME)}
-        </h1>
-        <p style="margin:6px 0 0;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:#8FBF00;font-weight:600;">
-          ${escHtml(ATELIER_TAGLINE)}
-        </p>
-      </td>
-    </tr>
-  </table>
-
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-    <tr><td style="height:8px;background:#8B4513;font-size:0;line-height:0;">&nbsp;</td></tr>
-    <tr><td style="height:6px;background:#BFFF00;font-size:0;line-height:0;">&nbsp;</td></tr>
-    <tr><td style="height:3px;background:#8FBF00;font-size:0;line-height:0;">&nbsp;</td></tr>
-  </table>`;
-}
-
-function fieldRow(label, value, tone = "default") {
-  const labelColor = tone === "ref" ? "#5C2E0C" : "#000000";
-  return `
-    <tr>
-      <td style="padding:10px 14px;border-bottom:1px solid #B0DDF0;font-weight:600;color:${labelColor};width:36%;background:#E6F4FB;vertical-align:top;font-size:13px;">
-        ${escHtml(label)}
-      </td>
-      <td style="padding:10px 14px;border-bottom:1px solid #B0DDF0;color:#3D2614;vertical-align:top;font-size:14px;">
-        ${value}
-      </td>
-    </tr>`;
-}
-
-function footerBlock() {
-  return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-         style="background:#000000;color:#B0DDF0;">
-    <tr>
-      <td style="padding:22px 24px;text-align:center;">
-        <p style="margin:0 0 4px;font-family:Georgia,serif;font-size:16px;color:#BFFF00;">
-          ${escHtml(ATELIER_NAME)}
-        </p>
-        <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#BFFF00;font-weight:600;">
-          ${escHtml(ATELIER_TAGLINE)}
-        </p>
-        <p style="margin:0;font-size:13px;color:#B0DDF0;">
-          📞 <a href="tel:${escHtml(ATELIER_PHONE.replace(/\s/g, ""))}" style="color:#BFFF00;text-decoration:none;font-weight:600;">${escHtml(ATELIER_PHONE)}</a>
-          &nbsp;·&nbsp;
-          <a href="tel:${escHtml(ATELIER_PHONE_2.replace(/\s/g, ""))}" style="color:#BFFF00;text-decoration:none;font-weight:600;">${escHtml(ATELIER_PHONE_2)}</a>
-        </p>
-        <p style="margin:6px 0 0;font-size:13px;color:#B0DDF0;">
-          💬 <a href="https://wa.me/${escHtml(ATELIER_WA)}" style="color:#BFFF00;text-decoration:none;font-weight:600;">WhatsApp direct</a>
-          &nbsp;·&nbsp;
-          🌐 <a href="${escHtml(ATELIER_SITE)}" style="color:#BFFF00;text-decoration:none;font-weight:600;">${escHtml(ATELIER_SITE.replace(/^https?:\/\//, ""))}</a>
-        </p>
-        <p style="margin:10px 0 0;font-size:11px;color:#9A9A9A;">
-          ${escHtml(ATELIER_LOCATION)}
-        </p>
-      </td>
-    </tr>
-  </table>`;
-}
-
-function adminNote(ref, roleLabel) {
-  return `
-  <div style="background:#E6F4FB;border:2px dashed #8B4513;border-radius:8px;padding:14px 16px;margin:0 0 20px;">
-    <p style="margin:0 0 6px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8B4513;font-size:11px;">
-      ⚑ Note pour les admins
-    </p>
-    <p style="margin:0 0 4px;font-size:13px;color:#000000;">
-      <strong>Nouvelle demande reçue</strong> de <strong>${escHtml(roleLabel)}</strong>.
-      Référence : <code style="background:#FFFFFF;padding:2px 6px;border-radius:4px;border:1px solid #B0DDF0;font-size:12px;">${escHtml(ref)}</code>
-    </p>
-    <p style="margin:6px 0 0;font-size:13px;color:#3D2614;font-style:italic;">
-      📩 <strong>Veuillez lui répondre</strong> dans les meilleurs délais
-      (objectif interne : sous 24h ouvrées).
-    </p>
-  </div>`;
-}
-
-function processingNote(ref, recipientName) {
-  return `
-  <div style="background:#F0F8E0;border-left:4px solid #BFFF00;border-radius:8px;padding:14px 16px;margin:0 0 20px;">
-    <p style="margin:0 0 4px;font-weight:700;color:#8FBF00;letter-spacing:0.08em;text-transform:uppercase;font-size:11px;">
-      ✓ Demande bien reçue
-    </p>
-    <p style="margin:0;font-size:14px;color:#000000;line-height:1.5;">
-      Bonjour <strong>${escHtml(recipientName)}</strong>, votre demande est bien enregistrée
-      sous la référence
-      <code style="background:#FFFFFF;padding:2px 6px;border-radius:4px;border:1px solid #BFFF00;font-size:12px;">${escHtml(ref)}</code>.
-      <strong>Elle est en cours de traitement.</strong>
-    </p>
-    <p style="margin:8px 0 0;font-size:14px;color:#000000;line-height:1.5;">
-      <strong>Nous vous reviendrons d'ici 48 heures</strong> (jours ouvrés).
-    </p>
-    <p style="margin:8px 0 0;font-size:12px;color:#3D2614;">
-      En cas d'urgence :
-      <a href="tel:${escHtml(ATELIER_PHONE.replace(/\s/g, ""))}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(ATELIER_PHONE)}</a>
-      ou
-      <a href="https://wa.me/${escHtml(ATELIER_WA)}" style="color:#25D366;text-decoration:none;font-weight:600;">WhatsApp</a>.
-    </p>
-  </div>`;
-}
-
-/**
- * Bandeau "VOTRE NUMÉRO DE TICKET" bien visible — utilisé en haut du mail client.
- * Design : gros bloc coloré citron avec liseré orange, comme la charte du site.
- */
-function ticketBanner(ref) {
-  return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-         style="margin:0 0 22px;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;border:1px solid #BFFF00;">
-    <tr>
-      <td style="width:8px;background:#8B4513;font-size:0;line-height:0;">&nbsp;</td>
-      <td style="background:linear-gradient(135deg,#F0F8E0 0%,#E5F5BE 100%);padding:18px 20px;">
-        <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#8FBF00;font-weight:700;">
-          🎫 Votre numéro de ticket
-        </p>
-        <p style="margin:0;font-family:'Courier New',Consolas,monospace;font-size:26px;font-weight:800;color:#000000;letter-spacing:0.04em;line-height:1.2;">
-          ${escHtml(ref)}
-        </p>
-        <p style="margin:8px 0 0;font-size:12px;color:#3D2614;line-height:1.5;">
-          📌 <strong>À conserver précieusement</strong> — à mentionner lors de tout échange
-          (téléphone, WhatsApp, passage à l'atelier).
-        </p>
-      </td>
-    </tr>
-  </table>`;
-}
-
-/**
- * Pictos SVG inline (universels) — utilisés en tête de chaque étape.
- * Couleurs du site, traits épais pour rester lisibles sur 20x20px.
- * Index : 0 = carnet, 1 = ciseaux, 2 = bobine, 3 = aiguille+fil
- */
-function stepIconSvg(index) {
-  const strokes = "#8B4513";
-  const accent = "#BFFF00";
-  const wrap = (inner) => `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"
-         role="presentation" aria-hidden="true" style="vertical-align:-5px;margin-right:6px;">
-      <rect x="0" y="0" width="24" height="24" rx="5" fill="#F0F8E0"/>
-      ${inner}
-    </svg>`;
-  if (index === 0) {
-    // Carnet de notes (consultation)
-    return wrap(`
-      <rect x="4" y="4" width="13" height="17" rx="2" fill="#FFFFFF" stroke="${strokes}" stroke-width="1.6"/>
-      <rect x="6" y="8" width="9" height="1.2" fill="${strokes}"/>
-      <rect x="6" y="11" width="9" height="1.2" fill="${strokes}"/>
-      <rect x="6" y="14" width="6" height="1.2" fill="${strokes}"/>
-      <circle cx="18" cy="18" r="3" fill="${accent}" stroke="${strokes}" stroke-width="1.4"/>
-    `);
-  }
-  if (index === 1) {
-    // Ciseaux ouverts
-    return wrap(`
-      <circle cx="5"  cy="6"  r="2.4" fill="none" stroke="${strokes}" stroke-width="1.6"/>
-      <circle cx="5"  cy="18" r="2.4" fill="none" stroke="${strokes}" stroke-width="1.6"/>
-      <path d="M7 7 L19 12 M7 17 L19 12" stroke="${strokes}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-      <path d="M19 12 L21 10 M19 12 L21 14" stroke="${strokes}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    `);
-  }
-  if (index === 2) {
-    // Bobine de fil
-    return wrap(`
-      <ellipse cx="12" cy="7"  rx="6" ry="2" fill="#FFFFFF" stroke="${strokes}" stroke-width="1.4"/>
-      <ellipse cx="12" cy="17" rx="6" ry="2" fill="#FFFFFF" stroke="${strokes}" stroke-width="1.4"/>
-      <path d="M6 7 L6 17 M18 7 L18 17" stroke="${strokes}" stroke-width="1.4" fill="none"/>
-      <path d="M8 9 Q12 11 16 9 M8 12 Q12 14 16 12 M8 15 Q12 17 16 15" stroke="${accent}" stroke-width="1.2" fill="none" opacity="0.9"/>
-    `);
-  }
-  // index 3 — aiguille + fil
-  return wrap(`
-    <ellipse cx="12" cy="3" rx="2.2" ry="1.2" fill="${strokes}"/>
-    <path d="M12 4 L12 21" stroke="${strokes}" stroke-width="1.6" stroke-linecap="round"/>
-    <path d="M12 21 L10 19 M12 21 L14 19" stroke="${strokes}" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-    <path d="M13 5 Q 20 8 19 16 Q 18 20 14 19" stroke="${accent}" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-  `);
-}
-
-/**
- * Bloc "Étapes suivantes" — rassure le client sur ce qui va se passer.
- * Chaque étape est préfixée par un picto SVG inline (carnet, ciseaux, bobine, aiguille).
- */
-function nextSteps(type) {
-  const formationSteps = [
-    "Notre équipe examine votre candidature sous 48 heures ouvrées.",
-    "Un échange (téléphone ou WhatsApp) est planifié pour préciser votre projet et votre niveau.",
-    "Une proposition de planning + tarif vous est envoyée.",
-    "Démarrage de la formation selon vos disponibilités.",
-  ];
-  const precommandeSteps = [
-    "Notre équipe prend connaissance de votre projet sous 48 heures ouvrées.",
-    "Un échange est planifié pour valider les détails (tissu, mesures, finitions).",
-    "Un devis détaillé vous est envoyé avec les délais de confection.",
-    "Lancement de la production après validation de votre devis.",
-  ];
-  const contactSteps = [
-    "Notre équipe prend connaissance de votre message sous 48 heures ouvrées.",
-    "Une réponse personnalisée vous est envoyée par mail ou téléphone.",
-    "Si nécessaire, nous planifions un rendez-vous à l'atelier.",
-  ];
-
-  const steps =
-    type === "formation" ? formationSteps :
-    type === "precommande" ? precommandeSteps :
-    contactSteps;
-
-  return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-         style="margin:0 0 22px;border-collapse:collapse;border:1px solid #B0DDF0;border-radius:8px;overflow:hidden;">
-    <tr>
-      <td style="padding:14px 18px;background:#E6F4FB;border-bottom:1px solid #B0DDF0;">
-        <p style="margin:0;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#8FBF00;font-weight:700;">
-          📋 Les étapes suivantes
-        </p>
-      </td>
-    </tr>
-    ${steps.map((step, i) => `
-      <tr>
-        <td style="padding:10px 18px;border-bottom:1px solid #B0DDF0;font-size:14px;color:#000000;line-height:1.6;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-            <tr>
-              <td style="width:30px;vertical-align:top;padding-top:1px;">${stepIconSvg(i)}</td>
-              <td style="vertical-align:top;">
-                <strong style="color:#8B4513;">${i + 1}.</strong> ${escHtml(step)}
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    `).join("")}
-  </table>`;
-}
-
-/**
- * Bloc signature "Maman Colombe" — touche manuscrite Caveat, chaleur humaine.
- * Affiché juste avant le footer, uniquement dans le mail CLIENT.
- * Le bloc utilise un fallback font-family (Caveat -> cursive) pour les
- * clients mail qui ne chargent pas Google Fonts.
- */
-function mamanColombeSignature(recipientName) {
-  return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-         style="margin:0 0 18px;border-collapse:collapse;">
-    <tr>
-      <td style="padding:18px 18px 14px;background:#FFFFFF;border:1px dashed #BFFF00;border-radius:10px;text-align:center;">
-        <p style="margin:0 0 4px;font-family:'Caveat','Bradley Hand','Comic Sans MS',cursive;font-size:26px;line-height:1.15;color:#5C2E0C;font-weight:700;">
-          À très vite, ${escHtml(recipientName)} 🤍
-        </p>
-        <p style="margin:8px 0 0;font-family:Georgia,'Playfair Display',serif;font-style:italic;font-size:14px;color:#3D2614;line-height:1.5;">
-          On prend soin de votre demande comme on prendrait soin<br/>
-          d'un tissu précieux — patience et douceur.
-        </p>
-        <p style="margin:14px 0 0;font-family:'Caveat','Bradley Hand','Comic Sans MS',cursive;font-size:22px;color:#8B4513;font-weight:700;">
-          — Maman Colombe 🪡
-        </p>
-      </td>
-    </tr>
-  </table>`;
-}
+// =============================================================
+// Données (dates FR, noms, cœur de soumission)
+// =============================================================
 
 function submittedAtInfo(data = {}) {
   const submittedAt = data.timestamp || data.submittedAt || new Date().toISOString();
@@ -536,11 +248,33 @@ function customerNameFor(type, data) {
   );
 }
 
+/** Numéro de téléphone de la cliente → chiffres pour wa.me */
+function clientPhoneDigits(data = {}) {
+  const raw = String(data.telephone || data.phone || "").replace(/[^\d]/g, "");
+  if (!raw) return "";
+  // 229 déjà présent ? sinon on préfixe (Bénin)
+  if (raw.startsWith("229")) return raw;
+  return `229${raw.replace(/^0+/, "")}`;
+}
+
+/**
+ * CŒUR MÉTIER — extrait tous les champs saisis, par type de demande,
+ * dans l'ordre d'affichage. AUCUNE information saisie n'est perdue.
+ */
 function buildSubmissionCore(type, data) {
   const ref = data.ref || "—";
   const profil = profilFor(type);
   const { submittedAt, dateSoumission, heureSoumission } = submittedAtInfo(data);
   const recipientName = customerNameFor(type, data);
+
+  const telLink = (v) =>
+    v
+      ? `<a href="tel:${escHtml(String(v).replace(/\s/g, ""))}" style="color:${C.marron};text-decoration:none;font-weight:600;">${escHtml(v)}</a>`
+      : "—";
+  const mailLink = (v) =>
+    v
+      ? `<a href="mailto:${escHtml(v)}" style="color:${C.marron};text-decoration:none;font-weight:600;">${escHtml(v)}</a>`
+      : "—";
 
   let subject = "";
   let label = "";
@@ -558,8 +292,8 @@ function buildSubmissionCore(type, data) {
       ["Nom", escHtml(data.nom) || "—"],
       ["Prénom", escHtml(data.prenom) || "—"],
       ["Âge", data.age ? `${escHtml(data.age)} ans` : "—"],
-      ["Téléphone", data.telephone ? `<a href="tel:${escHtml(data.telephone)}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(data.telephone)}</a>` : "—"],
-      ["Email", data.email ? `<a href="mailto:${escHtml(data.email)}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(data.email)}</a>` : "—"],
+      ["Téléphone", telLink(data.telephone)],
+      ["Email", mailLink(data.email)],
       ["Niveau actuel", escHtml(labelNiveau(data.niveau_actuel))],
       ["Formation choisie", escHtml(labelFormationChoisie(data.formation_choisie))],
       ["Disponibilités", escHtml(formatDispo(data.disponibilite))],
@@ -575,8 +309,8 @@ function buildSubmissionCore(type, data) {
       ["Heure de soumission", escHtml(heureSoumission)],
       ["Référence", ref, "ref"],
       ["Nom complet", escHtml(data.nom) || "—"],
-      ["Téléphone", data.telephone ? `<a href="tel:${escHtml(data.telephone)}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(data.telephone)}</a>` : "—"],
-      ["Email", data.email ? `<a href="mailto:${escHtml(data.email)}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(data.email)}</a>` : "—"],
+      ["Téléphone", telLink(data.telephone)],
+      ["Email", mailLink(data.email)],
       ["Type de tenue", escHtml(data.type_tenue) || "—"],
       ["Type (autre / précisé)", escHtml(data.tenue_autre) || "—"],
       ["Couleur préférée", escHtml(data.couleur_preferee) || "—"],
@@ -595,8 +329,8 @@ function buildSubmissionCore(type, data) {
       ["Heure de soumission", escHtml(heureSoumission)],
       ["Référence", ref, "ref"],
       ["Nom", escHtml(data.nom) || "—"],
-      ["Email", data.email ? `<a href="mailto:${escHtml(data.email)}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(data.email)}</a>` : "—"],
-      ["Téléphone", data.telephone ? `<a href="tel:${escHtml(data.telephone)}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(data.telephone)}</a>` : "—"],
+      ["Email", mailLink(data.email)],
+      ["Téléphone", telLink(data.telephone)],
       ["Sujet", escHtml(labelSujet(data.sujet))],
       ["Message", escHtml(data.message) || "—"],
     ];
@@ -607,242 +341,436 @@ function buildSubmissionCore(type, data) {
     fields = [
       ["Date de soumission", escHtml(dateSoumission)],
       ["Heure de soumission", escHtml(heureSoumission)],
-      ...Object.entries(data).map(([k, v]) => [escHtml(k), typeof v === "object" ? escHtml(JSON.stringify(v)) : escHtml(String(v ?? "—"))]),
+      ...Object.entries(data).map(([k, v]) => [
+        escHtml(k),
+        typeof v === "object" ? escHtml(JSON.stringify(v)) : escHtml(String(v ?? "—")),
+      ]),
     ];
   }
 
   return { ref, profil, recipientName, subject, label, intro, fields, submittedAt, dateSoumission, heureSoumission };
 }
 
-function buildClientMail(type, data) {
-  const { ref, recipientName, fields, dateSoumission, heureSoumission } = buildSubmissionCore(type, data);
-  const clientLabel =
-    type === "formation" ? "Votre candidature a bien été reçue" :
-    type === "precommande" ? "Votre pré-commande a bien été reçue" :
-    type === "contact" ? "Votre message a bien été reçu" :
-    "Votre demande a bien été reçue";
-  const clientSubject = `✅ ${clientLabel} — Ticket n° ${ref}`;
+// =============================================================
+// PIÈCES DU DESIGN v2
+// =============================================================
 
-  // Pour le mail client : on filtre pour ne pas afficher les champs admin-only
-  // (sessionId, source technique, etc.) tout en gardant TOUT ce que le client a saisi.
-  const ADMIN_ONLY = new Set(["sessionId", "source", "Page", "Session"]);
-  const clientFields = fields.filter(([label]) => {
-    const l = String(label).trim();
-    return !ADMIN_ONLY.has(l);
-  });
-
-  const html = `<!doctype html>
+/** Coquille commune : fond, carte 620 px, coins arrondis. */
+function shell({ pageBg, inner }) {
+  return `<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${escHtml(clientSubject)}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap">
   <style>
-    /* La signature manuscrite utilise Caveat — fallback cursive pour clients sans web fonts. */
     .lsc-signature { font-family: 'Caveat','Bradley Hand','Comic Sans MS',cursive; }
     @media only screen and (max-width: 480px) {
-      .lsc-pad { padding: 22px 18px !important; }
+      .lsc-pad { padding: 24px 18px !important; }
       .lsc-h1 { font-size: 22px !important; }
-      .lsc-mob-stack > tbody > tr > td { display: block !important; width: 100% !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background:#E6F4FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#000000;">
-  <div style="max-width:640px;margin:0 auto;background:#FFFFFF;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
-    ${headerBlock(LOGO_CID)}
-    <div class="lsc-pad" style="padding:28px 24px;background:#FFFFFF;">
-      <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:#8B4513;font-weight:700;">
-        🎫 Ticket n° ${escHtml(ref)}
+<body style="margin:0;padding:0;background:${pageBg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:${C.encre};">
+  <div style="max-width:620px;margin:0 auto;">${inner}</div>
+</body>
+</html>`;
+}
+
+/** En-tête cliente : pagne + bande noire fil d'or + wordmark Colombes. */
+function clientHeader() {
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr><td style="padding:0;line-height:0;font-size:0;">${pagneBandSvg()}</td></tr>
+  </table>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${C.noir};">
+    <tr>
+      <td style="padding:30px 24px 26px;text-align:center;">
+        <div style="display:inline-block;width:78px;height:78px;border-radius:50%;background:#FFFFFF;border:2px solid ${C.or};box-shadow:0 6px 18px rgba(0,0,0,0.35);overflow:hidden;">
+          <img src="cid:${LOGO_CID}" alt="${escHtml(ATELIER_NAME)}" width="78" height="78" style="display:block;width:100%;height:100%;object-fit:contain;" />
+        </div>
+        <p style="margin:16px 0 0;font-size:10px;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,255,255,0.62);font-weight:600;">
+          ${escHtml(ATELIER_NAME)}
+        </p>
+        <p style="margin:4px 0 0;font-family:Georgia,'Playfair Display',serif;font-style:italic;font-size:34px;color:${C.or};font-weight:700;letter-spacing:0.01em;">
+          Colombes
+        </p>
+        <p style="margin:8px 0 0;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:${C.citron};font-weight:600;">
+          ${escHtml(ATELIER_TAGLINE)}
+        </p>
+        <div style="margin:18px auto 0;width:120px;height:1px;background:linear-gradient(90deg,transparent,${C.or},transparent);"></div>
+      </td>
+    </tr>
+  </table>`;
+}
+
+/** Carte ticket — bordure or pointillée « patron à découper » (écho au PDF). */
+function clientTicketCard(ref, dateSoumission, heureSoumission) {
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+         style="margin:0 0 22px;background:#FFFDF6;border:2px dashed ${C.or};border-radius:12px;">
+    <tr>
+      <td style="padding:16px 18px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td style="vertical-align:middle;">
+              <p style="margin:0;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:${C.marron};font-weight:700;">🎫 Votre ticket</p>
+              <p style="margin:5px 0 0;font-family:'Courier New',monospace;font-size:21px;font-weight:700;color:${C.marronD};letter-spacing:0.04em;">${escHtml(ref)}</p>
+            </td>
+            <td style="vertical-align:middle;text-align:right;font-size:26px;color:${C.or};">✂</td>
+          </tr>
+        </table>
+        <div style="margin:12px 0 10px;border-top:1px dashed ${C.or};"></div>
+        <p style="margin:0;font-size:12px;color:${C.encre};opacity:0.75;">
+          Reçu le <strong>${escHtml(dateSoumission)}</strong> à <strong>${escHtml(heureSoumission)}</strong><br>
+          <em>Présentez ce numéro lors de votre passage à l'atelier — il est votre fil d'Ariane avec nous.</em>
+        </p>
+      </td>
+    </tr>
+  </table>`;
+}
+
+/** Tableau récapitulatif zébré. */
+function recapTable(fields, { compact = false } = {}) {
+  const pad = compact ? "8px 12px" : "11px 15px";
+  const size = compact ? "13px" : "14px";
+  const rows = fields
+    .map(([k, v, tone], i) => {
+      const zebra = i % 2 === 1 ? `background:${C.creme};` : "";
+      const labelColor = tone === "ref" ? C.marronD : C.marronD;
+      const labelWeight = tone === "ref" ? "700" : "600";
+      return `
+    <tr style="${zebra}">
+      <td style="padding:${pad};font-weight:${labelWeight};color:${labelColor};width:38%;vertical-align:top;font-size:${compact ? "12px" : "13px"};">${escHtml(k)}</td>
+      <td style="padding:${pad};color:${C.encre};vertical-align:top;font-size:${size};line-height:1.5;">${v ?? "—"}</td>
+    </tr>`;
+    })
+    .join("");
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+         style="border-collapse:collapse;border:1px solid ${C.or}66;border-radius:10px;overflow:hidden;margin:0 0 22px;">
+    ${rows}
+  </table>`;
+}
+
+/** Bouton pilule bulletproof (table + bgcolor). */
+function pillButton(href, label, bg, textColor = "#FFFFFF") {
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
+    <tr>
+      <td bgcolor="${bg}" style="border-radius:999px;">
+        <a href="${href}" style="display:inline-block;padding:13px 26px;border-radius:999px;font-size:14px;font-weight:700;color:${textColor};text-decoration:none;">
+          ${label}
+        </a>
+      </td>
+    </tr>
+  </table>`;
+}
+
+/** Étapes suivantes (cliente). */
+function stepsBlock(type) {
+  const steps =
+    type === "formation"
+      ? [
+          "Nous étudions votre candidature sous 48 h ouvrées.",
+          "Un échange (téléphone ou WhatsApp) est planifié avec vous.",
+          "Une proposition de planning et de tarif vous est envoyée.",
+          "Votre formation démarre selon vos disponibilités. ✂️",
+        ]
+      : type === "precommande"
+        ? [
+            "Nous prenons connaissance de votre projet sous 48 h ouvrées.",
+            "Un échange est planifié pour valider chaque détail (tissu, mesures, délai).",
+            "Un devis détaillé vous est envoyé.",
+            "La production démarre après votre validation. 🧵",
+          ]
+        : [
+            "Nous lisons votre message sous 48 h ouvrées.",
+            "Une réponse personnalisée vous est adressée.",
+            "Si besoin, nous planifions ensemble un rendez-vous à l'atelier. 💛",
+          ];
+  const lis = steps
+    .map(
+      (s, i) => `
+      <tr>
+        <td style="vertical-align:top;width:30px;padding:4px 0;">
+          <div style="width:24px;height:24px;border-radius:50%;border:2px solid ${C.or};color:${C.marronD};font-size:12px;font-weight:700;text-align:center;line-height:22px;">${i + 1}</div>
+        </td>
+        <td style="padding:4px 0 8px 4px;font-size:14px;color:${C.encre};line-height:1.5;">${s}</td>
+      </tr>`,
+    )
+    .join("");
+  return `
+  <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${C.citronD};font-weight:700;">
+    🧭 La suite, tout simplement
+  </p>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 22px;">
+    ${lis}
+  </table>`;
+}
+
+/** Signature chaleureuse (cliente). */
+function signatureBlock(recipientName) {
+  return `
+  <div style="margin:6px 0 0;padding:16px 18px;background:${C.creme};border-radius:12px;border-left:4px solid ${C.or};">
+    <p class="lsc-signature" style="margin:0 0 2px;font-size:26px;color:${C.marron};">
+      Maman Colombe
+    </p>
+    <p style="margin:0;font-size:13px;color:${C.encre};opacity:0.8;line-height:1.5;">
+      &amp; toute l'équipe de l'atelier — nous avons hâte de coudre avec vous, ${escHtml(recipientName)}. ✂️
+    </p>
+  </div>`;
+}
+
+/** Pied de page SANS URL du site (l'hébergement reste invisible). */
+function footerBlock({ dark = true } = {}) {
+  const bg = dark ? C.noir : C.creme;
+  const text = dark ? "#CFC6B8" : C.encre;
+  const accent = dark ? C.citron : C.marron;
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${bg};border-radius:0 0 14px 14px;">
+    <tr>
+      <td style="padding:22px 24px;text-align:center;">
+        <p style="margin:0 0 2px;font-family:Georgia,serif;font-size:15px;color:${accent};font-weight:600;">
+          ✂️ ${escHtml(ATELIER_NAME)}
+        </p>
+        <p style="margin:0 0 12px;font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:${accent};opacity:0.85;">
+          ${escHtml(ATELIER_TAGLINE)}
+        </p>
+        <p style="margin:0;font-size:13px;color:${text};">
+          📞 <a href="tel:${escHtml(ATELIER_PHONE.replace(/\s/g, ""))}" style="color:${accent};text-decoration:none;font-weight:600;">${escHtml(ATELIER_PHONE)}</a>
+          &nbsp;·&nbsp;
+          <a href="tel:${escHtml(ATELIER_PHONE_2.replace(/\s/g, ""))}" style="color:${accent};text-decoration:none;font-weight:600;">${escHtml(ATELIER_PHONE_2)}</a>
+        </p>
+        <p style="margin:7px 0 0;font-size:13px;color:${text};">
+          💬 <a href="https://wa.me/${escHtml(ATELIER_WA)}" style="color:${accent};text-decoration:none;font-weight:600;">WhatsApp direct</a>
+        </p>
+        <p style="margin:12px 0 0;font-size:11px;color:${text};opacity:0.7;">
+          ${escHtml(ATELIER_LOCATION)}
+        </p>
+      </td>
+    </tr>
+  </table>`;
+}
+
+/** Bandeau « PDF joint » (natif — plus de hack regex). */
+function pdfBanner(ref, forAdmin = false) {
+  return `
+  <div style="background:#FFF8E5;border:1px solid ${C.or};border-radius:10px;padding:12px 16px;margin:0 0 ${forAdmin ? "16px" : "20px"};">
+    <p style="margin:0;font-size:12.5px;color:${C.encre};line-height:1.5;">
+      📎 <strong>Récapitulatif PDF joint</strong> — Ticket <code style="background:#FFFFFF;padding:1px 6px;border-radius:4px;border:1px solid ${C.or}55;font-size:12px;">${escHtml(ref)}</code>${forAdmin ? "" : "<br><span style=\"opacity:0.75;\">Conservez-le : il tient lieu de justificatif de votre demande.</span>"}
+    </p>
+  </div>`;
+}
+
+// =============================================================
+// 💌 MAIL CLIENTE — « GLAMOUR »
+// =============================================================
+
+function buildClientMail(type, data) {
+  const { ref, recipientName, fields, dateSoumission, heureSoumission } = buildSubmissionCore(type, data);
+  const clientLabel =
+    type === "formation"
+      ? "Votre candidature est entre de bonnes mains"
+      : type === "precommande"
+        ? "Votre pré-commande est entre de bonnes mains"
+        : type === "contact"
+          ? "Votre message est bien arrivé"
+          : "Votre demande est bien arrivée";
+  const clientSubject = `✂️ ${clientLabel} — Ticket n° ${ref}`;
+
+  // Pour la cliente : on retire les champs purement techniques.
+  const ADMIN_ONLY = new Set(["sessionId", "source", "Page", "Session"]);
+  const clientFields = fields.filter(([label]) => !ADMIN_ONLY.has(String(label).trim()));
+
+  const inner = `
+  <div style="background:#FFFFFF;border-radius:14px;overflow:hidden;box-shadow:0 10px 34px rgba(43,27,14,0.10);" >
+    ${clientHeader()}
+    <div class="lsc-pad" style="padding:30px 26px;">
+      <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:${C.citronD};font-weight:700;">
+        Confirmation de réception
       </p>
-      <h1 class="lsc-h1" style="margin:0 0 10px;font-family:Georgia,'Playfair Display',serif;font-size:24px;color:#000000;font-weight:700;line-height:1.25;">
+      <h1 class="lsc-h1" style="margin:0 0 12px;font-family:Georgia,'Playfair Display',serif;font-size:25px;color:${C.encre};font-weight:700;line-height:1.25;">
         ${escHtml(clientLabel)}
       </h1>
-      <p style="margin:0 0 22px;color:#3D2614;line-height:1.55;font-size:15px;">
-        Bonjour <strong style="color:#000000;">${escHtml(recipientName)}</strong>, nous vous confirmons
-        la bonne réception de votre demande. <strong>Elle est entre de bonnes mains</strong> —
-        voici votre récapitulatif.
+      <p style="margin:0 0 22px;color:${C.encre};opacity:0.85;line-height:1.6;font-size:15px;">
+        Bonjour <strong>${escHtml(recipientName)}</strong>, merci pour votre confiance.
+        Votre demande vient d'être cousue dans notre registre — la voici, récapitulée avec soin.
       </p>
 
-      ${ticketBanner(ref)}
+      ${clientTicketCard(ref, dateSoumission, heureSoumission)}
 
-      ${processingNote(ref, recipientName)}
+      <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${C.marron};font-weight:700;">
+        📝 Votre récapitulatif
+      </p>
+      ${recapTable(clientFields)}
 
-      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#8FBF00;font-weight:700;">
-        📝 Récapitulatif de votre demande
-      </p>
-      <p style="margin:0 0 12px;font-size:12px;color:#3D2614;">
-        Envoyé le <strong>${escHtml(dateSoumission)}</strong> à <strong>${escHtml(heureSoumission)}</strong>
-      </p>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-             style="border-collapse:collapse;border:1px solid #B0DDF0;border-radius:8px;overflow:hidden;margin:0 0 22px;">
-        ${clientFields.map(([k, v, tone]) => fieldRow(k, v, tone)).join("")}
+      ${data.__pdfAttached ? pdfBanner(ref) : ""}
+
+      ${stepsBlock(type)}
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;">
+        <tr>
+          <td align="center" style="padding:6px 0 10px;">
+            ${pillButton(`https://wa.me/${ATELIER_WA}?text=${encodeURIComponent(`Bonjour, je fais suite à ma demande (ticket ${ref}) ✂️`)}`, "💬 Échanger sur WhatsApp", C.wa)}
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:0;">
+            <a href="tel:${escHtml(ATELIER_PHONE.replace(/\s/g, ""))}" style="font-size:13px;color:${C.marron};text-decoration:none;font-weight:600;border-bottom:1px dashed ${C.or};padding-bottom:2px;">
+              ou appelez-nous au ${escHtml(ATELIER_PHONE)}
+            </a>
+          </td>
+        </tr>
       </table>
 
-      ${nextSteps(type)}
-
-      <div style="background:#FFF8E5;border:1px solid #FFE4A8;border-radius:8px;padding:14px 16px;margin:0 0 20px;">
-        <p style="margin:0 0 4px;font-size:13px;color:#000000;">
-          📎 <strong>Un récapitulatif PDF est joint à ce mail.</strong>
-        </p>
-        <p style="margin:0;font-size:12px;color:#3D2614;line-height:1.5;">
-          Vous pouvez l'imprimer ou le conserver pour votre archive personnelle.
-          Il contient votre ticket et l'ensemble des informations transmises.
-        </p>
-      </div>
-
-      <p style="margin:0 0 18px;font-size:13px;color:#3D2614;line-height:1.6;">
-        Pour toute question, répondez simplement à ce mail — votre ticket
-        <strong style="color:#000000;">${escHtml(ref)}</strong> sera automatiquement reconnu
-        par notre équipe. Ou contactez-nous au
-        <a href="tel:${escHtml(ATELIER_PHONE.replace(/\s/g, ""))}" style="color:#8B4513;text-decoration:none;font-weight:600;">${escHtml(ATELIER_PHONE)}</a>.
-      </p>
-
-      ${mamanColombeSignature(recipientName)}
+      ${signatureBlock(recipientName)}
     </div>
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
       <tr><td style="padding:0;line-height:0;font-size:0;background:#FFFFFF;">${threadStitchSvg()}</td></tr>
     </table>
     ${footerBlock()}
-  </div>
-</body>
-</html>`;
+  </div>`;
+
+  const html = shell({ pageBg: C.parchemin, inner });
 
   const text = [
-    `[${ATELIER_NAME}] ${clientLabel}`,
-    clientSubject,
+    `✂️ ${ATELIER_NAME} — ${clientLabel}`,
     "",
     `Bonjour ${recipientName},`,
     "",
-    "✓ Votre demande a bien été reçue.",
+    "Votre demande a bien été reçue et enregistrée.",
     "",
-    "🎫 VOTRE NUMÉRO DE TICKET",
-    `   ${ref}`,
-    "   À conserver et mentionner lors de tout échange.",
+    `🎫 TICKET N° : ${ref}`,
+    "   Présentez ce numéro lors de votre passage à l'atelier.",
     "",
-    `Envoyé le : ${dateSoumission} à ${heureSoumission}`,
+    `Reçu le : ${dateSoumission} à ${heureSoumission}`,
     "",
-    "--- RÉCAPITULATIF DE VOTRE DEMANDE ---",
-    ...clientFields.map(([k, v]) => `${k}: ${String(v).replace(/<[^>]+>/g, "")}`),
+    "--- VOTRE RÉCAPITULATIF ---",
+    ...clientFields.map(([k, v]) => `${k} : ${String(v).replace(/<[^>]+>/g, "")}`),
     "",
-    "--- LES ÉTAPES SUIVANTES ---",
-    ...(type === "formation" ? [
-      "1. Notre équipe examine votre candidature sous 48 heures ouvrées.",
-      "2. Un échange (téléphone ou WhatsApp) est planifié.",
-      "3. Une proposition de planning + tarif vous est envoyée.",
-      "4. Démarrage de la formation selon vos disponibilités.",
-    ] : type === "precommande" ? [
-      "1. Notre équipe prend connaissance de votre projet sous 48 heures ouvrées.",
-      "2. Un échange est planifié pour valider les détails.",
-      "3. Un devis détaillé vous est envoyé.",
-      "4. Production lancée après validation du devis.",
-    ] : [
-      "1. Notre équipe prend connaissance de votre message sous 48 heures ouvrées.",
-      "2. Une réponse personnalisée vous est envoyée.",
-      "3. Si besoin, nous planifions un rendez-vous.",
-    ]),
+    data.__pdfAttached ? "📎 Récapitulatif PDF joint à ce mail." : "",
     "",
-    "📎 Un récapitulatif PDF est joint à ce mail.",
+    "--- LA SUITE ---",
+    ...(type === "formation"
+      ? [
+          "1. Étude de votre candidature sous 48 h ouvrées.",
+          "2. Échange (téléphone ou WhatsApp) planifié.",
+          "3. Proposition de planning et tarif.",
+          "4. Démarrage selon vos disponibilités.",
+        ]
+      : type === "precommande"
+        ? [
+            "1. Lecture de votre projet sous 48 h ouvrées.",
+            "2. Échange pour valider les détails.",
+            "3. Devis détaillé envoyé.",
+            "4. Production après validation du devis.",
+          ]
+        : [
+            "1. Lecture de votre message sous 48 h ouvrées.",
+            "2. Réponse personnalisée.",
+            "3. Rendez-vous planifié si besoin.",
+          ]),
     "",
     "Contact :",
     `  ${ATELIER_PHONE} / ${ATELIER_PHONE_2}`,
     `  WhatsApp : https://wa.me/${ATELIER_WA}`,
     `  ${ATELIER_LOCATION}`,
-    `  ${ATELIER_SITE}`,
-  ].join("\n");
+    "",
+    "Maman Colombe & toute l'équipe ✂️",
+  ]
+    .filter((l) => l !== "")
+    .join("\n");
 
   return { subject: clientSubject, html, text, attachments: [getLogoAttachment()] };
 }
 
-function buildAdminMail(type, data) {
-  const { ref, profil, recipientName, subject, label, intro, fields, submittedAt } = buildSubmissionCore(type, data);
+// =============================================================
+// ⚡ MAIL ATELIER — « EFFICACE » (lecture 5 secondes, actions 1 clic)
+// =============================================================
 
-  const html = `<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${escHtml(subject)}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap">
-  <style>
-    .lsc-signature { font-family: 'Caveat','Bradley Hand','Comic Sans MS',cursive; }
-    @media only screen and (max-width: 480px) {
-      .lsc-pad { padding: 22px 18px !important; }
-    }
-  </style>
-</head>
-<body style="margin:0;padding:0;background:#E6F4FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#000000;">
-  <div style="max-width:640px;margin:0 auto;background:#FFFFFF;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
-    ${headerBlock(LOGO_CID)}
-    <div class="lsc-pad" style="padding:28px 24px;background:#FFFFFF;">
-      ${adminNote(ref, profil)}
-      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#8B4513;font-weight:700;">${escHtml(label)}</p>
-      <h2 style="margin:0 0 16px;font-family:Georgia,'Playfair Display',serif;font-size:20px;color:#000000;font-weight:700;line-height:1.3;">${escHtml(subject)}</h2>
-      <p style="margin:0 0 20px;color:#3D2614;line-height:1.55;font-size:14px;">${escHtml(intro)}</p>
-      <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8FBF00;font-weight:700;">Détail des informations saisies</p>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:1px solid #B0DDF0;border-radius:8px;overflow:hidden;">
-        ${fields.map(([k, v, tone]) => fieldRow(k, v, tone)).join("")}
-      </table>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:24px;border-top:1px dashed #B0DDF0;padding-top:12px;">
-        <tr>
-          <td style="font-size:12px;color:#8A8A8A;padding-top:10px;">
-            <strong style="color:#000000;">Reçu le</strong>
-            ${escHtml(new Date(submittedAt).toLocaleString("fr-FR", { timeZone: "Africa/Porto-Novo", dateStyle: "full", timeStyle: "short" }))}
-            &nbsp;·&nbsp;
-            <strong style="color:#000000;">Source</strong> ${escHtml(data.source || "site")}
-            ${data.path ? `&nbsp;·&nbsp;<strong style="color:#000000;">Page</strong> ${escHtml(data.path)}` : ""}
-            ${data.sessionId ? `&nbsp;·&nbsp;<strong style="color:#000000;">Session</strong> ${escHtml(data.sessionId)}` : ""}
-          </td>
-        </tr>
-      </table>
-      <p class="lsc-signature" style="margin:18px 0 0;font-size:20px;color:#8B4513;text-align:right;">
-        — Maman Colombe 🪡
+function buildAdminMail(type, data) {
+  const { ref, subject, label, intro, fields, dateSoumission, heureSoumission } = buildSubmissionCore(type, data);
+
+  const typeBadge =
+    type === "formation" ? "🎓 FORMATION" : type === "precommande" ? "👗 PRÉ-COMMANDE" : "📩 CONTACT";
+  const clientTel = String(data.telephone || "").trim();
+  const clientTelHref = clientTel ? `tel:${clientTel.replace(/\s/g, "")}` : "";
+  const waDigits = clientPhoneDigits(data);
+  const waHref = waDigits
+    ? `https://wa.me/${waDigits}?text=${encodeURIComponent(
+        `Bonjour ${customerNameFor(type, data)}, ici l'atelier ${ATELIER_NAME} — au sujet de votre ticket ${ref} ✂️`,
+      )}`
+    : "";
+  const clientMail = String(data.email || "").trim();
+
+  const actions = [
+    clientTelHref ? pillButton(clientTelHref, "📞 Appeler", C.marron) : "",
+    waHref ? pillButton(waHref, "💬 WhatsApp", C.wa) : "",
+    clientMail ? pillButton(`mailto:${escHtml(clientMail)}?subject=${encodeURIComponent(`Re: votre ticket ${ref} — ${ATELIER_NAME}`)}`, "✉️ Email", C.noir) : "",
+  ]
+    .filter(Boolean)
+    .join("&nbsp;&nbsp;");
+
+  const inner = `
+  <div style="background:#FFFFFF;border-radius:14px;overflow:hidden;box-shadow:0 10px 34px rgba(43,27,14,0.10);">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${C.marronD};">
+      <tr>
+        <td style="padding:16px 22px;">
+          <p style="margin:0;font-size:13px;font-weight:700;color:${C.citron};letter-spacing:0.14em;">${typeBadge}</p>
+          <p style="margin:4px 0 0;font-size:11px;color:rgba(255,255,255,0.75);">${escHtml(intro)}</p>
+        </td>
+        <td style="padding:16px 22px;text-align:right;vertical-align:top;">
+          <span style="display:inline-block;background:#FFFFFF;border-radius:8px;padding:5px 10px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:${C.marronD};">${escHtml(ref)}</span>
+        </td>
+      </tr>
+    </table>
+
+    <div class="lsc-pad" style="padding:20px 22px 24px;">
+      <p style="margin:0 0 4px;font-size:11px;color:${C.encre};opacity:0.6;">
+        Reçu le <strong>${escHtml(dateSoumission)}</strong> à <strong>${escHtml(heureSoumission)}</strong>
+      </p>
+
+      ${actions ? `<div style="margin:14px 0 18px;">${actions}</div>` : ""}
+
+      ${data.__pdfAttached ? pdfBanner(ref, true) : ""}
+
+      <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:${C.marron};font-weight:700;">
+        📋 Détails de la demande
+      </p>
+      ${recapTable(fields, { compact: true })}
+
+      <p style="margin:0;font-size:11px;color:${C.encre};opacity:0.55;line-height:1.5;">
+        Relais automatique du site · penser à marquer la demande « Traitée » dans Google Sheets après réponse.
       </p>
     </div>
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-      <tr><td style="padding:0;line-height:0;font-size:0;background:#FFFFFF;">${threadStitchSvg()}</td></tr>
-    </table>
     ${footerBlock()}
-  </div>
-  <p style="text-align:center;margin:16px 0 0;font-size:11px;color:#8A8A8A;">
-    Email automatique envoyé par le système de suivi — ${escHtml(ATELIER_NAME)}
-  </p>
-</body>
-</html>`;
+  </div>`;
+
+  const html = shell({ pageBg: C.parchemin, inner });
 
   const text = [
-    `[${ATELIER_NAME}] ${label}`,
-    subject,
-    "",
-    `[Profil destinataire] ${profil}`,
-    `Nouvelle demande reçue de ${recipientName}`,
+    `${typeBadge} — ${label}`,
     `Référence : ${ref}`,
+    `Reçu le : ${dateSoumission} à ${heureSoumission}`,
     "",
-    "--- DÉTAIL DES INFORMATIONS SAISIES ---",
-    ...fields.map(([k, v]) => `${k}: ${String(v).replace(/<[^>]+>/g, "")}`),
+    ...fields.map(([k, v]) => `${k} : ${String(v).replace(/<[^>]+>/g, "")}`),
     "",
-    "Contact :",
-    `  ${ATELIER_PHONE} / ${ATELIER_PHONE_2}`,
-    `  WhatsApp : https://wa.me/${ATELIER_WA}`,
-    `  ${ATELIER_LOCATION}`,
-  ].join("\n");
+    waHref ? `Répondre sur WhatsApp : ${waHref}` : "",
+    data.__pdfAttached ? `📎 PDF joint : ticket ${ref}` : "",
+  ]
+    .filter((l) => l !== "")
+    .join("\n");
 
   return { subject, html, text, attachments: [getLogoAttachment()] };
 }
 
 // =============================================================
-// API publique
+// PDF récapitulatif (pièce jointe — généré par lib/pdf.js)
 // =============================================================
 
-/**
- * Construit la pièce jointe PDF pour un envoi mail.
- * Retourne null si le PDF ne peut pas être généré (erreur silencieuse, on n'empêche
- * pas l'envoi du mail).
- */
 async function buildPdfAttachment(type, data) {
   try {
     const { buildSubmissionPdf, pdfFilename } = await import("./pdf.js");
@@ -858,13 +786,10 @@ async function buildPdfAttachment(type, data) {
   }
 }
 
-/**
- * Envoie deux mails séparés :
- *  - au client / soumetteur si une adresse e-mail existe
- *  - à l'équipe admin via MAIL_TO
- *
- * Les deux mails reçoivent le PDF récapitulatif en pièce jointe.
- */
+// =============================================================
+// Envoi des deux mails (admin + client). PDF joint aux deux.
+// =============================================================
+
 export async function sendSubmissionMail(type, data) {
   if (MAIL_TO.length === 0) {
     throw new Error("MAIL_TO manquant (variables d'env serveur)");
@@ -872,35 +797,16 @@ export async function sendSubmissionMail(type, data) {
 
   const transport = getTransport();
   const pdfAttachment = await buildPdfAttachment(type, data);
+
+  // Le PDF est annoncé NATIVEËMENT par les modèles (plus d'injection regex).
+  const enriched = { ...data, __pdfAttached: !!pdfAttachment };
+
   const results = { admin: null, customer: null, pdfAttached: !!pdfAttachment };
 
-  // --- Mail admin ---
-  const adminMail = buildAdminMail(type, data);
+  // --- Mail atelier (interne) ---
+  const adminMail = buildAdminMail(type, enriched);
   const adminAttachments = [...(adminMail.attachments || [])];
-  if (pdfAttachment) {
-    adminAttachments.push(pdfAttachment);
-    // Bandeau "PDF joint" dans le mail admin
-    //
-    // IMPORTANT : on insère UNIQUEMENT un <p> juste avant le second <table>
-    // (le bloc "Reçu le ..."). On ne réouvre PAS un nouveau <table> ici,
-    // car sinon le second <table> du template (ligne ~790) se retrouve
-    // refermé par le </table> de notre replace, et le <table> qu'on ouvre
-    // n'a jamais de </table> de fermeture. Gmail "répare" alors en mangeant
-    // tout le contenu entre les deux et n'affiche que la queue d'attribut
-    // style — d'où le déchet "#B0DDF0;padding-top:12px;"> visible en haut
-    // du mail admin.
-    //
-    // On remplace la balise <table ...> ENTIÈRE (jusqu'au '>') par
-    // `${pdfBanner}<table ...>` reconstruite proprement, pour éviter tout
-    // risque de doublon d'attribut style si le `[^>]*` du regex
-    // consomme mal la balise d'origine.
-    const pdfBanner = `<p style="margin:18px 0 0;padding:10px 14px;background:#F0F8E0;border-left:4px solid #BFFF00;border-radius:6px;font-size:13px;color:#000000;">📎 <strong>PDF récapitulatif joint</strong> — Ticket <code style="background:#FFFFFF;padding:2px 6px;border-radius:4px;font-family:monospace;">${escHtml(data.ref || "")}</code></p>`;
-    adminMail.html = adminMail.html.replace(
-      /<table role="presentation"[^>]*style="margin-top:24px;border-top:1px dashed[^>]*>/s,
-      `${pdfBanner}<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:24px;border-top:1px dashed #B0DDF0;padding-top:12px;">`,
-    );
-    adminMail.text += `\n\n📎 PDF récapitulatif joint : ${pdfAttachment.filename}\n`;
-  }
+  if (pdfAttachment) adminAttachments.push(pdfAttachment);
   const adminInfo = await transport.sendMail({
     from: MAIL_FROM,
     to: MAIL_TO.join(", "),
@@ -911,15 +817,16 @@ export async function sendSubmissionMail(type, data) {
   });
   results.admin = { messageId: adminInfo.messageId, recipients: MAIL_TO };
 
-  // --- Mail client (soumetteur) ---
+  // --- Mail cliente (si email fourni) ---
   const customerEmail = String(data.email || "").trim();
   if (customerEmail) {
-    const clientMail = buildClientMail(type, data);
+    const clientMail = buildClientMail(type, enriched);
     const customerAttachments = [...(clientMail.attachments || [])];
     if (pdfAttachment) customerAttachments.push(pdfAttachment);
     const customerInfo = await transport.sendMail({
       from: MAIL_FROM,
       to: customerEmail,
+      replyTo: MAIL_TO[0],
       subject: clientMail.subject,
       text: clientMail.text,
       html: clientMail.html,

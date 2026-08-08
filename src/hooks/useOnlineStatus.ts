@@ -25,7 +25,7 @@ import { useEffect, useRef, useState } from "react";
    Cela évite les faux positifs sur les réseaux restrictifs.
    ============================================================= */
 
-const FIRST_PARTY_PROBES = ["/api/ping", "/favicon.ico", "/manifest.webmanifest"];
+const FIRST_PARTY_PROBES = ["/api/ping", "/favicon.ico"];
 const CROSS_PROBES: ReadonlyArray<{ url: string; mode: RequestMode }> = [
   // generate_204 : Apple/Cloudflare
   { url: "https://captive.apple.com/generate_204", mode: "no-cors" },
