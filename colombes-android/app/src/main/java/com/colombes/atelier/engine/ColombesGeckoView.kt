@@ -108,33 +108,6 @@ class ColombesGeckoView @JvmOverloads constructor(
                     callback.reject()
                 }
             }
-
-            override fun onMediaPermissionRequest(
-                session: GeckoSession,
-                uri: String?,
-                video: Array<GeckoSession.PermissionDelegate.MediaSource>?,
-                audio: Array<GeckoSession.PermissionDelegate.MediaSource>?,
-                callback: GeckoSession.PermissionDelegate.MediaCallback
-            ) {
-                val perms = mutableListOf<String>()
-                if (video != null) perms.add(android.Manifest.permission.CAMERA)
-                if (audio != null) perms.add(android.Manifest.permission.RECORD_AUDIO)
-                if (perms.isEmpty()) {
-                    callback.reject()
-                    return
-                }
-                val videoSource = video?.firstOrNull()
-                val audioSource = audio?.firstOrNull()
-                if (onAndroidPermissionsRequest != null) {
-                    onAndroidPermissionsRequest!!(
-                        perms.toTypedArray(),
-                        { callback.grant(videoSource, audioSource) },
-                        { callback.reject() }
-                    )
-                } else {
-                    callback.reject()
-                }
-            }
         }
 
         session.promptDelegate = object : GeckoSession.PromptDelegate {
