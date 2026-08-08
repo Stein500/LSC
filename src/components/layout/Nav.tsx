@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, Scissors, Settings2 } from "lucide-react";
+import { Menu, X, Settings2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 import { trackCtaClick } from "@/utils/api";
-import { SmartImage } from "@/components/ui/SmartImage";
+import { HeaderAppBadge } from "@/components/layout/HeaderAppBadge";
 import { ConnectionStatusIcon } from "@/components/ui/ConnectionStatusIcon";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 
@@ -52,45 +52,11 @@ export function Nav() {
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8">
         <div className="flex items-center justify-between gap-3">
-          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group min-w-0">
-            <div
-              className={cn(
-                "relative rounded-full overflow-hidden shrink-0 transition-all duration-300 group-hover:scale-105",
-                // 🛡️ Badge royal : grand médaillon qui dépasse sous le bandeau,
-                // puis se resserre joliment dès qu'on défile.
-                scrolled
-                  ? "w-11 h-11 sm:w-12 sm:h-12"
-                  : "w-[60px] h-[60px] sm:w-16 sm:h-16 -mb-7 sm:-mb-9",
-              )}
-              style={{
-                border: "3px solid var(--color-citron)",
-                boxShadow: "0 8px 22px rgba(92,46,12,0.38), 0 0 0 3px rgba(201,168,124,0.45)",
-              }}
-            >
-              <SmartImage
-                src="/images/logo.webp"
-                alt="Les Services Colombes"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const el = e.currentTarget as HTMLImageElement;
-                  el.style.display = "none";
-                  (el.parentElement?.querySelector("[data-fallback-logo]") as HTMLElement | null)?.style.setProperty(
-                    "display",
-                    "flex",
-                  );
-                }}
-              />
-              <span
-                data-fallback-logo
-                className="absolute inset-0 items-center justify-center text-[var(--color-orange)]"
-                style={{ display: "none" }}
-                aria-hidden="true"
-              >
-                <Scissors className="w-5 h-5" />
-              </span>
-            </div>
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            {/* 👑 Trône du header : logo ⇄ badge « APP » toutes les 5 min */}
+            <HeaderAppBadge scrolled={scrolled} />
 
-            <div className="leading-tight min-w-0">
+            <Link to="/" className="leading-tight min-w-0 group">
               <p
                 className={cn(
                   "font-bold tracking-wide truncate transition-all duration-300",
@@ -115,8 +81,8 @@ export function Nav() {
               >
                 {BAND_SUBTITLE}
               </p>
-            </div>
-          </Link>
+            </Link>
+          </div>
 
           <div className="hidden md:flex items-center gap-7">
             {links.map((l) => (

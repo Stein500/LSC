@@ -75,6 +75,11 @@ export const env = {
   // SEO
   siteUrl: v("VITE_SITE_URL", "https://couturecolombe.vercel.app"),
 
+  // 📱 Destination du badge « Mettre à jour l'App » (header).
+  // ⚠️ Ne JAMAIS afficher cette URL en clair dans l'interface —
+  // elle ne vit que dans le href du badge (cf. HeaderAppBadge).
+  appUpdateUrl: v("VITE_APP_UPDATE_URL", "https://lesservicescolombes.vercel.app"),
+
   // API back — **relatif par défaut** : le même build fonctionne sur
   // couturecolombe.vercel.app, sur les URLs de preview Vercel et en
   // dev local sans reconfiguration. Le token public ne protège que le
