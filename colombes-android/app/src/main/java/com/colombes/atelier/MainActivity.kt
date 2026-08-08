@@ -129,6 +129,10 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+        // Focus pour que le clavier s'affiche dans les champs des formulaires
+        gecko.isFocusable = true
+        gecko.isFocusableInTouchMode = true
+
         gecko.onProgress = { progress -> updateProgress(progress) }
         gecko.onHomeLoaded = { onHomePageReady() }
         gecko.onMainError = { showOffline() }
@@ -141,6 +145,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         gecko.setup(GeckoRuntimeHolder.runtime)
+        gecko.requestFocus()
 
         binding.swipeRefresh.setColorSchemeResources(R.color.marron)
         binding.swipeRefresh.setOnRefreshListener { gecko.session.reload() }

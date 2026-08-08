@@ -33,6 +33,10 @@
             android:label="@string/app_name"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
+<<<<<<< HEAD
+=======
+            android:windowSoftInputMode="adjustResize"
+>>>>>>> 3fdf78f (⌨️ Fix clavier dans les formulaires: windowSoftInputMode=adjustResize + focus du moteur (v2.0 & v2.1 GeckoView))
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:theme="@style/Theme.Colombes">
             <intent-filter>
