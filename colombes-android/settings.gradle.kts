@@ -17,6 +17,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // GeckoView (moteur embarqué) est hébergé sur maven.mozilla.org
+        maven(url = "https://maven.mozilla.org/maven2/")
     }
 }
 

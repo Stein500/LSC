@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
 
-    // GeckoView — moteur embarqué, autonome (indépendant du WebView/Chrome système)
-    implementation("org.mozilla.geckoview:geckoview:121.0.20231212101608")
+    // GeckoView — moteur embarqué, autonome (indépendant du WebView/Chrome système).
+    // 115 ESR = version stable Long-Term-Support, adaptée à l'embarquement.
+    implementation("org.mozilla.geckoview:geckoview:115.0.20230726201356")
 }
