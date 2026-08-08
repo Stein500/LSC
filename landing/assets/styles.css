@@ -122,13 +122,16 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   gap: 20px;
   padding-top: 14px;
   padding-bottom: 14px;
+  flex-wrap: nowrap;
 }
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 0;      /* la marque cède la place au bouton, jamais l'inverse */
+  overflow: hidden;
 }
 .brand img {
   width: 44px;
@@ -793,8 +796,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .cards { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 420px) {
-  /* Très petits écrans : logo seul, la place va au bouton versionné */
+@media (max-width: 560px) {
+  /* Mobile : logo seul + bouton versionné — zéro chevauchement, jamais */
   .brand-text { display: none; }
 }
 @media (max-width: 720px) {

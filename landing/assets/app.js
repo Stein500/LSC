@@ -97,10 +97,9 @@
         if (label) label.textContent = compact ? "Télécharger" : "Télécharger l'app Colombes";
         if (sub) {
           if (compact) {
-            var bits = [];
-            if (version) bits.push("v" + version);
-            if (taille) bits.push(taille);
-            sub.textContent = bits.length ? bits.join(" · ") : "APK Android";
+            /* En-tête : version SEULE — la taille/infos complètes vivent
+               sur les gros boutons et la pastille citron */
+            sub.textContent = version ? "v" + version : "APK";
           } else {
             var morceaux = [];
             if (version) morceaux.push("v" + version);
