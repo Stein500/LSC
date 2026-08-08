@@ -11,11 +11,28 @@ android {
         applicationId = "com.colombes.atelier"
         minSdk = 24
         targetSdk = 35
-        versionCode = 3
+        versionCode = 4
         versionName = "2.1.0"
 
         // APK name: colombes-atelier-2.1.0-debug.apk / -release.apk
         setProperty("archivesBaseName", "colombes-atelier-${versionName}")
+
+        // Restreindre aux architectures réelles des téléphones (exclut x86/x86_64
+        // réservés aux émulateurs) → réduit fortement la taille de l'APK.
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
+    }
+
+    // Génère un APK PAR architecture (au lieu d'un seul énorme) → chaque APK
+    // ne contient que le moteur pour le CPU du téléphone (~1/2 voire 1/4 du poids).
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a")
+            isUniversalApk = false
+        }
     }
 
     buildTypes {
