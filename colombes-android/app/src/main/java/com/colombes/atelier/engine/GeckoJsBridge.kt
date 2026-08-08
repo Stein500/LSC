@@ -16,7 +16,7 @@ import org.mozilla.geckoview.WebExtension
 class GeckoJsBridge(private val context: Context) {
 
     /** Gère un message venant de la WebExtension. */
-    fun onMessage(nativeApp: String?, message: Any?): GeckoResult<Any>? {
+    fun onMessage(nativeApp: String, message: Any): GeckoResult<Any>? {
         val json = message as? JSONObject ?: return GeckoResult.fromValue(null)
         return when (json.optString("type")) {
             "getAppVersion" -> GeckoResult.fromValue(AppConfig.APP_VERSION)
@@ -61,7 +61,7 @@ class GeckoJsBridge(private val context: Context) {
 
     /** MessageDelegate à enregistrer sur la WebExtension. */
     val messageDelegate = object : WebExtension.MessageDelegate {
-        override fun onMessage(nativeApp: String?, message: Any?): GeckoResult<Any>? {
+        override fun onMessage(nativeApp: String, message: Any): GeckoResult<Any>? {
             return this@GeckoJsBridge.onMessage(nativeApp, message)
         }
     }

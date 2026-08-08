@@ -18,7 +18,7 @@ object BridgeInstaller {
         val runtime = GeckoRuntimeHolder.runtime
         runtime.webExtensionController.ensureBuiltIn(EXTENSION_LOCATION, EXTENSION_ID)
             .accept({ ext ->
-                ext.setMessageDelegate(bridge.messageDelegate, NATIVE_APP)
+                ext?.setMessageDelegate(bridge.messageDelegate, NATIVE_APP)
                 onReady()
             }, { onReady() })
     }

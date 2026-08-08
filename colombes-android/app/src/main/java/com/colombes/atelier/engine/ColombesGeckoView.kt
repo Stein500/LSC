@@ -24,6 +24,7 @@ class ColombesGeckoView @JvmOverloads constructor(
     lateinit var session: GeckoSession
 
     private var canGoBackFlag = false
+    private var currentUrl: String? = null
 
     /** Progression 0..100. */
     var onProgress: ((Int) -> Unit)? = null
@@ -46,8 +47,7 @@ class ColombesGeckoView @JvmOverloads constructor(
     fun setup(runtime: org.mozilla.geckoview.GeckoRuntime) {
         session = GeckoSession()
 
-        val settings = session.settings
-        settings.allowJavascript = true
+        session.settings.allowJavascript = true
 
         session.open(runtime)
         setSession(session)
@@ -64,8 +64,8 @@ class ColombesGeckoView @JvmOverloads constructor(
 
             override fun onPageStop(session: GeckoSession, success: Boolean) {
                 if (success) {
-                    val uri = session.currentUri
-                    if (uri?.startsWith(AppConfig.HOME_URL) == true) {
+                    val url = currentUrl
+                    if (url?.startsWith(AppConfig.HOME_URL) == true) {
                         onHomeLoaded?.invoke()
                     }
                 } else {
@@ -88,25 +88,11 @@ class ColombesGeckoView @JvmOverloads constructor(
                 permissions: List<GeckoSession.PermissionDelegate.ContentPermission>,
                 navigationType: Int
             ) {
-                // navigation interne acceptée
+                this@ColombesGeckoView.currentUrl = uri
             }
 
             override fun onCanGoBack(session: GeckoSession, canGoBack: Boolean) {
                 this@ColombesGeckoView.canGoBackFlag = canGoBack
-            }
-        }
-
-        session.downloadDelegate = object : GeckoSession.DownloadDelegate {
-            override fun onDownload(session: GeckoSession, download: GeckoSession.DownloadDelegate.Download) {
-                val url = download.uri
-                val filename = download.filename
-                val mime = download.contentType
-                if (url.startsWith("data:application/pdf;base64,")) {
-                    val b64 = url.removePrefix("data:application/pdf;base64,")
-                    DownloadHelper.saveBase64Pdf(context, b64, filename ?: "ticket.pdf")
-                } else {
-                    DownloadHelper.enqueueDownload(context, url, "GeckoView", null, mime)
-                }
             }
         }
 
@@ -140,10 +126,12 @@ class ColombesGeckoView @JvmOverloads constructor(
                 permissions: Array<out String>?,
                 callback: GeckoSession.PermissionDelegate.Callback
             ) {
-                onAndroidPermissionsRequest?.invoke(
-                    permissions?.toTypedArray() ?: emptyArray(),
-                    { callback.grant() }, { callback.reject() }
-                ) ?: callback.reject()
+                val perms = permissions?.map { it }?.toTypedArray() ?: emptyArray()
+                if (onAndroidPermissionsRequest != null) {
+                    onAndroidPermissionsRequest!!(perms, { callback.grant() }, { callback.reject() })
+                } else {
+                    callback.reject()
+                }
             }
         }
 
@@ -209,7 +197,13 @@ class ColombesGeckoView @JvmOverloads constructor(
 
     /** Charge la page d'accueil. */
     fun loadHome() {
-        session.load(AppConfig.HOME_URL)
+        val loader = GeckoSession.Loader().uri(AppConfig.HOME_URL)
+        session.load(loader)
+    }
+
+    /** Charge une URL donnée. */
+    fun loadUrl(url: String) {
+        session.load(GeckoSession.Loader().uri(url))
     }
 
     /** Navigue en arrière si possible. */
