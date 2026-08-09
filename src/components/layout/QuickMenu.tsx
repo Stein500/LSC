@@ -78,7 +78,7 @@ export function QuickMenu({ className, triggerLabel = "Menu", align = "bottom", 
         aria-expanded={open}
         aria-label={triggerLabel}
       >
-        <span className={cn("inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-citron)]/20 text-[var(--color-ink)] transition-colors", open ? "bg-[var(--color-citron)] text-[var(--color-ink)]" : "")}>
+        <span className={cn("inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-citron)]/20 text-[var(--color-ink)] transition-colors", open ? "bg-[var(--color-citron)] text-white" : "")}>
           <TriggerIcon className="w-4 h-4" />
         </span>
         <span>{triggerLabel}</span>

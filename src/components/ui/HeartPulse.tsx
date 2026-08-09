@@ -8,7 +8,7 @@ type ColorKey = 'blush' | 'orange' | 'citron' | 'rose-soft';
 const colorMap: Record<ColorKey, string> = {
   blush: 'var(--color-blush)',
   orange: 'var(--color-orange, #F4B860)',
-  citron: 'var(--color-citron, #BFFF00)',
+  citron: 'var(--color-citron, #D1232A)',
   'rose-soft': 'var(--color-rose-soft)',
 };
 

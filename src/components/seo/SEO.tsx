@@ -90,7 +90,7 @@ export function SEO({
       <meta name="geo.placename" content="Porto-Novo" />
       <meta name="geo.position" content="6.4969;2.6289" />
       <meta name="ICBM" content="6.4969, 2.6289" />
-      <meta name="theme-color" content="#BFFF00" />
+      <meta name="theme-color" content="#5C2E0C" />
 
       <link rel="canonical" href={url} />
       <link rel="alternate" hrefLang="fr" href={hreflangFr} />

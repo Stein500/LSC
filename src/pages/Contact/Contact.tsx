@@ -97,8 +97,8 @@ export default function Contact() {
                 className="block"
               >
                 <Card hover={false} className="text-center h-full">
-                  <div className="w-14 h-14 rounded-2xl bg-[#25D366]/15 flex items-center justify-center mx-auto mb-4">
-                    <MessageCircle className="w-6 h-6 text-[#25D366]" />
+                  <div className="w-14 h-14 rounded-2xl bg-[#8B4513]/15 flex items-center justify-center mx-auto mb-4">
+                    <MessageCircle className="w-6 h-6" style={{ color: "#8B4513" }} />
                   </div>
                   <p className="text-xs uppercase tracking-wider text-[var(--color-muted)] mb-1">WhatsApp</p>
                   <p className="text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>

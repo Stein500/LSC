@@ -46,8 +46,8 @@ export function ConnectionStatusIcon({ size = "md", withLabel = true, className 
 
   const toneStyles: Record<typeof tone, { dot: string; icon: string; label: string }> = {
     online: {
-      dot: "bg-green-500",
-      icon: "text-green-600",
+      dot: "bg-[var(--color-citron)]",
+      icon: "text-[var(--color-citron)]",
       label: "Connecté — tout est prêt",
     },
     stale: {

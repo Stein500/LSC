@@ -5,7 +5,7 @@ type ColorKey = 'gold-thread' | 'citron';
 
 const colorMap: Record<ColorKey, string> = {
   'gold-thread': 'var(--color-gold-thread, #C9A87C)',
-  citron: 'var(--color-citron, #BFFF00)',
+  citron: 'var(--color-citron, #D1232A)',
 };
 
 type Props = {

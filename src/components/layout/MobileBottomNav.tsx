@@ -32,7 +32,7 @@ export function MobileBottomNav() {
                 <span
                   className={cn(
                     "w-9 h-9 rounded-full flex items-center justify-center transition-all",
-                    isActive ? "bg-[var(--color-citron)] scale-110" : "bg-transparent",
+                    isActive ? "bg-[var(--color-citron)] scale-110 text-white" : "bg-transparent",
                   )}
                 >
                   <Icon className="w-5 h-5" />

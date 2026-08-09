@@ -31,7 +31,7 @@ function getThemeColor(theme: ResolvedTheme) {
     case "amoled":
       return "#000000";
     default:
-      return "#BFFF00";
+      return "#5C2E0C";
   }
 }
 

@@ -21,7 +21,7 @@ function escAttr(value: string) {
 const LOGO_FALLBACK_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 341" role="img" aria-label="Les Services Colombes">
   <rect width="512" height="341" rx="28" fill="transparent"/>
-  <circle cx="256" cy="114" r="58" fill="#FFFFFF" fill-opacity="0.92" stroke="#BFFF00" stroke-width="8"/>
+  <circle cx="256" cy="114" r="58" fill="#FFFFFF" fill-opacity="0.92" stroke="#D1232A" stroke-width="8"/>
   <g fill="none" stroke="#8B4513" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M214 114c16 16 37 31 64 48"/>
     <path d="M224 98l-16-16"/>

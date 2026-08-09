@@ -19,10 +19,10 @@ const base =
   "relative inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-all duration-300 select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 overflow-hidden";
 
 const variants: Record<Variant, string> = {
-  // Citron satiné : dégradé subtil + ombre colorée + ourlet lumineux
+  // Rouge colombe satiné : dégradé subtil + ombre colorée + ourlet lumineux
   primary:
-    "text-[var(--color-ink)] shadow-[0_10px_25px_-8px_rgba(143,191,0,0.55)] hover:shadow-[0_16px_34px_-8px_rgba(143,191,0,0.65)] " +
-    "bg-[linear-gradient(180deg,#D6FF4D_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] hover:brightness-[1.04] " +
+    "text-white shadow-[0_10px_25px_-8px_rgba(209,35,42,0.55)] hover:shadow-[0_16px_34px_-8px_rgba(209,35,42,0.65)] " +
+    "bg-[linear-gradient(180deg,#E85454_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] hover:brightness-[1.04] " +
     "before:absolute before:inset-x-4 before:top-px before:h-px before:bg-white/70 before:content-['']",
   // Marron cuir : profondeur chaude
   secondary:
@@ -31,7 +31,7 @@ const variants: Record<Variant, string> = {
     "before:absolute before:inset-x-4 before:top-px before:h-px before:bg-white/25 before:content-['']",
   ghost: "bg-transparent text-[var(--color-ink)] hover:bg-black/5",
   outline:
-    "bg-transparent border-2 border-[var(--color-citron)] text-[var(--color-ink)] hover:bg-[var(--color-citron)] hover:shadow-[0_10px_25px_-8px_rgba(143,191,0,0.5)]",
+    "bg-transparent border-2 border-[var(--color-citron)] text-[var(--color-ink)] hover:bg-[var(--color-citron)] hover:text-white hover:shadow-[0_10px_25px_-8px_rgba(209,35,42,0.5)]",
 };
 
 const sizes: Record<Size, string> = {

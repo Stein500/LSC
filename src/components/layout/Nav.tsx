@@ -148,7 +148,7 @@ export function Nav() {
             <Link
               to="/services"
               onClick={() => trackCtaClick("nav_commander")}
-              className="relative overflow-hidden px-5 py-2.5 rounded-full text-sm font-semibold text-[var(--color-ink)] bg-[linear-gradient(180deg,#D6FF4D_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] shadow-[0_8px_20px_-8px_rgba(143,191,0,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-8px_rgba(143,191,0,0.7)] hover:brightness-[1.04] active:translate-y-0 active:scale-[0.97] lsc-shine-sweep"
+              className="relative overflow-hidden px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-[linear-gradient(180deg,#E85454_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] !text-white shadow-[0_8px_20px_-8px_rgba(209,35,42,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-8px_rgba(209,35,42,0.7)] hover:brightness-[1.04] active:translate-y-0 active:scale-[0.97] lsc-shine-sweep"
             >
               Commander
             </Link>
@@ -217,7 +217,7 @@ export function Nav() {
               ))}
               <Link
                 to="/services"
-                className="mt-2 block text-center px-5 py-3 rounded-xl font-semibold bg-[linear-gradient(180deg,#D6FF4D_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] text-[var(--color-ink)]"
+                className="mt-2 block text-center px-5 py-3 rounded-xl font-semibold bg-[linear-gradient(180deg,#E85454_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] text-white"
               >
                 Commander
               </Link>

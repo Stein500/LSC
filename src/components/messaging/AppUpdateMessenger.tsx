@@ -124,7 +124,7 @@ export function AppUpdateMessenger() {
                 onClick={openExternally("app_update_toast")}
                 aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
                 className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide transition-transform hover:scale-105 active:scale-95"
-                style={{ background: "var(--color-citron)", color: "#0B0B12", boxShadow: "0 3px 10px rgba(143,191,0,0.45)" }}
+                style={{ background: "var(--color-citron)", color: "#FFFFFF", boxShadow: "0 3px 10px rgba(209,35,42,0.45)" }}
               >
                 <Smartphone className="w-3.5 h-3.5" strokeWidth={2.4} aria-hidden="true" />
                 Mettre à jour
@@ -157,7 +157,7 @@ export function AppUpdateMessenger() {
           exit={reduceMotion ? { opacity: 0 } : { y: 16, opacity: 0, scale: 0.8 }}
           transition={{ type: "spring", stiffness: 380, damping: 22 }}
           aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
-          className="fixed right-5 bottom-40 md:bottom-24 z-30 flex items-center gap-2 rounded-full pl-3 pr-4 py-2.5 text-[var(--color-citron)]"
+          className="fixed right-5 bottom-40 md:bottom-24 z-30 flex items-center gap-2 rounded-full pl-3 pr-2 py-2.5"
           style={{
             background: "radial-gradient(circle at 30% 25%, #2A2A36 0%, #0B0B12 70%)",
             border: "2px solid var(--color-citron)",
@@ -175,10 +175,22 @@ export function AppUpdateMessenger() {
               aria-hidden="true"
             />
           )}
-          <Smartphone className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
-          <span className="text-[11px] font-extrabold tracking-wide" style={{ fontFamily: "var(--font-display)" }}>
+          <Smartphone className="w-5 h-5 shrink-0" strokeWidth={2.2} style={{ color: "#FF6B6B" }} aria-hidden="true" />
+          <span className="text-[11px] font-extrabold tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>
             Mettre à jour l'app
           </span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dismissToast();
+            }}
+            aria-label="Fermer — ne plus rappeler pour cette visite"
+            className="shrink-0 rounded-full p-1 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <X className="w-3.5 h-3.5" aria-hidden="true" />
+          </button>
         </motion.a>
       )}
     </AnimatePresence>

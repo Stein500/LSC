@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#BFFF00" />
+    <meta name="theme-color" content="#5C2E0C" />
     <script>
       (function () {
         try {
@@ -14,7 +14,7 @@
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme === "light" ? "light" : "dark";
           var meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute("content", theme === "light" ? "#BFFF00" : theme === "amoled" ? "#000000" : "#101b24");
+          if (meta) meta.setAttribute("content", theme === "light" ? "#5C2E0C" : theme === "amoled" ? "#000000" : "#101b24");
         } catch (e) {}
       })();
     </script>

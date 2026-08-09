@@ -12,8 +12,8 @@
   --color-ink-soft: #3D2614;     /* brun très sombre — texte secondaire */
   --color-paper: #FFFFFF;        /* blanc — cartes, surfaces */
   --color-cream: #87CEEB;        /* bleu ciel — fond dominant */
-  --color-citron: #BFFF00;       /* vert citron — accent vif (texte noir) */
-  --color-citron-d: #8FBF00;     /* vert citron foncé — hover */
+  --color-citron: #D1232A;        /* rouge colombe — accent signature (texte blanc) */
+  --color-citron-d: #A31322;     /* rouge colombe foncé — hover */
   --color-orange: #8B4513;       /* marron — accent secondaire (texte blanc) */
   --color-orange-d: #5C2E0C;     /* marron foncé — hover */
   --color-line: #B0DDF0;         /* ligne douce teintée bleu ciel */
@@ -49,8 +49,8 @@ html[data-theme="dark"] {
   --color-ink-soft: #D8C8BB;
   --color-paper: #101A23;
   --color-cream: #101B24;
-  --color-citron: #BFFF00;
-  --color-citron-d: #A7E000;
+  --color-citron: #D1232A;
+  --color-citron-d: #A31322;
   --color-orange: #D99A66;
   --color-orange-d: #B87943;
   --color-line: #2A3F4D;
@@ -79,8 +79,8 @@ html[data-theme="amoled"] {
   --color-ink-soft: #CFCFCF;
   --color-paper: #070707;
   --color-cream: #000000;
-  --color-citron: #BFFF00;
-  --color-citron-d: #A7E000;
+  --color-citron: #D1232A;
+  --color-citron-d: #A31322;
   --color-orange: #D99A66;
   --color-orange-d: #B87943;
   --color-line: #262626;
@@ -362,8 +362,8 @@ html[data-theme="amoled"] :root {
 
 /* Selection */
 ::selection {
-  background-color: #BFFF00;
-  color: #000000;
+  background-color: #D1232A;
+  color: #FFFFFF;
 }
 
 /* Safe area iOS */
@@ -389,7 +389,7 @@ input, textarea, select, button {
 
 /* Focus visible propre */
 :focus-visible {
-  outline: 2px solid #BFFF00;
+  outline: 2px solid #D1232A;
   outline-offset: 2px;
   border-radius: 8px;
 }

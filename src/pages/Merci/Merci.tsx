@@ -34,7 +34,7 @@ export default function Merci() {
             className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
             style={{ backgroundColor: "var(--color-citron)" }}
           >
-            <CheckCircle2 className="w-12 h-12 text-[var(--color-ink)]" strokeWidth={2.5} />
+            <CheckCircle2 className="w-12 h-12 text-white" strokeWidth={2.5} />
           </motion.div>
 
           <motion.h1

@@ -31,7 +31,7 @@ export function WhatsAppFAB() {
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={() => setExpanded((v) => !v)}
-        className="fixed bottom-24 md:bottom-7 right-5 z-30 w-14 h-14 rounded-full bg-[#25D366] text-white shadow-xl flex items-center justify-center hover:scale-110 transition-transform animate-pulse-citron"
+        className="fixed bottom-24 md:bottom-7 right-5 z-30 w-14 h-14 rounded-full bg-[linear-gradient(135deg,#8B4515,#5C2E0C)] text-white shadow-xl flex items-center justify-center hover:scale-110 transition-transform animate-pulse-citron"
         aria-label="WhatsApp"
       >
         {expanded ? <X className="w-6 h-6" /> : <MessageCircle className="w-7 h-7" />}

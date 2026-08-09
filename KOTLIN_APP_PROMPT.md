@@ -28,8 +28,8 @@ Palette exacte :
 | Rôle | Hex |
 |---|---|
 | Bleu ciel (fond dominant) | `#87CEEB` |
-| vert citron (accent, boutons) | `#BFFF00` |
-| vert citron foncé (hover) | `#8FBF00` |
+| rouge colombe (accent, boutons) | `#D1232A` |
+| rouge colombe foncé (hover) | `#A31322` |
 | Marron (accent secondaire) | `#8B4513` |
 | Marron foncé | `#5C2E0C` |
 | Fil d'or (finitions) | `#C9A87C` |
@@ -37,7 +37,7 @@ Palette exacte :
 | Blanc | `#FFFFFF` |
 
 - Typographie système ok, mais les titres du splash utilisent une police *serif* élégante ; si tu en embarques une, prends **Playfair Display** (`res/font`).
-- Le **logo** est fourni dans le repo du site : `public/images/logo.webp` (télécharge-le depuis GitHub `Stein500/LSC`, branche `arena/019fce3a-lsc`, et mets-le dans `res/drawable`). Génère aussi l'**icône adaptive** de l'app à partir de ce logo (`mipmap`) : fond blanc `#FFFFFF` avec le logo centré à ~60%, monogramme rond avec bordure citron.
+- Le **logo** est fourni dans le repo du site : `public/images/logo.webp` (télécharge-le depuis GitHub `Stein500/LSC`, branche `arena/019fce3a-lsc`, et mets-le dans `res/drawable`). Génère aussi l'**icône adaptive** de l'app à partir de ce logo (`mipmap`) : fond blanc `#FFFFFF` avec le logo centré à ~60%, monogramme rond avec bordure rouge colombe.
 
 ### 3. Stack technique obligatoire
 
@@ -56,7 +56,7 @@ Animation du splash (reproduire l'esprit du site) :
 1. Fond sombre `#0B0B12` avec un léger dégradé, **deux panneaux rideaux** (deux View noires/bord doré) qui vont s'écarter.
 2. Au centre : le logo Colombes qui **scale depuis 0,8 → 1 avec fade**, sous le logo le mot **« Colombes »** en lettres qui montent une par une (fade+translate, spring, ~60 ms d'intervalle), en dégradé **fil d'or** (`#F4E3C9 → #C9A87C → #F4B860`) via `LinearGradient` sur le TextPaint (ou Spannable).
 3. Un **fil doré pointillé** (View custom ou ligne animée) qui se « coud » sous le mot (dashGap animé de gauche à droite), symbole ✂ optionnel qui glisse le long du fil.
-4. En bas : une **fine barre de progression** dégradé `#BFFF00 → #C9A87C → #8B4513` qui remplit sur la durée.
+4. En bas : une **fine barre de progression** dégradé `#D1232A → #C9A87C → #8B4513` qui remplit sur la durée.
 5. Ouverture : les deux rideaux partent `translationX → ±100%` avec easing `FastOutSlowIn`, crossfade 300 ms vers la WebView.
 6. **Skippable au tap** (tap = ouverture immédiate).
 7. Montrer le splash **à chaque cold start**, mais **jamais** au retour de background (state sauvegardée).
@@ -95,7 +95,7 @@ Animation du splash (reproduire l'esprit du site) :
 **Gestes natifs** :
 - Bouton **retour** : `webView.canGoBack() → goBack()` sinon `finish()`.
 - **Pull-to-refresh** : `SwipeRefreshLayout` autour de la WebView, teinté en `#8B4513`, désactivé automatiquement quand `scrollY > 0` (via `webView.setOnScrollChangedCallback` → `swipeRefresh.isEnabled = scrollY == 0`), et **déclenché seulement en haut de page**.
-- Barre de progression **fine (3 dp)** en haut, dégradé `#BFFF00 → #C9A87C → #8B4513`, avec animation de fondu à 100%.
+- Barre de progression **fine (3 dp)** en haut, dégradé `#D1232A → #C9A87C → #8B4513`, avec animation de fondu à 100%.
 - **Status bar** : couleur `#87CEEB` (bleu ciel) en mode clair avec icônes foncées (`isAppearanceLightStatusBars = true`) ; barre de navigation blanche.
 
 ### 6. État réseau & hors-connexion

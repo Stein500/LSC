@@ -182,7 +182,7 @@ export default function Home() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackWhatsapp("hero")}
-                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white bg-[#25D366] shadow-[0_12px_28px_-10px_rgba(37,211,102,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(37,211,102,0.7)] active:scale-[0.97]"
+                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white bg-[linear-gradient(135deg,#8B4515,#5C2E0C)] shadow-[0_12px_28px_-10px_rgba(92,46,12,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(92,46,12,0.7)] active:scale-[0.97]"
                     >
                       <MessageCircle className="w-4 h-4" /> WhatsApp
                     </a>
@@ -521,7 +521,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackWhatsapp("cta_final")}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white bg-[#25D366] shadow-[0_12px_28px_-10px_rgba(37,211,102,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(37,211,102,0.7)] active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white bg-[linear-gradient(135deg,#8B4515,#5C2E0C)] shadow-[0_12px_28px_-10px_rgba(92,46,12,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(92,46,12,0.7)] active:scale-[0.97]"
               >
                 <MessageCircle className="w-4 h-4" /> WhatsApp
               </a>
