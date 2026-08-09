@@ -26,21 +26,30 @@
         android:usesCleartextTraffic="false"
         android:theme="@style/Theme.Colombes">
 
-        <!-- MainActivity : activité unique (splash + moteur + hors-ligne) -->
+        <!-- HomeActivity : hub natif élégant (écran de démarrage) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
-            android:theme="@style/Theme.Colombes">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Colombes.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- MainActivity : WebView premium (site) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
+            android:theme="@style/Theme.Colombes" />
 
         <!-- FileProvider pour ouvrir les tickets PDF -->
         <provider

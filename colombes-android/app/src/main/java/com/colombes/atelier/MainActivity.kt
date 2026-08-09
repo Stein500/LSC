@@ -108,15 +108,27 @@ class MainActivity : AppCompatActivity() {
         registerNetworkMonitor()
         setupNotifications()
 
-        if (savedInstanceState == null) {
+        // Chemin de démarrage (depuis le hub natif) ou accueil
+        val startPath = intent.getStringExtra("START_PATH") ?: "/"
+        val fromHub = intent.hasExtra("START_PATH")
+
+        // Le splash ne se joue que depuis un démarrage à froid direct (pas depuis le hub)
+        if (savedInstanceState == null && !fromHub) {
             startSplash()
-            webView.loadHome()
+            loadPath(startPath)
         } else {
-            webView.loadHome()
+            // Cache l'overlay splash si présent
+            binding.splashOverlay.root.visibility = View.GONE
+            loadPath(startPath)
         }
 
         scheduleUpdateCheck()
         checkAppUpdate()
+    }
+
+    private fun loadPath(path: String) {
+        val url = AppConfig.HOME_URL.trimEnd('/') + path
+        webView.loadUrl(url)
     }
 
     // ------------------------------------------------------------------
