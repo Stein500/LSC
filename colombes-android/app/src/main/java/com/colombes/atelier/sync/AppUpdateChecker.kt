@@ -1,6 +1,7 @@
 package com.colombes.atelier.sync
 
 import com.colombes.atelier.BuildConfig
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -17,7 +18,7 @@ data class AppUpdate(
  */
 object AppUpdateChecker {
 
-    private const val RELEASES_API = "https://api.github.com/repos/Stein500/LSC/releases/latest"
+    private const val RELEASES_API = "https://api.github.com/repos/Stein500/LSC/releases"
 
     fun checkForUpdate(): AppUpdate? {
         return try {
@@ -26,30 +27,38 @@ object AppUpdateChecker {
             conn.readTimeout = 8000
             conn.setRequestProperty("Accept", "application/vnd.github+json")
             val text = conn.inputStream.bufferedReader().use { it.readText() }
-            val json = JSONObject(text)
+            val json = JSONArray(text)
 
-            val tag = json.optString("tag_name", "").removePrefix("v")
-            if (tag.isBlank()) return null
-            if (!isNewer(tag, BuildConfig.VERSION_NAME)) return null
-
-            val assets = json.optJSONArray("assets")
-            if (assets == null || assets.length() == 0) return null
-
-            // Choisit le premier asset APK (une seule release APK par tag)
-            var downloadUrl: String? = null
-            for (i in 0 until assets.length()) {
-                val a = assets.optJSONObject(i)
-                val name = a?.optString("name", "") ?: ""
-                if (name.endsWith(".apk")) {
-                    downloadUrl = a.optString("browser_download_url", "")
-                    break
+            // Cherche la plus haute version semver parmi toutes les releases
+            var bestTag: String? = null
+            var bestUrl: String? = null
+            for (i in 0 until json.length()) {
+                val rel = json.optJSONObject(i)
+                val tag = rel?.optString("tag_name", "")?.removePrefix("v") ?: ""
+                if (tag.isBlank()) continue
+                if (!isNewer(tag, BuildConfig.VERSION_NAME)) continue
+                val url = firstApkUrl(rel) ?: continue
+                if (bestTag == null || isNewer(tag, bestTag)) {
+                    bestTag = tag
+                    bestUrl = url
                 }
             }
-            val url = downloadUrl ?: return null
-            AppUpdate(tag, url)
+            bestUrl?.let { AppUpdate(bestTag!!, it) }
         } catch (_: Exception) {
             null
         }
+    }
+
+    private fun firstApkUrl(rel: JSONObject): String? {
+        val assets = rel.optJSONArray("assets") ?: return null
+        for (i in 0 until assets.length()) {
+            val a = assets.optJSONObject(i)
+            val name = a?.optString("name", "") ?: ""
+            if (name.endsWith(".apk")) {
+                return a.optString("browser_download_url", "")
+            }
+        }
+        return null
     }
 
     /** Compare deux versions semver "x.y.z". */

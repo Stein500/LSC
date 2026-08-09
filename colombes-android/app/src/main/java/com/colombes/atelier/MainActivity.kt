@@ -307,8 +307,8 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("✨ Nouvelle version disponible")
             .setMessage(
-                "Vous utilisez la version ${BuildConfig.VERSION_NAME}.\n" +
-                        "La version ${update.versionName} est disponible."
+                "Une nouvelle version (${update.versionName}) est disponible.\n" +
+                        "Améliorez votre expérience Colombes."
             )
             .setPositiveButton("Mettre à jour") { _, _ -> downloadAndInstall(update) }
             .setNegativeButton("Plus tard") { _, _ -> }
