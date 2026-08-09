@@ -21,10 +21,10 @@ android {
         applicationId = "com.colombes.atelier"
         minSdk = 24
         targetSdk = 35
-        versionCode = 5
-        versionName = "2.1.1"
+        versionCode = 6
+        versionName = "2.2.0"
 
-        // APK name: colombes-atelier-2.1.1-release.apk
+        // APK name: colombes-atelier-2.2.0-release.apk
         setProperty("archivesBaseName", "colombes-atelier-${versionName}")
 
         // Restreindre à l'architecture réelle du téléphone (arm64-v8a) →
