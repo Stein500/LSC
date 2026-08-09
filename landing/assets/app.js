@@ -259,8 +259,14 @@
      Jamais de rechargement pendant la lecture. Jamais de popup.
      ============================================================ */
   var MAJ_POLL_MS = 30000;
+  var MAJ_INACTIVITE_MS = 20000;
   var empreinte = null;
   var majPrete = false;
+  var derniereInteraction = Date.now();
+
+  ["scroll", "touchstart", "pointerdown", "keydown"].forEach(function (ev) {
+    window.addEventListener(ev, function () { derniereInteraction = Date.now(); }, { passive: true });
+  });
 
   function releverEmpreinte() {
     return fetch("version.json", { cache: "no-store" })
@@ -277,14 +283,26 @@
       });
   }
 
+  function essayerReload() {
+    try {
+      window.__lscReloadEssais = (window.__lscReloadEssais || 0) + 1;
+      location.reload();
+    } catch (e) {}
+  }
+
   function appliquerQuandDiscret() {
-    if (!majPrete || document.visibilityState !== "hidden") return;
+    if (!majPrete) return;
+    /* Discret = onglet en arrière-plan, OU écran visible mais inactif > 20 s */
+    var discret =
+      document.visibilityState === "hidden" ||
+      Date.now() - derniereInteraction > MAJ_INACTIVITE_MS;
+    if (!discret) return;
     try { sessionStorage.setItem("lsc_scroll", String(window.scrollY)); } catch (e) {}
-    location.reload();
+    essayerReload();
   }
 
   function verifierMiseAJour() {
-    if (document.visibilityState === "hidden") return; /* économie de data au repos */
+    if (document.visibilityState === "hidden") { appliquerQuandDiscret(); return; }
     releverEmpreinte().then(function (s) {
       if (s && empreinte && s !== empreinte) {
         majPrete = true;
@@ -308,5 +326,6 @@
 
   /* Crochets de test (inoffensifs en production) */
   window.__lscVerifier = verifierMiseAJour;
+  window.__lscForcerInactivite = function () { derniereInteraction = 0; };
   Object.defineProperty(window, "__lscMajPrete", { get: function () { return majPrete; } });
 })();

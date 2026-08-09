@@ -1,0 +1,16 @@
+{
+  "name": "lsc-dev-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tests automatisés de la landing (jsdom + rendus satori) — jamais déployés",
+  "type": "module",
+  "scripts": {
+    "test": "node test-js.mjs && node test-maj.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "jsdom": "^30.0.1",
+    "satori": "^0.29.0",
+    "satori-html": "^0.3.2"
+  }
+}

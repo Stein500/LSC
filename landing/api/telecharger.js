@@ -31,8 +31,8 @@ export default async function handler(req, res) {
     const apk = apks.find((a) => /arm64/i.test(a.name || "")) || apks[0];
     if (!apk || !apk.browser_download_url) throw new Error("aucun apk joint");
 
-    // 5 min de cache au CDN — les visiteurs suivants ne touchent pas l'API
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=60");
+    // 1 min de cache CDN au plus — une nouvelle release devient visible quasi aussitôt
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=30");
     res.setHeader("X-Robots-Tag", "noindex");
     return res.redirect(307, apk.browser_download_url);
   } catch (e) {
