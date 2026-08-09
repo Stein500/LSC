@@ -89,6 +89,12 @@ Tant qu'il n'y a ni miroir ni release, la page reste en mode « liste d'attente 
 
 ## 3. 🚀 Déployer sur Vercel (la première fois)
 
+### 🔄 Mises à jour automatiques — déjà intégrées
+- La page vérifie **`version.json` toutes les 30 s** (empreinte régénérée à chaque build).
+- Dès qu'un nouveau déploiement est détecté → rechargement **silencieux quand le visiteur change d'onglet** (position de lecture conservée, jamais en pleine lecture).
+- Caches : HTML & manifestes = toujours frais · CSS/JS = 5 min max · images = 1 h max avec revalidation.
+→ Tu poses un nouveau build, tout le monde l'a en une minute, sans lever le petit doigt.
+
 ### Option A — glisser-déposer (2 minutes)
 1. Va sur <https://vercel.com/new> → onglet **“Deploy”** par drag & drop
    (ou `vercel deploy` depuis ce dossier).

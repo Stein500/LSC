@@ -247,4 +247,66 @@
           appliquerSource({ mode: "page-github" });
         });
     });
+
+  /* ============================================================
+     5. MISE À JOUR SILENCIEUSE — toutes les 30 s, sans perturber
+     ------------------------------------------------------------
+     La page surveille version.json (empreinte régénérée à chaque
+     déploiement). Si elle change :
+       - l'onglet en arrière-plan → rechargement IMMÉDIAT discret ;
+       - l'onglet visible → on ATTEND que tu changes d'onglet,
+         puis rechargement silencieux (position de lecture gardée).
+     Jamais de rechargement pendant la lecture. Jamais de popup.
+     ============================================================ */
+  var MAJ_POLL_MS = 30000;
+  var empreinte = null;
+  var majPrete = false;
+
+  function releverEmpreinte() {
+    return fetch("version.json", { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("404");
+        return res.json();
+      })
+      .then(function (j) { return String(j.stamp || ""); })
+      .catch(function () {
+        /* Repli : l'ETag de l'accueil (change à chaque redéploiement) */
+        return fetch("/", { method: "HEAD", cache: "no-store" })
+          .then(function (res) { return res.headers.get("etag") || null; })
+          .catch(function () { return null; });
+      });
+  }
+
+  function appliquerQuandDiscret() {
+    if (!majPrete || document.visibilityState !== "hidden") return;
+    try { sessionStorage.setItem("lsc_scroll", String(window.scrollY)); } catch (e) {}
+    location.reload();
+  }
+
+  function verifierMiseAJour() {
+    if (document.visibilityState === "hidden") return; /* économie de data au repos */
+    releverEmpreinte().then(function (s) {
+      if (s && empreinte && s !== empreinte) {
+        majPrete = true;
+        appliquerQuandDiscret();
+      }
+    });
+  }
+
+  document.addEventListener("visibilitychange", appliquerQuandDiscret);
+  releverEmpreinte().then(function (s) { empreinte = s; });
+  window.setInterval(verifierMiseAJour, MAJ_POLL_MS);
+
+  /* Après un rechargement silencieux : rendre la place exacte de lecture */
+  try {
+    var retourY = sessionStorage.getItem("lsc_scroll");
+    if (retourY) {
+      sessionStorage.removeItem("lsc_scroll");
+      window.scrollTo(0, parseInt(retourY, 10) || 0);
+    }
+  } catch (e) {}
+
+  /* Crochets de test (inoffensifs en production) */
+  window.__lscVerifier = verifierMiseAJour;
+  Object.defineProperty(window, "__lscMajPrete", { get: function () { return majPrete; } });
 })();

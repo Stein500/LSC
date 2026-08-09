@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
-  "buildCommand": "node scripts/update-app-release.mjs || true",
+  "buildCommand": "node scripts/update-app-release.mjs || true; node scripts/stamp-version.mjs || true",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/telecharger", "destination": "/api/telecharger" }
@@ -18,11 +18,15 @@
     },
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
+      ]
     },
     {
       "source": "/images/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }
+      ]
     },
     {
       "source": "/downloads/(.*)",
@@ -33,6 +37,10 @@
     },
     {
       "source": "/app-release.json",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+    },
+    {
+      "source": "/version.json",
       "headers": [{ "key": "Cache-Control", "value": "no-store" }]
     }
   ]
