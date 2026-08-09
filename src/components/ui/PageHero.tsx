@@ -54,7 +54,17 @@ export function PageHero({
           animate={reduce ? undefined : { scale: 1.02 }}
           transition={{ duration: 8, ease: [0.16, 1, 0.3, 1] }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-cream)]/88 via-[var(--color-cream)]/72 to-[var(--color-cream)]/96" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-cream)]/92 via-[var(--color-cream)]/88 to-[var(--color-cream)]/98" />
+        {/* ☀️ Halo de lecture : zone claire garantie derrière titre & sous-titre,
+            quel que soit le navigateur ou la complexité de la photo. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 78% 60% at 50% 55%, rgba(135,206,235,0.94) 0%, rgba(135,206,235,0.72) 42%, rgba(135,206,235,0) 78%)",
+          }}
+          aria-hidden="true"
+        />
         <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
       </div>
 
@@ -104,7 +114,11 @@ export function PageHero({
         <div className="overflow-hidden mb-4">
           <motion.h1
             className="text-4xl md:text-6xl font-bold leading-[1.08]"
-            style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
+            style={{
+              fontFamily: "var(--font-display)",
+              color: "var(--color-ink)",
+              textShadow: "0 2px 26px rgba(224,244,255,0.95), 0 0 8px rgba(224,244,255,0.85)",
+            }}
             initial={reduce ? undefined : { y: "108%" }}
             animate={reduce ? undefined : { y: 0 }}
             transition={{ type: "spring", stiffness: 62, damping: 15, mass: 0.9, delay: 0.25 }}
@@ -115,7 +129,8 @@ export function PageHero({
 
         {subtitle && (
           <motion.p
-            className="text-lg md:text-xl text-[var(--color-ink-soft)] max-w-2xl mx-auto"
+            className="text-lg md:text-xl font-medium text-[var(--color-ink)] max-w-2xl mx-auto"
+            style={{ textShadow: "0 1px 16px rgba(224,244,255,0.95), 0 0 6px rgba(224,244,255,0.8)" }}
             initial={reduce ? undefined : { opacity: 0, y: 16, filter: "blur(4px)" }}
             animate={reduce ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}

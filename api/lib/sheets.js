@@ -345,9 +345,25 @@ export async function readRecords(tabName, headers) {
  * Écrit un event dans le bon onglet selon `sheet` ou `event`.
  * Crée l'onglet + en-têtes à la volée si besoin.
  */
+// Le front historique envoie des clés anglaises (PageViews, Clicks, Forms…)
+// ou les noms d'onglets accentués : on normalise tout vers les clés SHEETS.
+const SHEET_ALIASES = {
+  pageviews: "Visites", visites: "Visites",
+  clicks: "ContactsClics", contactsclics: "ContactsClics", clicscontacts: "ContactsClics",
+  forms: "Formulaires", formulaires: "Formulaires",
+  sessions: "Sessions",
+  messages: "Messages", contacts: "Messages",
+  formations: "Formations",
+  precommandes: "Precommandes",
+  scrolldepth: "Events", errors: "Events", events: "Events",
+};
+
 export async function logEvent(payload) {
   // 1. Détermine l'onglet cible — structure « qualité » (française & métier)
   let tabKey = payload.sheet;
+  if (tabKey && typeof tabKey === "string" && !SHEETS[tabKey]) {
+    tabKey = SHEET_ALIASES[normalizeKey(tabKey)] || tabKey;
+  }
   const ev = payload.event || "";
   if (!tabKey) {
     if (ev === "page_view" || ev === "section_view") {
@@ -447,12 +463,30 @@ const DASH_TABS = [
   { label: "Précommandes", tab: "Précommandes" },
 ];
 
-function q(tab) { return "'" + tab + "'!$D:$D"; }
-function cntToday(tab) { return "=COUNTIF(" + q(tab) + ",TEXT(TODAY(),\"YYYY-MM-DD\"))"; }
-function cntSince(tab, days) {
-  return "=COUNTIFS(" + q(tab) + ",\">=\"&TEXT(TODAY()-" + days + ",\"YYYY-MM-DD\"))";
+async function countTab(sheets, tabName) {
+  // Comptes calculés côté serveur : aucun risque de #ERROR! (locale FR du tableur)
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "'" + tabName + "'!D2:D10000",
+      valueRenderOption: "UNFORMATTED_VALUE",
+    });
+    const vals = (res.data.values || []).map(function (r) { return String(r[0] || "").trim(); }).filter(Boolean);
+    const today = new Date().toISOString().slice(0, 10);
+    const d6 = new Date(Date.now() - 6 * 864e5).toISOString().slice(0, 10);
+    const d29 = new Date(Date.now() - 29 * 864e5).toISOString().slice(0, 10);
+    let t = 0, s7 = 0, s30 = 0;
+    for (const v of vals) {
+      const iso = v.slice(0, 10);
+      if (iso === today) t++;
+      if (iso >= d6) s7++;
+      if (iso >= d29) s30++;
+    }
+    return { today: t, d7: s7, d30: s30, total: vals.length };
+  } catch (e) {
+    return { today: 0, d7: 0, d30: 0, total: 0 };
+  }
 }
-function cntTotal(tab) { return "=MAX(0,COUNTA('" + tab + "'!$A:$A)-1)"; }
 
 async function ensureDashboard(force = false) {
   if (!force && Date.now() - _dashboardAt < DASHBOARD_REFRESH_MS) return;
@@ -480,23 +514,27 @@ async function ensureDashboard(force = false) {
     hour: "2-digit", minute: "2-digit",
   }).format(new Date());
 
+  const counts = [];
+  for (const t of DASH_TABS) counts.push(await countTab(sheets, t.tab));
+  const sumDemandes = function (k) { return counts[3][k] + counts[4][k] + counts[5][k]; }; // Messages + Formations + Précommandes
+
   const rows = [
     ["✂️ LES SERVICES COLOMBES — TABLEAU DE BORD"],
     ["Mis à jour automatiquement — dernière écriture : " + stamp],
     [],
     ["Période"].concat(DASH_TABS.map(function (t) { return t.label; }), ["Demandes totales"]),
-    ["Aujourd'hui"].concat(DASH_TABS.map(function (t) { return cntToday(t.tab); }), ["=E5+F5+G5"]),
-    ["7 derniers jours"].concat(DASH_TABS.map(function (t) { return cntSince(t.tab, 6); }), ["=E6+F6+G6"]),
-    ["30 derniers jours"].concat(DASH_TABS.map(function (t) { return cntSince(t.tab, 29); }), ["=E7+F7+G7"]),
-    ["Total général"].concat(DASH_TABS.map(function (t) { return cntTotal(t.tab); }), ["=E8+F8+G8"]),
+    ["Aujourd'hui"].concat(counts.map(function (c) { return c.today; }), [sumDemandes("today")]),
+    ["7 derniers jours"].concat(counts.map(function (c) { return c.d7; }), [sumDemandes("d7")]),
+    ["30 derniers jours"].concat(counts.map(function (c) { return c.d30; }), [sumDemandes("d30")]),
+    ["Total général"].concat(counts.map(function (c) { return c.total; }), [sumDemandes("total")]),
     [],
-    ["💡 Les chiffres se recalculent seuls dès qu'une ligne arrive. Ne pas modifier les formules. Les détails vivent dans les onglets métier."],
+    ["💡 Chiffres recalculés par l'atelier à chaque activité (visites, clics, formulaires). Les détails vivent dans les onglets métier."],
   ];
 
   await sheets.spreadsheets.values.update({
     spreadsheetId: SPREADSHEET_ID,
     range: "'" + DASHBOARD_NAME + "'!A1:H10",
-    valueInputOption: "USER_ENTERED",
+    valueInputOption: "RAW",
     requestBody: { values: rows },
   });
 
