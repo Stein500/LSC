@@ -32,8 +32,26 @@ class HomeActivity : AppCompatActivity() {
             binding = ActivityHomeBinding.inflate(layoutInflater)
             setContentView(binding.root)
             setupCards()
+            setupBottomNav()
             splashBinding = null
         }, 2000)
+    }
+
+    private fun setupBottomNav() {
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_accueil -> true
+                R.id.nav_services -> {
+                    openSection("/services")
+                    true
+                }
+                R.id.nav_contact -> {
+                    openSection("/contact")
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun animateSplash() {

@@ -4,7 +4,7 @@
     android:height="40dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="@color/mauve_deep">
+    android:tint="@color/or">
     <path
         android:fillColor="#000000"
         android:pathData="M9.64,7.64A4,4 0 1,1 12,4.68a4,4 0 0,1 -2.36,2.96zM4,4a1.5,1.5 0 0,0 0,3l5.12,0l0.44,-0.66A5.98,5.98 0 0,1 9,4L4,4zM4,17a1.5,1.5 0 0,0 3,0l0,-5.12l-0.66,-0.44A5.98,5.98 0 0,1 4,11L4,17zM17.5,12a2.5,2.5 0 1,1 0,5a2.5,2.5 0 0,1 0,-5z" />

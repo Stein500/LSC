@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/linen"
-    android:fillViewport="true"
-    android:scrollbars="none">
+    android:orientation="vertical"
+    android:background="@color/linen">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="40dp">
+        android:paddingBottom="24dp">
 
         <!-- En-tête clair & élégant -->
         <LinearLayout
@@ -73,15 +80,15 @@
             android:textColor="@color/ink_soft"
             android:textSize="15sp" />
 
-        <!-- Image héro (créations) -->
+        <!-- Image héro (créations) pleine largeur -->
         <ImageView
             android:id="@+id/hero_image"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:layout_marginHorizontal="22dp"
+            android:layout_height="220dp"
             android:layout_marginTop="20dp"
             android:contentDescription="@string/app_name"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
+            android:background="@color/white"
             android:src="@drawable/header_colombes" />
 
         <!-- Section découverte -->
@@ -370,4 +377,17 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <!-- Barre de navigation élégante -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="12dp"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemTextColor="@color/bottom_nav_selector"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
+</LinearLayout>
