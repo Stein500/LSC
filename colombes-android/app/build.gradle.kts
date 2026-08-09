@@ -21,17 +21,11 @@ android {
         applicationId = "com.colombes.atelier"
         minSdk = 24
         targetSdk = 35
-        versionCode = 6
-        versionName = "2.2.0"
+        versionCode = 7
+        versionName = "2.3.0"
 
-        // APK name: colombes-atelier-2.2.0-release.apk
+        // APK name: colombes-atelier-2.3.0-release.apk
         setProperty("archivesBaseName", "colombes-atelier-${versionName}")
-
-        // Restreindre à l'architecture réelle du téléphone (arm64-v8a) →
-        // GeckoView n'inclut que le moteur arm64, APK nettement plus léger.
-        ndk {
-            abiFilters += listOf("arm64-v8a")
-        }
     }
 
     signingConfigs {
@@ -95,7 +89,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
 
-    // GeckoView — moteur embarqué, autonome (indépendant du WebView/Chrome système).
-    // 115 ESR = version stable Long-Term-Support, adaptée à l'embarquement.
-    implementation("org.mozilla.geckoview:geckoview:115.0.20230726201356")
+    // WebView système (léger, compatible tous téléphones) — pas de GeckoView.
 }

@@ -37,32 +37,31 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.colombes.atelier.databinding.ActivityMainBinding
-import com.colombes.atelier.engine.BridgeInstaller
-import com.colombes.atelier.engine.ColombesGeckoView
-import com.colombes.atelier.engine.GeckoJsBridge
-import com.colombes.atelier.engine.GeckoRuntimeHolder
 import com.colombes.atelier.notifications.NotificationHelper
 import com.colombes.atelier.notifications.NotificationScheduler
 import com.colombes.atelier.offline.OfflineFragment
 import com.colombes.atelier.sync.AppUpdate
 import com.colombes.atelier.sync.AppUpdateChecker
 import com.colombes.atelier.sync.UpdateWorker
+import com.colombes.atelier.web.ColombesJsBridge
+import com.colombes.atelier.web.ColombesWebChromeClient
+import com.colombes.atelier.web.ColombesWebView
+import com.colombes.atelier.web.ColombesWebViewClient
+import com.colombes.atelier.web.DownloadHelper
 import java.io.File
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
 /**
- * Activité unique « Colombes » basée sur **GeckoView** (moteur embarqué,
- * autonome, indépendant du WebView/Chrome système).
- *
- * Splash cinématique synchronisé : l'overlay reste affiché jusqu'au rendu
- * réel de la page d'accueil, puis ouvre les rideaux — aucune impression de
- * « site qui charge ».
+ * Activité unique « Colombes » — WebView système « premium ».
+ * Léger, fiable, compatible tous téléphones. Gère splash synchronisé,
+ * MAJ auto, tickets PDF, notifications, clavier, hors-ligne.
  */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var gecko: ColombesGeckoView
+    private lateinit var chromeClient: ColombesWebChromeClient
+    private lateinit var webView: ColombesWebView
     private var offlineFragment: OfflineFragment? = null
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
@@ -71,7 +70,6 @@ class MainActivity : AppCompatActivity() {
     private var splashOpened = false
     private var pageReady = false
     private var minSplashElapsed = false
-    private var splashForceOpen = false
     private val curtainInterpolator = PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f)
     private val goldRamp = intArrayOf(
         Color.parseColor("#F4E3C9"), Color.parseColor("#F0D9B0"),
@@ -83,26 +81,22 @@ class MainActivity : AppCompatActivity() {
     private val notificationPermissionLauncher: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
-    private var pendingGrant: (() -> Unit)? = null
-    private var pendingReject: (() -> Unit)? = null
-    private val androidPermissionsLauncher: ActivityResultLauncher<Array<String>> =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-            val allGranted = results.values.all { it }
-            if (allGranted) pendingGrant?.invoke() else pendingReject?.invoke()
-            pendingGrant = null
-            pendingReject = null
-        }
-
     private val fileChooserLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val uri = when {
-                result.resultCode == RESULT_OK && result.data?.clipData != null ->
-                    result.data!!.clipData!!.getItemAt(0).uri
-                result.resultCode == RESULT_OK && result.data?.data != null -> result.data!!.data
-                else -> null
+            val callback = chromeClient.filePathCallback
+            if (callback != null) {
+                val data = result.data
+                val uris: Array<Uri>? = when {
+                    result.resultCode == RESULT_OK && data?.clipData != null -> {
+                        val clip = data.clipData!!
+                        Array(clip.itemCount) { i -> clip.getItemAt(i).uri }
+                    }
+                    result.resultCode == RESULT_OK && data?.data != null -> arrayOf(data.data!!)
+                    else -> null
+                }
+                callback.onReceiveValue(uris)
+                chromeClient.filePathCallback = null
             }
-            gecko.filePromptResult?.complete(uri)
-            gecko.filePromptResult = null
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,18 +104,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        GeckoRuntimeHolder.ensure(this)
         setupEngine()
-        BridgeInstaller.install(this, GeckoJsBridge(this))
-
         registerNetworkMonitor()
         setupNotifications()
 
         if (savedInstanceState == null) {
             startSplash()
-            gecko.loadHome()
+            webView.loadHome()
         } else {
-            gecko.loadHome()
+            webView.loadHome()
         }
 
         scheduleUpdateCheck()
@@ -129,108 +120,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ------------------------------------------------------------------
-    // Mise à jour de l'application (GitHub Releases)
+    // Moteur (WebView premium)
     // ------------------------------------------------------------------
-    /** Vérifie en arrière-plan si une nouvelle version existe, puis propose la MAJ. */
-    private fun checkAppUpdate() {
-        Thread {
-            val update = AppUpdateChecker.checkForUpdate()
-            runOnUiThread {
-                if (update != null) promptUpdate(update)
-            }
-        }.start()
-    }
-
-    /** Dialogue discret, affiché une seule fois par version. */
-    private fun promptUpdate(update: AppUpdate) {
-        val prefs = getSharedPreferences("colombes_prefs", MODE_PRIVATE)
-        if (prefs.getString("ignored_version", null) == update.versionName) return
-
-        AlertDialog.Builder(this)
-            .setTitle("✨ Nouvelle version disponible")
-            .setMessage(
-                "Vous utilisez la version ${BuildConfig.VERSION_NAME}.\n" +
-                        "La version ${update.versionName} est disponible."
-            )
-            .setPositiveButton("Mettre à jour") { _, _ -> downloadAndInstall(update) }
-            .setNegativeButton("Plus tard") { _, _ -> /* silencieux */ }
-            .setNeutralButton("Ignorer cette version") { _, _ ->
-                prefs.edit().putString("ignored_version", update.versionName).apply()
-            }
-            .setCancelable(true)
-            .show()
-    }
-
-    /** Télécharge l'APK puis lance l'installation. */
-    private fun downloadAndInstall(update: AppUpdate) {
-        Toast.makeText(this, "Téléchargement de la mise à jour…", Toast.LENGTH_SHORT).show()
-        Thread {
-            try {
-                val conn = URL(update.downloadUrl).openConnection()
-                conn.connect()
-                val input = conn.getInputStream()
-                val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
-                dir.mkdirs()
-                val file = File(dir, "colombes-atelier-${update.versionName}.apk")
-                file.outputStream().use { out -> input.copyTo(out) }
-                runOnUiThread { installApk(file) }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(this, "Téléchargement impossible. Réessaie plus tard.", Toast.LENGTH_LONG).show()
-                }
-            }
-        }.start()
-    }
-
-    /** Lance l'installateur système sur l'APK téléchargé. */
-    private fun installApk(file: File) {
-        try {
-            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "application/vnd.android.package-archive")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Impossible d'ouvrir l'installation.", Toast.LENGTH_LONG).show()
-        }
-    }
-
     private fun setupEngine() {
-        gecko = ColombesGeckoView(this)
-        binding.engineContainer.addView(
-            gecko,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
+        webView = binding.webView
+        webView.isFocusable = true
+        webView.isFocusableInTouchMode = true
+        webView.requestFocus()
+
+        chromeClient = ColombesWebChromeClient(
+            onProgressChanged = { progress -> updateProgress(progress) },
+            onFileChooser = { acceptType -> openFileChooser(acceptType) }
+        )
+        val webViewClient = ColombesWebViewClient(
+            context = this,
+            onMainError = { showOffline() },
+            onHomeLoaded = { onHomePageReady() }
         )
 
-        // Focus pour que le clavier s'affiche dans les champs des formulaires
-        gecko.isFocusable = true
-        gecko.isFocusableInTouchMode = true
+        webView.webChromeClient = chromeClient
+        webView.webViewClient = webViewClient
 
-        gecko.onProgress = { progress -> updateProgress(progress) }
-        gecko.onHomeLoaded = { onHomePageReady() }
-        gecko.onMainError = { showOffline() }
-        gecko.onScrollYChanged = { scrollY -> binding.swipeRefresh.isEnabled = scrollY == 0 }
-        gecko.onFileChooser = { accept -> openFileChooser(accept) }
-        gecko.onAndroidPermissionsRequest = { permissions, grant, reject ->
-            pendingGrant = grant
-            pendingReject = reject
-            androidPermissionsLauncher.launch(permissions)
-        }
+        // Pont JS (site peut détecter in-app + télécharger PDF + notifier)
+        webView.addJavascriptInterface(ColombesJsBridge(this), "ColombesApp")
 
-        gecko.setup(GeckoRuntimeHolder.runtime)
-        gecko.requestFocus()
-
+        // Pull-to-refresh (en haut de page uniquement)
         binding.swipeRefresh.setColorSchemeResources(R.color.marron)
-        binding.swipeRefresh.setOnRefreshListener { gecko.reload() }
+        binding.swipeRefresh.setOnRefreshListener { webView.reload() }
+        webView.onScrollYChanged = { scrollY -> binding.swipeRefresh.isEnabled = scrollY == 0 }
+
+        // Téléchargement des tickets PDF
+        webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->
+            if (url.startsWith("data:application/pdf;base64,")) {
+                val b64 = url.removePrefix("data:application/pdf;base64,")
+                DownloadHelper.saveBase64Pdf(this, b64, "ticket.pdf")
+            } else {
+                DownloadHelper.enqueueDownload(this, url, userAgent, contentDisposition, mimetype)
+            }
+        }
     }
 
     // ------------------------------------------------------------------
-    // Splash cinématique synchronisé
+    // Splash cinématique synchronisé (amélioré)
     // ------------------------------------------------------------------
     private fun startSplash() {
         val overlay = binding.splashOverlay.root
@@ -251,17 +182,13 @@ class MainActivity : AppCompatActivity() {
         handler.postDelayed({
             minSplashElapsed = true
             maybeOpenSplash()
-        }, 3200)
+        }, 2600)
 
-        // Garde-temps max : si la page n'est toujours pas rendue (hors connexion
-        // ou lenteur), on affiche l'écran hors-connexion au lieu d'un écran blanc.
+        // Garde-temps : si page pas prête, afficher hors-ligne au lieu du blanc
         handler.postDelayed({
-            if (!pageReady && !splashOpened) {
-                showOffline()
-            }
-            splashForceOpen = true
-            maybeOpenSplash()
-        }, 6000)
+            if (!pageReady && !splashOpened) showOffline()
+            openSplash()
+        }, 5000)
     }
 
     private fun setupCurtains() {
@@ -314,7 +241,7 @@ class MainActivity : AppCompatActivity() {
         binding.splashOverlay.progressBar.pivotX = 0f
         binding.splashOverlay.progressBar.scaleX = 0f
         binding.splashOverlay.progressBar.animate()
-            .scaleX(1f).setDuration(3000).setInterpolator(LinearInterpolator()).start()
+            .scaleX(1f).setDuration(2400).setInterpolator(LinearInterpolator()).start()
     }
 
     private fun showSplashStatus(text: String) {
@@ -331,7 +258,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun maybeOpenSplash() {
         if (splashOpened) return
-        if (splashForceOpen || (minSplashElapsed && pageReady)) openSplash()
+        if (minSplashElapsed && pageReady) openSplash()
     }
 
     private fun openSplash() {
@@ -347,6 +274,71 @@ class MainActivity : AppCompatActivity() {
         handler.postDelayed({
             binding.splashOverlay.root.visibility = View.GONE
         }, 560)
+    }
+
+    // ------------------------------------------------------------------
+    // MAJ application (GitHub Releases)
+    // ------------------------------------------------------------------
+    private fun checkAppUpdate() {
+        Thread {
+            val update = AppUpdateChecker.checkForUpdate()
+            runOnUiThread {
+                if (update != null) promptUpdate(update)
+            }
+        }.start()
+    }
+
+    private fun promptUpdate(update: AppUpdate) {
+        val prefs = getSharedPreferences("colombes_prefs", MODE_PRIVATE)
+        if (prefs.getString("ignored_version", null) == update.versionName) return
+
+        AlertDialog.Builder(this)
+            .setTitle("✨ Nouvelle version disponible")
+            .setMessage(
+                "Vous utilisez la version ${BuildConfig.VERSION_NAME}.\n" +
+                        "La version ${update.versionName} est disponible."
+            )
+            .setPositiveButton("Mettre à jour") { _, _ -> downloadAndInstall(update) }
+            .setNegativeButton("Plus tard") { _, _ -> }
+            .setNeutralButton("Ignorer cette version") { _, _ ->
+                prefs.edit().putString("ignored_version", update.versionName).apply()
+            }
+            .setCancelable(true)
+            .show()
+    }
+
+    private fun downloadAndInstall(update: AppUpdate) {
+        Toast.makeText(this, "Téléchargement de la mise à jour…", Toast.LENGTH_SHORT).show()
+        Thread {
+            try {
+                val conn = URL(update.downloadUrl).openConnection()
+                conn.connect()
+                val input = conn.getInputStream()
+                val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
+                dir.mkdirs()
+                val file = File(dir, "colombes-atelier-${update.versionName}.apk")
+                file.outputStream().use { out -> input.copyTo(out) }
+                runOnUiThread { installApk(file) }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, "Téléchargement impossible. Réessaie plus tard.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }.start()
+    }
+
+    private fun installApk(file: File) {
+        try {
+            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Impossible d'ouvrir l'installation.", Toast.LENGTH_LONG).show()
+        }
     }
 
     // ------------------------------------------------------------------
@@ -369,8 +361,8 @@ class MainActivity : AppCompatActivity() {
         try {
             fileChooserLauncher.launch(intent)
         } catch (e: ActivityNotFoundException) {
-            gecko.filePromptResult?.complete(null)
-            gecko.filePromptResult = null
+            chromeClient.filePathCallback?.onReceiveValue(null)
+            chromeClient.filePathCallback = null
         }
     }
 
@@ -419,7 +411,7 @@ class MainActivity : AppCompatActivity() {
             binding.fragmentContainer.visibility = View.VISIBLE
             if (offlineFragment == null) {
                 offlineFragment = OfflineFragment().apply {
-                    onRetry = { if (isOnline()) { hideOffline(); gecko.loadHome() } }
+                    onRetry = { if (isOnline()) { hideOffline(); webView.loadHome() } }
                 }
             }
             if (offlineFragment?.isAdded != true) {
@@ -451,7 +443,7 @@ class MainActivity : AppCompatActivity() {
             override fun onAvailable(network: Network) {
                 runOnUiThread {
                     if (binding.fragmentContainer.visibility == View.VISIBLE) {
-                        hideOffline(); gecko.loadHome()
+                        hideOffline(); webView.loadHome()
                     }
                 }
             }
@@ -463,7 +455,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         when {
             binding.fragmentContainer.visibility == View.VISIBLE -> finish()
-            gecko.canGoBack() -> gecko.goBack()
+            webView.canGoBack() -> webView.goBack()
             else -> finish()
         }
     }
@@ -472,6 +464,7 @@ class MainActivity : AppCompatActivity() {
         networkCallback?.let {
             runCatching { getSystemService(ConnectivityManager::class.java)?.unregisterNetworkCallback(it) }
         }
+        webView.removeJavascriptInterface("ColombesApp")
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }

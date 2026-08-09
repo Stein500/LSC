@@ -3,9 +3,7 @@ package com.colombes.atelier.web
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
@@ -35,33 +33,20 @@ class ColombesWebViewClient(
         val uri = Uri.parse(url)
         val scheme = uri.scheme?.lowercase() ?: ""
 
-        // Navigation interne : même host HTTPS -> charger dans la WebView
         if (scheme == "https" || scheme == "http") {
             if (uri.host == AppConfig.HOME_HOST) return false
-
-            // WhatsApp
             if (url.contains("wa.me") || url.contains("whatsapp.com")) {
-                openExternal(url)
-                return true
+                openExternal(url); return true
             }
-            // Google Maps
             if (uri.host?.contains("maps.google") == true || url.contains("maps.app.goo.gl")) {
-                openExternal(url)
-                return true
+                openExternal(url); return true
             }
-            // Autre lien https externe -> navigateur / app native
-            openExternal(url)
-            return true
+            openExternal(url); return true
         }
 
         return when (scheme) {
-            "tel", "mailto", "sms", "geo", "whatsapp" -> {
-                openExternal(url)
-                true
-            }
-            "intent" -> {
-                handleIntent(uri)
-                true
+            "tel", "mailto", "sms", "geo", "whatsapp", "intent" -> {
+                openExternal(url); true
             }
             else -> false
         }
@@ -72,24 +57,8 @@ class ColombesWebViewClient(
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             context.startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            // Pas de résolveur -> ouvrir dans le navigateur par défaut
-            runCatching {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-            }
-        }
-    }
-
-    private fun handleIntent(uri: Uri) {
-        try {
-            val intent = Intent.parseUri(uri.toString(), Intent.URI_INTENT_SCHEME)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-        } catch (e: Exception) {
-            // Fallback Play Store ou navigateur
-            val fallback = uri.getQueryParameter("url")
-                ?: uri.getQueryParameter("browser_fallback_url")
-            if (fallback != null) openExternal(fallback)
+        } catch (_: ActivityNotFoundException) {
+            runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
         }
     }
 
@@ -97,26 +66,19 @@ class ColombesWebViewClient(
         super.onPageFinished(view, url)
         // Injecte l'observateur d'événements (formulaires, appels, WhatsApp)
         view?.let { JsInjector.inject(it, url) }
-        // Notifie que la page d'accueil est prête (synchro du splash)
+        // Synchro splash : notifie quand la page d'accueil est rendue
         if (onHomeLoaded != null && url?.startsWith(AppConfig.HOME_URL) == true) {
             onHomeLoaded()
         }
     }
 
-    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-        super.onPageStarted(view, url, favicon)
-    }
-
     override fun onReceivedError(
         view: WebView?,
         request: WebResourceRequest?,
-        error: WebResourceError?
+        error: android.webkit.WebResourceError?
     ) {
         super.onReceivedError(view, request, error)
-        // Erreur sur le document principal -> écran hors-connexion (jamais d'URL affichée)
-        if (request?.isForMainFrame == true) {
-            onMainError()
-        }
+        if (request?.isForMainFrame == true) onMainError()
     }
 
     override fun onReceivedHttpError(
@@ -125,11 +87,8 @@ class ColombesWebViewClient(
         errorResponse: WebResourceResponse?
     ) {
         super.onReceivedHttpError(view, request, errorResponse)
-        if (request?.isForMainFrame == true) {
-            val code = errorResponse?.statusCode ?: 0
-            if (code >= 400) {
-                onMainError()
-            }
+        if (request?.isForMainFrame == true && (errorResponse?.statusCode ?: 0) >= 400) {
+            onMainError()
         }
     }
 }

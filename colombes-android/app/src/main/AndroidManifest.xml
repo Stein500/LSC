@@ -12,10 +12,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <!-- Caméra / micro pour les permissions web (GeckoView) -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <!-- Permet d'installer la nouvelle version téléchargée depuis GitHub -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 

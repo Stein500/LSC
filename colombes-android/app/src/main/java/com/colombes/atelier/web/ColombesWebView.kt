@@ -2,7 +2,6 @@ package com.colombes.atelier.web
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.webkit.WebSettings
@@ -10,7 +9,8 @@ import android.webkit.WebView
 import com.colombes.atelier.AppConfig
 
 /**
- * WebView « ultra » : réglages centralisés pour une expérience fluide et premium.
+ * WebView « premium » : réglages centralisés pour une expérience fluide et native.
+ * Léger et fiable, compatible avec tous les téléphones.
  */
 @SuppressLint("SetJavaScriptEnabled")
 class ColombesWebView @JvmOverloads constructor(
@@ -43,15 +43,12 @@ class ColombesWebView @JvmOverloads constructor(
             setSupportMultipleWindows(false)
             allowFileAccess = false
             allowContentAccess = false
+            textZoom = 100
         }
 
-        // Pas de débuggage WebView en release
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(false)
-        }
-
-        // Fluidité matérielle
+        // Fluidité
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        overScrollMode = WebView.OVER_SCROLL_IF_CONTENT_SCROLLS
     }
 
     /** Charge la page d'accueil. */
