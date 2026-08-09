@@ -21,19 +21,6 @@
     }
   };
 
-  // --- Évite le "double splash" ---
-  (function maskSiteSplash() {
-    try {
-      var style = document.createElement('style');
-      style.id = 'colombes-mask-splash';
-      style.textContent =
-        'div[aria-modal="true"],' +
-        'div[aria-label="Ouverture de l\'atelier"]' +
-        '{ display:none !important; visibility:hidden !important; }';
-      (document.head || document.documentElement).appendChild(style);
-    } catch (e) {}
-  })();
-
   function notify(title, body) {
     try { window.ColombesApp.notify(title, body); } catch (e) {}
   }

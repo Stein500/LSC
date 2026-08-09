@@ -55,9 +55,8 @@ export function SplashScreen() {
     return () => window.removeEventListener("keydown", onKey);
   }, [visible, close]);
 
-  // Dans l'app Android Kotlin (bridge ColombesApp), l'app a SON propre
-  // splash natif — le splash web se tait pour ne pas doubler l'entrée.
-  if (reduceMotion || (typeof window !== "undefined" && (window as any).ColombesApp?.isApp?.())) {
+  // reduced-motion : jamais affiché (accessibilité).
+  if (reduceMotion) {
     return null;
   }
 
