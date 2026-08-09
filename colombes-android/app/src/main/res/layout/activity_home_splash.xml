@@ -20,8 +20,8 @@
         android:layout_marginTop="220dp"
         android:fontFamily="serif"
         android:text="@string/app_name"
-        android:textColor="@color/gold_clair"
-        android:textSize="32sp"
+        android:textColor="@color/marron_dark"
+        android:textSize="34sp"
         android:textStyle="bold" />
 
     <TextView
@@ -31,7 +31,7 @@
         android:layout_marginBottom="40dp"
         android:fontFamily="sans-serif"
         android:text="@string/slogan"
-        android:textColor="#B3FFFFFF"
+        android:textColor="@color/or"
         android:textSize="13sp"
         android:textStyle="italic" />
 
