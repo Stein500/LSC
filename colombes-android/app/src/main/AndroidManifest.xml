@@ -16,6 +16,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Permet d'installer la nouvelle version téléchargée depuis GitHub -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
