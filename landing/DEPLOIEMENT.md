@@ -25,31 +25,42 @@ landing/
 
 ---
 
-## 2. 📦 Publier (ou mettre à jour) l'APK — à chaque fois
+## 2. 📦 Publier l'APK — le flux officiel : **GitHub Releases**
 
-1. Dépose **n'importe quel APK, avec n'importe quel nom** dans `downloads/`.
-   → Mets la version dans le nom pour un affichage élégant : **`colombes-1.0.0.apk`**
-   affichera « v1.0.0 · 23 Mo ». Sans numéro (`colombes.apk`), la page affiche
-   simplement « 23 Mo · APK Android ». *(Un seul APK à la fois — retire l'ancien.)*
-2. Régénère le manifeste :
+**Le site n'héberge plus l'APK : il lit ta dernière release GitHub en direct.**
+Publier une nouvelle version = créer la release, **sans toucher au site ni redéployer** :
 
-   ```bash
-   node scripts/update-app-release.mjs
-   ```
+```bash
+# depuis n'importe où (Termux compris, si gh est installé)
+gh release create v2.1.0 colombes-atelier-2.1.0.apk \
+  --repo Stein500/LSC \
+  --title "Colombes v2.1.0" \
+  --notes "Nouveautés de la version 2.1.0"
+```
 
-3. Redéploie (voir §3). **Tu ne touches JAMAIS au code** : la page lit
-   `app-release.json` et adapte boutons, version, taille et date toute seule.
+ou via le web : github.com/Stein500/LSC → **Releases** → *Draft a new release* →
+tag `v2.1.0` → glisse l'APK → *Publish release*.
 
-> 💡 **Astuce Vercel :** le `vercel.json` fourni exécute le script tout seul au
-> build (`buildCommand`). Si tu déploies via Git, tu n'as donc **rien à lancer
-> à la main** : push l'APK, Vercel fait le reste.
+La page affiche alors automatiquement, à chaque visite (API publique GitHub) :
 
-> ⚠️ **GitHub Releases :** si tu veux aussi un lien GitHub en plus de l'APK
-> direct, utilise un **dépôt dédié, public, qui ne contient QUE des releases**
-> (aucun code). Ajoute son URL dans `app-release.json` → champ
-> `"githubReleases": "https://github.com/…/releases"`.
-> Un dépôt **privé** ne marchera pas (liens protégés) ; un dépôt **public avec
-> ton code** exposerait tout ton code source. D'où : APK direct sur Vercel = le plus sûr.
+> **« Télécharger l'app Colombes — v2.1.0 · 6,7 Mo · APK Android »**
+> + pastille citron version/taille + date de mise en ligne + compteur de téléchargements
+
+⚠️ Points clés :
+- la release responsable est celle marquée **« Latest »** (la plus récente publiée) ;
+- le fichier doit finir par **`.apk`** ; la version est lue dans le tag (`v2.1.0`) ou le nom ;
+- le dépôt étant **public**, la page de release montre aussi le code — c'est assumé.
+  Si un jour le code doit devenir privé → déplace les releases dans un dépôt
+  public dédié (ex : `Stein500/colombes-app-releases`) et change `GH_REPO`
+  en haut de `assets/app.js` ;
+- si l'API GitHub est momentanément limitée (60 requêtes/h/IP), les boutons
+  basculent proprement vers la page `releases/latest` — jamais de lien mort.
+
+### Option miroir local (prioritaire si utilisée)
+Un APK déposé dans `downloads/` + `node scripts/update-app-release.mjs`
+prend le **dessus** sur GitHub (utile pour servir depuis ton domaine).
+Sinon, laisse `downloads/` vide : c'est GitHub qui parle.
+Tant qu'il n'y a ni miroir ni release, la page reste en mode « liste d'attente » WhatsApp.
 
 ---
 
