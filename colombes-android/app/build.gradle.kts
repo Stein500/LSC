@@ -3,6 +3,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Lecture du keystore de signature (fichier NON commité, à créer en local/Codespace)
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = java.util.Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
+}
+
 android {
     namespace = "com.colombes.atelier"
     compileSdk = 35
@@ -11,16 +19,27 @@ android {
         applicationId = "com.colombes.atelier"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "2.1.0"
+        versionCode = 5
+        versionName = "2.1.1"
 
-        // APK name: colombes-atelier-2.1.0-debug.apk / -release.apk
+        // APK name: colombes-atelier-2.1.1-release.apk
         setProperty("archivesBaseName", "colombes-atelier-${versionName}")
 
         // Restreindre à l'architecture réelle du téléphone (arm64-v8a) →
         // GeckoView n'inclut que le moteur arm64, APK nettement plus léger.
         ndk {
             abiFilters += listOf("arm64-v8a")
+        }
+    }
+
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+            }
         }
     }
 
@@ -32,6 +51,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Signé avec le keystore (sinon non signé)
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                null
+            }
         }
     }
 
