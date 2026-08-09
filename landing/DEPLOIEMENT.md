@@ -56,6 +56,29 @@ La page affiche alors automatiquement, à chaque visite (API publique GitHub) :
 - si l'API GitHub est momentanément limitée (60 requêtes/h/IP), les boutons
   basculent proprement vers la page `releases/latest` — jamais de lien mort.
 
+### 🔒 Lien de téléchargement jamais en clair
+Les boutons pointent tous vers **`https://lesservicescolombes.vercel.app/telecharger`** :
+une mini-fonction Vercel (`api/telecharger.js`, incluse dans le ZIP) résout la
+dernière release **côté serveur** et redirige (307). L'URL GitHub n'apparaît ni
+dans la page, ni sur aucun bouton.
+*Optimisation si le trafic monte : ajoute `GH_TOKEN` (token lecture seule) dans
+les Variables d'environnement Vercel → 5 000 requêtes/h au lieu de 60.*
+
+### 🏷 Nom de fichier propre (légalité des noms sur GitHub)
+Le site **affiche** toujours des noms propres (« Colombes v2.x · taille »), mais
+le nom du fichier **téléchargé** = le nom déposé sur GitHub (impossible de le
+renommer en vol sans faire transiter des centaines de Mo par Vercel).
+👉 Publie donc avec un nom propre dès le départ — Termux :
+
+```bash
+V=2.2.0
+cp /chemin/colombes-atelier-arm64-v8a-debug.apk colombes-$V.apk
+gh release create "v$V" "colombes-$V.apk" \
+  --repo Stein500/LSC --title "Colombes v$V" --notes "Nouveautés…"
+# plusieurs architectures ? le site choisit automatiquement « arm64 » ;
+# nomme-les colombes-2.2.0.apk (universel, optionnel) et colombes-2.2.0-arm64-v8a.apk
+```
+
 ### Option miroir local (prioritaire si utilisée)
 Un APK déposé dans `downloads/` + `node scripts/update-app-release.mjs`
 prend le **dessus** sur GitHub (utile pour servir depuis ton domaine).

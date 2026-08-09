@@ -4,6 +4,9 @@
   "trailingSlash": false,
   "buildCommand": "node scripts/update-app-release.mjs || true",
   "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/telecharger", "destination": "/api/telecharger" }
+  ],
   "headers": [
     {
       "source": "/",

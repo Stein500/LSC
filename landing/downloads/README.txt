@@ -6,6 +6,8 @@
    (Stein500/LSC → Releases → « Latest »). La page va lire la
    dernière release toute seule à chaque visite : version,
    taille, date, compteur de téléchargements. RIEN à faire ici.
+   Les boutons pointent vers /telecharger (résolution serveur) :
+   l'URL GitHub n'apparaît jamais sur la page.
 
 🪞 CE DOSSIER = MIROIR LOCAL (OPTIONNEL)
    Utile UNIQUEMENT si tu veux que le téléchargement soit servi

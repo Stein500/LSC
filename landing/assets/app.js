@@ -100,9 +100,19 @@
       btn.removeAttribute("download");
 
       if (src.mode === "fichier") {
-        /* ===== Téléchargement direct (miroir local OU release GitHub) ===== */
-        btn.href = src.url;
-        btn.setAttribute("target", "_blank");
+        /* ===== Téléchargement direct =====
+           - miroir local : vrai fichier + joli nom imposé (même origine)
+           - GitHub : l'URL n'apparaît JAMAIS — on passe par notre
+             adresse propre "/telecharger" (résolue côté serveur) */
+        var nomPropre = src.version ? "Colombes-v" + src.version + ".apk" : "Colombes.apk";
+        if (src.local) {
+          btn.href = src.url;
+          btn.setAttribute("download", nomPropre);
+        } else {
+          btn.href = "/telecharger";
+          btn.removeAttribute("download");
+        }
+        btn.removeAttribute("target");
         btn.setAttribute("rel", "noopener");
         btn.setAttribute(
           "aria-label",
@@ -187,6 +197,7 @@
       if (local && local.available && local.file) {
         appliquerSource({
           mode: "fichier",
+          local: true,
           url: local.file,
           version: local.version || null,
           taille: tailleLisible(local.sizeBytes),
