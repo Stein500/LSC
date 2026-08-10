@@ -209,27 +209,40 @@ class MainActivity : AppCompatActivity() {
             R.drawable.hero_services,
             R.drawable.atelier_01,
             R.drawable.atelier_02,
-            R.drawable.creation_afrique_01
+            R.drawable.atelier_03,
+            R.drawable.atelier_04,
+            R.drawable.creation_afrique_01,
+            R.drawable.creation_afrique_02,
+            R.drawable.creation_afrique_03,
+            R.drawable.creation_afrique_04,
+            R.drawable.creation_afrique_05,
+            R.drawable.formation_couture_01,
+            R.drawable.formation_couture_02,
+            R.drawable.formation_couture_03
         )
         val view = binding.splashOverlay.splashKenburns
         view.scaleX = 1f
         view.scaleY = 1f
         var index = 0
-        // Rotation des images avec zoom lent
+        // Rotation des images avec zoom lent + fondu entrée
         view.animate()
-            .scaleX(1.12f).scaleY(1.12f)
-            .setDuration(2500)
+            .scaleX(1.15f).scaleY(1.15f)
+            .alpha(1f)
+            .setDuration(2800)
             .setInterpolator(DecelerateInterpolator())
             .withEndAction {
                 index = (index + 1) % images.size
-                view.setImageResource(images[index])
-                view.scaleX = 1.0f
-                view.scaleY = 1.0f
-                view.animate()
-                    .scaleX(1.12f).scaleY(1.12f)
-                    .setDuration(2500)
-                    .setInterpolator(DecelerateInterpolator())
-                    .start()
+                // Fondu de sortie puis nouvelle image
+                view.animate().alpha(0f).setDuration(400).withEndAction {
+                    view.setImageResource(images[index])
+                    view.scaleX = 1.0f
+                    view.scaleY = 1.0f
+                    view.animate()
+                        .alpha(1f).scaleX(1.15f).scaleY(1.15f)
+                        .setDuration(2800)
+                        .setInterpolator(DecelerateInterpolator())
+                        .start()
+                }.start()
             }
             .start()
     }

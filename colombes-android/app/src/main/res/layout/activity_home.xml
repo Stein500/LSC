@@ -91,6 +91,72 @@
             android:background="@color/white"
             android:src="@drawable/header_colombes" />
 
+        <!-- Galerie de réalisations -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/playfair_display"
+            android:text="Nos réalisations"
+            android:textColor="@color/marron_dark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:paddingHorizontal="22dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="170dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/atelier_01" />
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="170dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/creation_afrique_01" />
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="170dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/formation_couture_01" />
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="170dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/atelier_03" />
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="170dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/creation_afrique_03" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
         <!-- Section découverte -->
         <TextView
             android:layout_width="wrap_content"
