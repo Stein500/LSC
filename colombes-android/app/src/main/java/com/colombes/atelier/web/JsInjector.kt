@@ -25,13 +25,13 @@ object JsInjector {
 
             // --- Masque le splash du SITE dans l'app ---
             // C'est le splash NATIF de l'app qui s'exécute (fidèle au site).
-            // On cache les overlays de splash du site pour éviter un double.
+            // On cache SEULEMENT le splash du site (via son aria-label), pas les
+            // autres fenêtres modales (tiroir de notifications, menus, etc.).
             (function maskSiteSplash() {
                 try {
                     var style = document.createElement('style');
                     style.id = 'colombes-mask-splash';
                     style.textContent =
-                        'div[aria-modal="true"],' +
                         'div[aria-label="Ouverture de l\'atelier"]' +
                         '{ display:none !important; visibility:hidden !important; }';
                     (document.head || document.documentElement).appendChild(style);
