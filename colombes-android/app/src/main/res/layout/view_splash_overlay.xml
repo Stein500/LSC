@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash_bg">
 
+    <!-- Image de fond animée (Ken Burns) — révélée à l'ouverture des rideaux -->
+    <ImageView
+        android:id="@+id/splash_kenburns"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hero_services" />
+
     <!-- Rideau gauche -->
     <View
         android:id="@+id/left_curtain"

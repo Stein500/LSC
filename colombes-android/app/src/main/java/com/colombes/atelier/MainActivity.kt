@@ -178,6 +178,7 @@ class MainActivity : AppCompatActivity() {
         val overlay = binding.splashOverlay.root
         overlay.visibility = View.VISIBLE
 
+        animateKenBurns()
         setupCurtains()
         animateLogo()
         animateLetters()
@@ -200,6 +201,37 @@ class MainActivity : AppCompatActivity() {
             if (!pageReady && !splashOpened) showOffline()
             openSplash()
         }, 5000)
+    }
+
+    /** Diaporama Ken Burns : zoom lent + fondu entre les créations (effet cinéma). */
+    private fun animateKenBurns() {
+        val images = intArrayOf(
+            R.drawable.hero_services,
+            R.drawable.atelier_01,
+            R.drawable.atelier_02,
+            R.drawable.creation_afrique_01
+        )
+        val view = binding.splashOverlay.splashKenburns
+        view.scaleX = 1f
+        view.scaleY = 1f
+        var index = 0
+        // Rotation des images avec zoom lent
+        view.animate()
+            .scaleX(1.12f).scaleY(1.12f)
+            .setDuration(2500)
+            .setInterpolator(DecelerateInterpolator())
+            .withEndAction {
+                index = (index + 1) % images.size
+                view.setImageResource(images[index])
+                view.scaleX = 1.0f
+                view.scaleY = 1.0f
+                view.animate()
+                    .scaleX(1.12f).scaleY(1.12f)
+                    .setDuration(2500)
+                    .setInterpolator(DecelerateInterpolator())
+                    .start()
+            }
+            .start()
     }
 
     private fun setupCurtains() {
