@@ -110,14 +110,13 @@ class MainActivity : AppCompatActivity() {
 
         // Chemin de démarrage (depuis le hub natif) ou accueil
         val startPath = intent.getStringExtra("START_PATH") ?: "/"
-        val fromHub = intent.hasExtra("START_PATH")
 
-        // Le splash ne se joue que depuis un démarrage à froid direct (pas depuis le hub)
-        if (savedInstanceState == null && !fromHub) {
+        // Le splash cinématique s'exécute TOUJOURS au chargement du WebView
+        // (fidèle au splash du site, qui s'affiche à chaque visite).
+        if (savedInstanceState == null) {
             startSplash()
             loadPath(startPath)
         } else {
-            // Cache l'overlay splash si présent
             binding.splashOverlay.root.visibility = View.GONE
             loadPath(startPath)
         }
