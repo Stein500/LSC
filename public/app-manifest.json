@@ -1,9 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-08-06T19:00:00Z",
-  "build_id": "v2-splash-sync",
+  "content_version": "2026-08-10T00:00:00Z",
+  "build_id": "site-app-sync-v1",
   "changelog": [
     "Splash synchronisé avec l'application Android",
-    "Expérience d'ouverture optimisée"
+    "Messager mise à jour masqué dans l'app",
+    "Contrat app↔site défini (voir SITE_APP_SYNC.md)"
   ]
 }
