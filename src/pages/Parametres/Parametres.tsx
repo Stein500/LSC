@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Sun, Tickets } from "lucide-react";
+import { Bell, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Smartphone, Sun, Tickets } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -26,6 +26,8 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { syncPendingTickets } from "@/utils/sync";
 import { notify } from "@/utils/notify";
 import { formatDateFR } from "@/utils/format";
+import { isColombesApp, colombesAppVersion } from "@/utils/appBridge";
+import { resolveUpdateOffer, type UpdateOffer } from "@/utils/appUpdate";
 
 export default function Parametres() {
   const { items: notifications, unread, clear: clearAll } = useNotifications();
@@ -35,6 +37,21 @@ export default function Parametres() {
   const [syncing, setSyncing] = useState(false);
   const pending = useMemo(() => countPendingTickets(), [refreshKey]);
   const tickets = useMemo(() => getTickets(), [refreshKey]);
+
+  // 📱 Pastille version — visible uniquement dans l'app Colombes.
+  //    La veille GitHub confirme « à jour » ou annonce la nouvelle version.
+  const inApp = isColombesApp();
+  const [appUpdate, setAppUpdate] = useState<UpdateOffer | null | undefined>(undefined);
+  useEffect(() => {
+    if (!inApp) return;
+    let live = true;
+    void resolveUpdateOffer().then((o) => {
+      if (live) setAppUpdate(o);
+    });
+    return () => {
+      live = false;
+    };
+  }, [inApp]);
 
   const handleResync = async () => {
     if (!online) {
@@ -124,6 +141,34 @@ export default function Parametres() {
                 })}
               </div>
             </Card>
+
+            {/* 📱 Carte version — rendue uniquement dans l'app Colombes */}
+            {inApp && (
+              <Card className="p-6 min-w-0">
+                <div className="flex items-start justify-between gap-4 mb-5">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Application</p>
+                    <h3 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>Version Colombes</h3>
+                  </div>
+                  <Smartphone className="w-6 h-6 text-[var(--color-orange)]" />
+                </div>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span
+                    className="inline-flex items-center rounded-full px-4 py-2 text-sm font-extrabold tracking-wide bg-[var(--color-citron)] text-white shadow-sm"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    v{colombesAppVersion()}
+                  </span>
+                  <span className="text-sm text-[var(--color-ink-soft)]">
+                    {appUpdate === undefined
+                      ? "Vérification des nouveautés…"
+                      : appUpdate?.version
+                      ? <>Nouvelle version <strong style={{ color: "var(--color-citron-d)" }}>v{appUpdate.version}</strong> disponible ✨ — la carte de mise à jour vous guidera.</>
+                      : "Votre app est à jour — cousue main 🕊️"}
+                  </span>
+                </div>
+              </Card>
+            )}
 
           </div>
 

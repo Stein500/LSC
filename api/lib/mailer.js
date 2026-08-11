@@ -50,9 +50,9 @@ const C = {
   marron: "#8B4513",
   marronD: "#5C2E0C",
   or: "#C9A87C",
-  orL: "#F4E3C9",
-  creme: "#FBF7EE",
-  parchemin: "#F4EEE4",
+  orL: "#F7E0DA",
+  creme: "#FBF1F3",
+  parchemin: "#F7E7EA",
   encre: "#2B1B0E",
   wa: "#8B4513",
 };
@@ -410,7 +410,7 @@ function clientHeader() {
 function clientTicketCard(ref, dateSoumission, heureSoumission) {
   return `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-         style="margin:0 0 22px;background:#FFFDF6;border:2px dashed ${C.or};border-radius:12px;">
+         style="margin:0 0 22px;background:#FFFCFD;border:2px dashed ${C.or};border-radius:12px;">
     <tr>
       <td style="padding:16px 18px;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -558,7 +558,7 @@ function footerBlock({ dark = true } = {}) {
 /** Bandeau « PDF joint » (natif — plus de hack regex). */
 function pdfBanner(ref, forAdmin = false) {
   return `
-  <div style="background:#FFF8E5;border:1px solid ${C.or};border-radius:10px;padding:12px 16px;margin:0 0 ${forAdmin ? "16px" : "20px"};">
+  <div style="background:#FDF0F3;border:1px solid ${C.or};border-radius:10px;padding:12px 16px;margin:0 0 ${forAdmin ? "16px" : "20px"};">
     <p style="margin:0;font-size:12.5px;color:${C.encre};line-height:1.5;">
       📎 <strong>Récapitulatif PDF joint</strong> — Ticket <code style="background:#FFFFFF;padding:1px 6px;border-radius:4px;border:1px solid ${C.or}55;font-size:12px;">${escHtml(ref)}</code>${forAdmin ? "" : "<br><span style=\"opacity:0.75;\">Conservez-le : il tient lieu de justificatif de votre demande.</span>"}
     </p>

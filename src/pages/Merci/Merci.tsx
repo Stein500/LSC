@@ -1,12 +1,14 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle2, Home, MessageCircle, ArrowRight } from "lucide-react";
+import { CheckCircle2, Home, MessageCircle, ArrowRight, Share2 } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { Button } from "@/components/ui/Button";
 import { buildWhatsAppUrl, WHATSAPP_TEMPLATES } from "@/utils/whatsapp";
 import { env } from "@/utils/env";
 import { trackWhatsapp, trackCtaClick } from "@/utils/api";
 import { track } from "@/utils/api";
+import { shareText } from "@/utils/share";
+import { notify } from "@/utils/notify";
 
 const TYPE_LABEL: Record<string, string> = {
   formation: "demande d'apprentissage",
@@ -21,6 +23,15 @@ export default function Merci() {
   const nom = params.get("nom") || "cher visiteur";
 
   const whatsappMsg = WHATSAPP_TEMPLATES.relance(nom, ref);
+
+  // 📤 Partage du résumé — Sharesheet Android en app, Web Share ailleurs.
+  //    L'URL d'hébergement n'apparaît jamais dans le texte.
+  const handleShare = async () => {
+    trackCtaClick("merci_partage");
+    const text = `🧵 Ma demande est entre de bonnes mains ! Ticket ${ref} — l'atelier Les Services Colombes (Porto-Novo) me répond sous 48 h ouvrées.`;
+    const channel = await shareText(text);
+    if (channel === "clipboard") notify.success("Résumé copié — partagez-le où vous voulez 🕊️");
+  };
 
   return (
     <>
@@ -106,6 +117,9 @@ export default function Merci() {
                 Retour à l'accueil
               </Button>
             </Link>
+            <Button size="lg" variant="outline" icon={<Share2 className="w-4 h-4" />} onClick={handleShare}>
+              Partager ma demande
+            </Button>
           </motion.div>
 
           <p className="text-xs text-[var(--color-muted)] mt-8">

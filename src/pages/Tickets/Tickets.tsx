@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Copy, RotateCcw, Trash2, MessageCircle } from "lucide-react";
+import { CheckCircle2, Copy, RotateCcw, Share2, Trash2, MessageCircle } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -20,7 +20,8 @@ import {
   updateTicket,
   type StoredTicket,
 } from "@/utils/tickets";
-import { trackFormSubmit } from "@/utils/api";
+import { trackFormSubmit, trackCtaClick } from "@/utils/api";
+import { shareText } from "@/utils/share";
 import { toast } from "sonner";
 
 function summarize(ticket: StoredTicket) {
@@ -42,6 +43,15 @@ export default function Tickets() {
   const handleCopy = async (ticket: StoredTicket) => {
     await navigator.clipboard.writeText(ticket.ref);
     toast.success("Référence copiée");
+  };
+
+  // 📤 Partage du suivi — Sharesheet Android en app, sans jamais
+  //    révéler l'URL d'hébergement (le texte suffit à retrouver la demande).
+  const handleShare = async (ticket: StoredTicket) => {
+    trackCtaClick("ticket_partage");
+    const text = `🧵 Suivi ${getTicketLabel(ticket.source)} — référence ${ticket.ref} · statut : ${getTicketStatusLabel(ticket.status)} · Les Services Colombes, Porto-Novo`;
+    const channel = await shareText(text);
+    if (channel === "clipboard") toast.success("Résumé copié — prêt à partager");
   };
 
   const handleRetry = async (ticket: StoredTicket) => {
@@ -150,6 +160,9 @@ export default function Tickets() {
                       <div className="flex flex-wrap gap-2 md:justify-end">
                         <Button size="sm" variant="outline" icon={<Copy className="w-4 h-4" />} onClick={() => handleCopy(ticket)}>
                           Copier
+                        </Button>
+                        <Button size="sm" variant="outline" icon={<Share2 className="w-4 h-4" />} onClick={() => handleShare(ticket)}>
+                          Partager
                         </Button>
                         <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex">
                           <Button size="sm" variant="secondary" icon={<MessageCircle className="w-4 h-4" />}>
