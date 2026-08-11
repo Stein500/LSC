@@ -110,7 +110,7 @@ export function RefreshImagesButton() {
             key="done"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex text-lime-400"
+            className="inline-flex text-[var(--color-saffron)]"
           >
             <Check className="h-3.5 w-3.5" />
           </motion.span>

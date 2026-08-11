@@ -61,10 +61,10 @@ export default function Parametres() {
 
   return (
     <>
-      <SEO title="Paramètres" description="Réglages du site, messages et repères utiles." path="/parametres" />
+      <SEO title="Paramètres" description="Réglages de l'application, messages et repères utiles." path="/parametres" />
       <PageHero
         title="Paramètres"
-        subtitle="Réglages du site, messages et repères utiles, tout en gardant une lecture simple et propre."
+        subtitle="Réglages de l'application, messages et repères utiles, tout en gardant une lecture simple et propre."
         image="/images/hero-contact.webp"
         crumbs={[{ label: "Accueil", to: "/" }, { label: "Paramètres" }]}
       />
@@ -73,7 +73,7 @@ export default function Parametres() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <SectionTitle
             eyebrow="Application"
-            title={<>Réglages <span style={{ color: "var(--color-orange)" }}>du site</span></>}
+            title={<>Réglages <span style={{ color: "var(--color-orange)" }}>de l'app</span></>}
           />
 
           <div className="grid lg:grid-cols-2 gap-4">
@@ -81,7 +81,7 @@ export default function Parametres() {
               <div className="flex items-start justify-between gap-4 mb-5">
                 <div>
                   <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Apparence</p>
-                  <h3 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>Thème du site</h3>
+                  <h3 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>Thème de l'app</h3>
                 </div>
                 <Settings2 className="w-6 h-6 text-[var(--color-orange)]" />
               </div>

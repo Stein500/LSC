@@ -148,7 +148,7 @@ export function PageHeaderBand({
                 {/* Halo doux derrière le picto */}
                 <motion.div
                   className="absolute -top-10 left-6 h-28 w-28 rounded-full blur-2xl pointer-events-none"
-                  style={{ background: "rgba(191,255,0,0.55)" }}
+                  style={{ background: "rgba(209,35,42,0.55)" }}
                   animate={{ scale: [1, 1.18, 1], opacity: [0.55, 1, 0.55] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 />
@@ -168,7 +168,7 @@ export function PageHeaderBand({
                     className="flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-white shadow-sm"
                     style={{
                       background:
-                        "linear-gradient(135deg, rgba(191,255,0,0.55) 0%, rgba(191,255,0,0.18) 100%)",
+                        "linear-gradient(135deg, rgba(209,35,42,0.55) 0%, rgba(209,35,42,0.18) 100%)",
                     }}
                     animate={{
                       rotate: [0, -12, 6, -10, 8, 0],

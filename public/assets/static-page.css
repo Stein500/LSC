@@ -7,8 +7,8 @@
   --lsc-ink: #000000;          /* noir — texte sur fond clair */
   --lsc-ink-soft: #3D2614;     /* brun très sombre — texte secondaire */
   --lsc-muted: #5C4030;        /* brun muté — discret */
-  --lsc-line: #B0DDF0;         /* ligne bleu ciel */
-  --lsc-cream: #87CEEB;        /* bleu ciel — fond dominant */
+  --lsc-line: #EFC9D1;         /* ligne rose poudré */
+  --lsc-cream: #FBE7EB;        /* rose poudré — fond dominant */
   --lsc-citron: #D1232A;       /* rouge colombe — accent vif */
   --lsc-orange: #8B4513;       /* marron — accent secondaire */
   --lsc-bg: #ffffff;           /* blanc — cartes, surfaces */
@@ -164,7 +164,7 @@ a { color: inherit; }
   line-height: 1;
   border: 1.5px solid rgba(0, 0, 0, 0.14);
   box-shadow:
-    0 6px 18px rgba(191, 255, 0, 0.35),
+    0 6px 18px rgba(209, 35, 42, 0.35),
     0 2px 4px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   white-space: nowrap;
@@ -199,7 +199,7 @@ a { color: inherit; }
   background-position: 100% 100%;
   border-color: rgba(0, 0, 0, 0.22);
   box-shadow:
-    0 10px 28px rgba(191, 255, 0, 0.55),
+    0 10px 28px rgba(209, 35, 42, 0.55),
     0 0 22px rgba(139, 69, 19, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
@@ -304,7 +304,7 @@ a { color: inherit; }
   /* Fond aéré : dégradé doux + halos colorés plus visibles pour que
      les éléments d'arrière-plan ne "disparaissent" pas derrière le texte. */
   background:
-    radial-gradient(70% 50% at 8% 0%, rgba(191, 255, 0, 0.28), transparent 65%),
+    radial-gradient(70% 50% at 8% 0%, rgba(209, 35, 42, 0.28), transparent 65%),
     radial-gradient(60% 50% at 100% 25%, rgba(139, 69, 19, 0.22), transparent 65%),
     linear-gradient(180deg, #ffffff 0%, #eaf6fb 55%, var(--lsc-cream) 100%);
   overflow: hidden;
@@ -351,7 +351,7 @@ a { color: inherit; }
   box-shadow: var(--lsc-shadow);
   border: 1px solid var(--lsc-line);
   aspect-ratio: 16 / 7;
-  background: #B0DDF0 center/cover no-repeat;
+  background: #EFC9D1 center/cover no-repeat;
 }
 
 /* ---------- BOUTONS ---------- */
@@ -379,10 +379,10 @@ a { color: inherit; }
 }
 .lsc-btn-ghost:hover { background: var(--lsc-cream); }
 .lsc-btn-wa {
-  background: #25D366;
+  background: linear-gradient(135deg, #8B4515, #5C2E0C);
   color: white;
 }
-.lsc-btn-wa:hover { background: #1ebe5a; }
+.lsc-btn-wa:hover { background: #5C2E0C; }
 .lsc-cta-row {
   display: flex; flex-wrap: wrap; gap: 12px;
   margin-top: 8px;
@@ -628,7 +628,7 @@ a { color: inherit; }
   /* Dégradé doux (au lieu d'un noir brut) — les éléments d'arrière-plan
      restent lisibles et la zone respire visuellement. */
   background:
-    radial-gradient(80% 60% at 50% 0%, rgba(191, 255, 0, 0.08), transparent 60%),
+    radial-gradient(80% 60% at 50% 0%, rgba(209, 35, 42, 0.08), transparent 60%),
     linear-gradient(180deg, #0B0B12 0%, #000000 100%);
   color: #FFFFFF;
   padding: 56px 0 28px;

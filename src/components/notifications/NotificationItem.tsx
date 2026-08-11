@@ -138,7 +138,7 @@ export function NotificationItem({
         <Trash2 className="w-4 h-4 mr-1" /> Retirer
       </div>
       <div
-        className="absolute inset-y-0 left-0 w-28 bg-emerald-500/90 text-white flex items-center justify-center"
+        className="absolute inset-y-0 left-0 w-28 bg-[var(--color-orange)]/90 text-white flex items-center justify-center"
         style={{ opacity: Math.min(Math.max(swipe, 0) / 90, 1) }}
         aria-hidden="true"
       >

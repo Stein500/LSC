@@ -3,7 +3,7 @@
 
 /* ============================================================
    LES SERVICES COLOMBES — Design Tokens
-   Palette : bleu ciel (dominant) + marron + blanc + noir + vert citron
+   Palette : rose poudré (dominant) + noir + marron + blanc + rouge colombe
    Typographie : Playfair Display (titres) + Poppins (texte)
    Règle contraste : fond clair → texte foncé, fond foncé → texte clair
    ============================================================ */
@@ -11,12 +11,12 @@
   --color-ink: #000000;          /* noir — texte principal sur fond clair */
   --color-ink-soft: #3D2614;     /* brun très sombre — texte secondaire */
   --color-paper: #FFFFFF;        /* blanc — cartes, surfaces */
-  --color-cream: #87CEEB;        /* bleu ciel — fond dominant */
+  --color-cream: #FBE7EB;        /* rose poudré — fond dominant */
   --color-citron: #D1232A;        /* rouge colombe — accent signature (texte blanc) */
   --color-citron-d: #A31322;     /* rouge colombe foncé — hover */
   --color-orange: #8B4513;       /* marron — accent secondaire (texte blanc) */
   --color-orange-d: #5C2E0C;     /* marron foncé — hover */
-  --color-line: #B0DDF0;         /* ligne douce teintée bleu ciel */
+  --color-line: #EFC9D1;         /* ligne douce teintée rose */
   --color-muted: #5C4030;        /* brun muté — texte discret */
   --color-blush: #FFE4E6;
   --color-rose-soft: #FBE4E6;
@@ -167,7 +167,7 @@ body {
   background-color: var(--app-bg);
   background-image:
     radial-gradient(38rem 26rem at 12% -6%, rgba(255, 255, 255, 0.85), transparent 62%),
-    radial-gradient(30rem 22rem at 88% 4%, rgba(191, 255, 0, 0.10), transparent 60%),
+    radial-gradient(30rem 22rem at 88% 4%, rgba(209, 35, 42, 0.10), transparent 60%),
     radial-gradient(34rem 30rem at 50% 110%, rgba(139, 69, 19, 0.08), transparent 65%),
     linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 88%, #ffffff 12%) 0%, var(--app-bg) 34%, var(--app-bg) 100%);
   color: var(--color-ink);
@@ -183,7 +183,7 @@ html[data-theme="dark"] body,
 html[data-theme="amoled"] body {
   background-image:
     radial-gradient(38rem 26rem at 12% -6%, rgba(255, 255, 255, 0.05), transparent 62%),
-    radial-gradient(30rem 22rem at 88% 4%, rgba(191, 255, 0, 0.05), transparent 60%),
+    radial-gradient(30rem 22rem at 88% 4%, rgba(209, 35, 42, 0.05), transparent 60%),
     radial-gradient(34rem 30rem at 50% 110%, rgba(217, 154, 102, 0.06), transparent 65%),
     linear-gradient(180deg, var(--app-bg) 0%, var(--app-bg) 100%);
 }
@@ -299,8 +299,8 @@ html[data-theme="amoled"] :root {
 .animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
 
 @keyframes pulse-citron {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(191, 255, 0, 0); }
-  50% { box-shadow: 0 0 0 12px rgba(191, 255, 0, 0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(209, 35, 42, 0); }
+  50% { box-shadow: 0 0 0 12px rgba(209, 35, 42, 0.25); }
 }
 .animate-pulse-citron { animation: pulse-citron 2.5s ease-in-out infinite; }
 
@@ -431,7 +431,7 @@ input, textarea, select, button {
 
 /* ============================================================
    ✨ COUCHE RAFFINEMENT — « L'Atelier d'Exception »
-   Même palette (bleu ciel / marron / citron / noir / blanc),
+   Même palette (rose poudré / marron / rouge colombe / noir / blanc),
    application plus couture : verre, soie, fil d'or, mouvement.
    ============================================================ */
 
@@ -744,8 +744,8 @@ html[data-theme="amoled"] ::-webkit-scrollbar-thumb {
 
 /* ---------- Badge « couds-moi » : pulse couture ---------- */
 @keyframes lsc-badge-breathe {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(191, 255, 0, 0.35); }
-  50% { box-shadow: 0 0 0 7px rgba(191, 255, 0, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(209, 35, 42, 0.35); }
+  50% { box-shadow: 0 0 0 7px rgba(209, 35, 42, 0); }
 }
 .lsc-badge-breathe {
   animation: lsc-badge-breathe 2.8s ease-in-out infinite;
@@ -792,7 +792,7 @@ a, button {
   background: radial-gradient(
     340px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
     rgba(255, 255, 255, 0.5),
-    rgba(191, 255, 0, 0.10) 32%,
+    rgba(209, 35, 42, 0.10) 32%,
     transparent 62%
   );
   transition: opacity 0.4s ease;
@@ -805,7 +805,7 @@ html[data-theme="amoled"] .lsc-spotlight::before {
   background: radial-gradient(
     340px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
     rgba(255, 255, 255, 0.08),
-    rgba(191, 255, 0, 0.06) 32%,
+    rgba(209, 35, 42, 0.06) 32%,
     transparent 62%
   );
 }

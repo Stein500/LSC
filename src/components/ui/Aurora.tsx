@@ -2,7 +2,7 @@ import { cn } from "@/utils/cn";
 
 /**
  * Aurora — fond animé de halos de couleur (toujours la palette de
- * l'atelier : bleu ciel, citron, marron doré) qui dérivent lentement.
+ * l'atelier : rose poudré, rouge colombe, marron doré) qui dérivent lentement.
  * 100% CSS (blur + keyframes), zéro JS par frame → aucun coût CPU.
  *
  * Usage : <Aurora className="absolute inset-0 -z-10" intensity="soft" />
@@ -20,12 +20,12 @@ export function Aurora({
     intensity === "soft" ? "opacity-50" : intensity === "vivid" ? "opacity-90" : "opacity-70";
 
   const palettes: Record<string, [string, string, string]> = {
-    // Ciel : citron + blanc + doré marron
-    sky: ["rgba(191,255,0,0.22)", "rgba(255,255,255,0.55)", "rgba(201,168,124,0.20)"],
-    // Chaud : marron + safran + citron léger
-    warm: ["rgba(139,69,19,0.28)", "rgba(244,184,96,0.25)", "rgba(191,255,0,0.14)"],
-    // Nuit : profondeurs bleutées + citron discret
-    night: ["rgba(191,255,0,0.14)", "rgba(109,168,196,0.20)", "rgba(139,69,19,0.22)"],
+    // Rosée : rose poudré + blanc + rouge colombe léger
+    sky: ["rgba(249,205,215,0.60)", "rgba(255,255,255,0.55)", "rgba(209,35,42,0.12)"],
+    // Chaud : marron + safran + rose léger
+    warm: ["rgba(139,69,19,0.28)", "rgba(244,184,96,0.25)", "rgba(249,205,215,0.35)"],
+    // Nuit : profondeurs marron + rouge colombe discret
+    night: ["rgba(209,35,42,0.14)", "rgba(92,46,12,0.32)", "rgba(139,69,19,0.22)"],
   };
   const [c1, c2, c3] = palettes[variant];
 

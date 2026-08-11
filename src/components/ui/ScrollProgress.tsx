@@ -23,7 +23,7 @@ export function ScrollProgress() {
         scaleX,
         background:
           "linear-gradient(90deg, var(--color-citron) 0%, var(--color-gold-thread) 55%, var(--color-orange) 100%)",
-        boxShadow: "0 0 10px rgba(191, 255, 0, 0.45)",
+        boxShadow: "0 0 10px rgba(209, 35, 42, 0.45)",
       }}
       aria-hidden="true"
     />

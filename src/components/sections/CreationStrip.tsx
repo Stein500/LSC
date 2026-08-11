@@ -89,7 +89,7 @@ export function CreationStrip() {
                     />
                     {/* anneau doré au survol */}
                     <div
-                      className="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-[rgba(244,184,96,0.28)] group-hover:ring-2 group-hover:ring-[rgba(191,255,0,0.55)] transition-shadow duration-500 pointer-events-none"
+                      className="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-[rgba(244,184,96,0.28)] group-hover:ring-2 group-hover:ring-[rgba(209,35,42,0.55)] transition-shadow duration-500 pointer-events-none"
                     />
                     <figcaption className="absolute bottom-4 left-4 right-4">
                       <p className="text-sm font-semibold text-[#F7F0E6] leading-snug drop-shadow">

@@ -61,7 +61,7 @@ export function PageHero({
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 78% 60% at 50% 55%, rgba(135,206,235,0.94) 0%, rgba(135,206,235,0.72) 42%, rgba(135,206,235,0) 78%)",
+              "radial-gradient(ellipse 78% 60% at 50% 55%, rgba(251,231,235,0.94) 0%, rgba(251,231,235,0.72) 42%, rgba(251,231,235,0) 78%)",
           }}
           aria-hidden="true"
         />
@@ -117,7 +117,7 @@ export function PageHero({
             style={{
               fontFamily: "var(--font-display)",
               color: "var(--color-ink)",
-              textShadow: "0 2px 26px rgba(224,244,255,0.95), 0 0 8px rgba(224,244,255,0.85)",
+              textShadow: "0 2px 26px rgba(253,236,239,0.95), 0 0 8px rgba(253,236,239,0.85)",
             }}
             initial={reduce ? undefined : { y: "108%" }}
             animate={reduce ? undefined : { y: 0 }}
@@ -130,7 +130,7 @@ export function PageHero({
         {subtitle && (
           <motion.p
             className="text-lg md:text-xl font-medium text-[var(--color-ink)] max-w-2xl mx-auto"
-            style={{ textShadow: "0 1px 16px rgba(224,244,255,0.95), 0 0 6px rgba(224,244,255,0.8)" }}
+            style={{ textShadow: "0 1px 16px rgba(253,236,239,0.95), 0 0 6px rgba(253,236,239,0.8)" }}
             initial={reduce ? undefined : { opacity: 0, y: 16, filter: "blur(4px)" }}
             animate={reduce ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}

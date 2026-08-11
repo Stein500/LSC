@@ -27,7 +27,7 @@ Tu es un développeur Android senior Kotlin. Crée une application Android **nat
 Palette exacte :
 | Rôle | Hex |
 |---|---|
-| Bleu ciel (fond dominant) | `#87CEEB` |
+| Rose poudré (fond dominant) | `#FBE7EB` |
 | rouge colombe (accent, boutons) | `#D1232A` |
 | rouge colombe foncé (hover) | `#A31322` |
 | Marron (accent secondaire) | `#8B4513` |
@@ -96,7 +96,7 @@ Animation du splash (reproduire l'esprit du site) :
 - Bouton **retour** : `webView.canGoBack() → goBack()` sinon `finish()`.
 - **Pull-to-refresh** : `SwipeRefreshLayout` autour de la WebView, teinté en `#8B4513`, désactivé automatiquement quand `scrollY > 0` (via `webView.setOnScrollChangedCallback` → `swipeRefresh.isEnabled = scrollY == 0`), et **déclenché seulement en haut de page**.
 - Barre de progression **fine (3 dp)** en haut, dégradé `#D1232A → #C9A87C → #8B4513`, avec animation de fondu à 100%.
-- **Status bar** : couleur `#87CEEB` (bleu ciel) en mode clair avec icônes foncées (`isAppearanceLightStatusBars = true`) ; barre de navigation blanche.
+- **Status bar** : couleur `#FBE7EB` (rose poudré) en mode clair avec icônes foncées (`isAppearanceLightStatusBars = true`) ; barre de navigation blanche.
 
 ### 6. État réseau & hors-connexion
 

@@ -125,7 +125,7 @@ export function PageIntroOverlay({
               {/* Halo doux derrière le picto */}
               <motion.div
                 className="absolute -top-8 left-6 h-24 w-24 rounded-full blur-2xl pointer-events-none"
-                style={{ background: "rgba(191,255,0,0.5)" }}
+                style={{ background: "rgba(209,35,42,0.5)" }}
                 animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />

@@ -21,11 +21,11 @@ export const WHATSAPP_TEMPLATES: Record<string, (name?: string, ref?: string) =>
   general: (name = "") =>
     `Bonjour${name ? " " + name : ""}, je suis intéressé(e) par vos services de couture LES SERVICES COLOMBES.`,
   precommande: (name = "") =>
-    `Bonjour, je m'appelle ${name || "[prénom]"}. Je viens de remplir le formulaire de pré-commande sur votre site. Pouvez-vous me recontacter ?`,
+    `Bonjour, je m'appelle ${name || "[prénom]"}. Je viens de remplir le formulaire de pré-commande dans l'application. Pouvez-vous me recontacter ?`,
   formation: (name = "") =>
     `Bonjour, je m'appelle ${name || "[prénom]"}. Je souhaite m'inscrire à une formation chez LES SERVICES COLOMBES.`,
   contact: (name = "") =>
-    `Bonjour, je m'appelle ${name || "[prénom]"}. Je vous écris via le formulaire de contact du site.`,
+    `Bonjour, je m'appelle ${name || "[prénom]"}. Je vous écris via le formulaire de contact de l'application.`,
   relance: (name = "", ref = "") =>
     `Bonjour, je reviens vers vous concernant ma demande${name ? " (" + name + ")" : ""}${ref ? ` — Réf. ${ref}` : ""}. Avez-vous eu le temps d'y jeter un œil ?`,
 };

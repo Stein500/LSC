@@ -45,8 +45,8 @@ const ATELIER_LOCATION =
 // ── Palette (identique au site — ne jamais dériver) ─────────────────────────
 const C = {
   noir: "#0B0B12",
-  citron: "#BFFF00",
-  citronD: "#8FBF00",
+  citron: "#D1232A",
+  citronD: "#A31322",
   marron: "#8B4513",
   marronD: "#5C2E0C",
   or: "#C9A87C",
@@ -54,7 +54,7 @@ const C = {
   creme: "#FBF7EE",
   parchemin: "#F4EEE4",
   encre: "#2B1B0E",
-  wa: "#25D366",
+  wa: "#8B4513",
 };
 
 let _transport = null;
@@ -173,15 +173,15 @@ function pagneBandSvg() {
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" height="28"
        preserveAspectRatio="xMidYMid slice" role="presentation" aria-hidden="true">
-    <rect width="600" height="28" fill="#E6F4FB"/>
-    <rect x="0"   y="0"  width="600" height="6"  fill="#BFFF00"/>
+    <rect width="600" height="28" fill="#FBE9ED"/>
+    <rect x="0"   y="0"  width="600" height="6"  fill="#D1232A"/>
     <rect x="0"   y="6"  width="600" height="4"  fill="#8B4513"/>
-    <rect x="0"   y="10" width="600" height="2"  fill="#8FBF00"/>
-    <rect x="0"   y="12" width="600" height="2"  fill="#BFFF00"/>
+    <rect x="0"   y="10" width="600" height="2"  fill="#A31322"/>
+    <rect x="0"   y="12" width="600" height="2"  fill="#D1232A"/>
     <rect x="0"   y="14" width="600" height="3"  fill="#8B4513"/>
     <rect x="0"   y="17" width="600" height="3"  fill="#5C2E0C"/>
-    <rect x="0"   y="20" width="600" height="3"  fill="#BFFF00"/>
-    <rect x="0"   y="23" width="600" height="3"  fill="#8FBF00"/>
+    <rect x="0"   y="20" width="600" height="3"  fill="#D1232A"/>
+    <rect x="0"   y="23" width="600" height="3"  fill="#A31322"/>
     <rect x="0"   y="26" width="600" height="2"  fill="#000000"/>
     <g fill="#5C2E0C" opacity="0.85">
       ${Array.from({ length: 12 }, (_, i) => {
@@ -195,7 +195,7 @@ function pagneBandSvg() {
         return `<polygon points="${x},0 ${x + 18},6 ${x + 36},0"/>`;
       }).join("")}
     </g>
-    <g fill="#BFFF00">
+    <g fill="#D1232A">
       ${Array.from({ length: 20 }, (_, i) => {
         const x = 12 + i * 30;
         return `<circle cx="${x}" cy="11" r="1.2"/>`;
@@ -214,7 +214,7 @@ function threadStitchSvg() {
           fill="none" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
     ${Array.from({ length: 40 }, (_, i) => {
       const x = 4 + i * 15;
-      return `<circle cx="${x}" cy="7" r="1" fill="#8FBF00" opacity="0.85"/>`;
+      return `<circle cx="${x}" cy="7" r="1" fill="#A31322" opacity="0.85"/>`;
     }).join("")}
   </svg>`;
 }

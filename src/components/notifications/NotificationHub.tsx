@@ -15,7 +15,7 @@ type MoodCard = {
   key: string;
   title: string;
   text: string;
-  accent: "citron" | "orange" | "rose" | "bleu";
+  accent: "citron" | "orange" | "rose" | "nuit";
   sticker: StickerName;
   stamp: string;
 };
@@ -71,7 +71,7 @@ const MOOD_BY_HOUR = [
     to: 24,
     title: "Veillée tranquille",
     text: "Les alertes se font discrètes, mais vos demandes restent bien rangées pour la suite.",
-    accent: "bleu",
+    accent: "nuit",
     sticker: "thread",
     stamp: "Nuit",
   },
@@ -80,7 +80,7 @@ const MOOD_BY_HOUR = [
     to: 5,
     title: "Nuit paisible",
     text: "Les Services Colombes garde une atmosphère calme ici. Vos messages attendent sagement le prochain regard.",
-    accent: "bleu",
+    accent: "nuit",
     sticker: "button",
     stamp: "Nuit",
   },
@@ -357,7 +357,7 @@ function MoodCard({ mood }: { mood: MoodCard }) {
     citron: "bg-[var(--color-citron)]/20 text-[var(--color-ink)] border-[var(--color-citron)]/30",
     orange: "bg-[var(--color-orange)]/12 text-[var(--color-ink)] border-[var(--color-orange)]/25",
     rose: "bg-pink-100 text-[var(--color-ink)] border-pink-200",
-    bleu: "bg-sky-100 text-[var(--color-ink)] border-sky-200",
+    nuit: "bg-[var(--color-rose-soft)] text-[var(--color-ink)] border-[var(--color-line)]",
   } as const;
 
   return (

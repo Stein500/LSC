@@ -85,7 +85,7 @@ export default function Home() {
         images={GALLERY_ATELIER}
         introTitle="L'atelier en images"
         introSubtitle="Plongez dans l'univers des Services Colombes — du fil aux finitions."
-        introLabel="Ouverture du site"
+        introLabel="Ouverture de l'app"
         seamCaption="L'atelier"
         maxHeight="min(58vh, 540px)"
       />
@@ -113,7 +113,7 @@ export default function Home() {
                 <div
                   className="absolute top-14 right-[8%] hidden lg:block w-24 h-24 rounded-full pointer-events-none lsc-drift"
                   style={{
-                    background: "radial-gradient(circle at 30% 30%, rgba(191,255,0,0.5), rgba(191,255,0,0.08) 70%)",
+                    background: "radial-gradient(circle at 30% 30%, rgba(209,35,42,0.5), rgba(209,35,42,0.08) 70%)",
                     filter: "blur(2px)",
                     animationDuration: "11s",
                   }}
@@ -476,7 +476,7 @@ export default function Home() {
         <div className="absolute inset-0 pointer-events-none cta-dots" aria-hidden="true" />
         <div
           className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl lsc-drift"
-          style={{ backgroundColor: "rgba(191, 255, 0, 0.22)", animationDuration: "12s" }}
+          style={{ backgroundColor: "rgba(209, 35, 42, 0.22)", animationDuration: "12s" }}
         />
         <div
           className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full blur-3xl lsc-drift"

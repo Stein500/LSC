@@ -5,7 +5,7 @@ import { env } from "@/utils/env";
 export default function Mentions() {
   return (
     <>
-      <SEO title="Mentions légales" description="Mentions légales du site Les Services Colombes." path="/mentions-legales" />
+      <SEO title="Mentions légales" description="Mentions légales de l'application Les Services Colombes." path="/mentions-legales" />
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-8" style={{ fontFamily: "var(--font-display)" }}>
@@ -20,11 +20,11 @@ export default function Mentions() {
             </div>
             <div>
               <h2 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>Hébergement</h2>
-              <p>Firebase Hosting — Google Cloud.</p>
+              <p>Vercel Inc. — cloud haute performance.</p>
             </div>
             <div>
               <h2 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>Propriété intellectuelle</h2>
-              <p>L'ensemble du contenu de ce site (textes, images, logo) est protégé. Toute reproduction est interdite sans autorisation préalable.</p>
+              <p>L'ensemble du contenu de cette application (textes, images, logo) est protégé. Toute reproduction est interdite sans autorisation préalable.</p>
             </div>
             <div>
               <h2 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>Données personnelles</h2>

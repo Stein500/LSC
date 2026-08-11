@@ -57,7 +57,7 @@ export function Footer() {
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div
           className="absolute -top-32 left-[8%] w-72 h-72 rounded-full blur-[110px] lsc-drift"
-          style={{ backgroundColor: "rgba(191,255,0,0.09)", animationDuration: "18s" }}
+          style={{ backgroundColor: "rgba(209,35,42,0.09)", animationDuration: "18s" }}
         />
         <div
           className="absolute -bottom-24 right-[12%] w-80 h-80 rounded-full blur-[120px] lsc-drift"
