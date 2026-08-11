@@ -199,7 +199,7 @@ Rythme : première apparition 2 min après l'arrivée, puis toutes les 5 minutes
 
 **Règles strictes pour l'app Android :**
 
-1. **Ne jamais masquer ni détourner ce messager** — c'est le système de secours de la maison.
+1. **Ne jamais masquer ni détourner ce messager en navigation web** — c'est le système de secours de la maison. *Hiérarchie (mise à jour août 2026) : dans l'app, le site masque lui-même le messager car l'app s'auto-met-à-jour via GitHub Releases ; le messager web ne s'adresse qu'aux navigateurs.*
 2. **Ouverture en navigateur EXTERNE obligatoire** (Chrome, Firefox…) pour ce lien et tout `target="_blank"` / `window.open` du site :
    - `WebChromeClient.onCreateWindow()` : WebView temporaire dont le `WebViewClient` capture l'URL dans `shouldOverrideUrlLoading`, lance immédiatement `Intent(Intent.ACTION_VIEW, uri)`, se détruit, et retourner `true`.
    - `WebViewClient.shouldOverrideUrlLoading()` : tout hôte différent de l'hébergement courant, ou schémas `tel:`, `mailto:`, `whatsapp:`, `https://wa.me`, `geo:`, `intent:` → `Intent(ACTION_VIEW)` externe avec `try/catch` + fallback silencieux.
@@ -220,7 +220,10 @@ Quand `ColombesApp.isApp()` renvoie `true`, le site s'allège et **délègue au 
 | ✨ **Animations CSS ambiantes** | `lsc-drift/bob/breathe/sheen/twinkle…` suspendues ; `backdrop-filter` → surfaces franches ; spotlight tactile désactivé |
 | 📜 **Scroll** | `scroll-behavior: auto` — l'élan natif du téléphone fait la loi |
 | 📣 **Partage** | `ColombesApp.share(text)` = Sharesheet Android quand utilisé |
-| 🪡 **Messager §14** | **inchangé** — jamais masqué, lien externe obligatoire |
+| 🔔 **Notification** | `ColombesApp.notify(title, body)` disponible côté bridge |
+| 🪡 **Messager §14** | **masqué dans l'app** (canal natif GitHub Releases) ; hors app = veille normale, lien externe obligatoire |
+| 📄 **app-manifest.json** | servi à `/app-manifest.json` — bump `content_version` + `changelog` à chaque déploiement (notif « ✨ Nouveautés ») |
+| 🎭 **Splash web** | garde `isApp()` + `aria-label="Ouverture de l'atelier"` **EXACT** (sélecteur CSS de masquage côté app — ne jamais renommer) |
 | 🧭 WhatsApp / tel / mail / maps | gérés par `shouldOverrideUrlLoading` (§5) — le site ne change rien |
 
 **Impératifs côté Kotlin :** injecter le bridge **avant** `loadUrl()` (`addJavascriptInterface` dans l'init de la WebView, jamais après), garder les 4 méthodes du §8 stables (le site teste leur présence une par une — une méthode absente = repli web silencieux, rien ne casse), et laisser `hardwareAccelerated="true"` pour que le CSS reste fluide.

@@ -106,7 +106,9 @@ export function SplashScreen() {
           className="fixed inset-0 z-[70] overflow-hidden"
           role="dialog"
           aria-modal="true"
-          aria-label="Ouverture de l'atelier Les Services Colombes"
+          // 🤝 CONTRAT passerelle app — ce libellé EXACT sert de sélecteur CSS
+          //    côté app pour masquer le splash web. Ne JAMAIS le modifier.
+          aria-label="Ouverture de l'atelier"
           onClick={close}
         >
           {/* ================= RIDEAUX (identité noire & fil d'or) ================= */}

@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Smartphone, X } from "lucide-react";
 import { env } from "@/utils/env";
 import { trackCtaClick } from "@/utils/api";
+import { isColombesApp } from "@/utils/appBridge";
 
 /**
  * AppUpdateMessenger — le messager à trois visages 🕊️
@@ -24,6 +25,10 @@ import { trackCtaClick } from "@/utils/api";
  * Si le visiteur ferme la carte, le messager se tait pour la session.
  * Destination : navigateur EXTERNE uniquement — l'URL n'est JAMAIS
  * affichée en clair (ni libellé, ni infobulle).
+ *
+ * 📱 CONTRAT app (passerelle site↔app) : DANS l'app Colombes, le messager
+ *    reste muet — l'app possède son propre canal de mise à jour native
+ *    (GitHub Releases). Hors app, il veille comme toujours.
  */
 const FIRST_MS = 120_000; // 2 minutes
 const EVERY_MS = 300_000; // 5 minutes
@@ -39,8 +44,11 @@ export function AppUpdateMessenger() {
   const snoozed = useRef(false); // × pressé → silence pour la session
   const timers = useRef<number[]>([]);
   const reduceMotion = useReducedMotion();
+  // 📱 L'app s'auto-met-à-jour : le messager web n'a pas voix au chapitre
+  const inApp = isColombesApp();
 
   useEffect(() => {
+    if (inApp) return;
     const later = (fn: () => void, ms: number) => timers.current.push(window.setTimeout(fn, ms));
     const hide = (ms: number) => later(() => setChannel(null), ms);
 
@@ -63,7 +71,7 @@ export function AppUpdateMessenger() {
       timers.current.forEach((t) => window.clearTimeout(t));
       timers.current = [];
     };
-  }, []);
+  }, [inApp]);
 
   /** Navigateur externe uniquement ; URL jamais affichée. */
   const openExternally = (origin: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -80,6 +88,9 @@ export function AppUpdateMessenger() {
     snoozed.current = true; // on a compris, on ne dérange plus 🕊️
     setChannel(null);
   };
+
+  // 📱 Dans l'app : silence complet (mises à jour gérées nativement)
+  if (inApp) return null;
 
   return (
     <AnimatePresence>

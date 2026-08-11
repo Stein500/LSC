@@ -22,12 +22,14 @@
 export interface ColombesBridge {
   /** true → le site vit dans l'application Android Colombes */
   isApp?: () => boolean;
-  /** Version native, ex. "1.0.0" */
+  /** Version native, ex. "4.2.6" */
   getAppVersion?: () => string;
   /** Décodage + enregistrement natif du PDF (notification « Ticket reçu ») */
   downloadBase64Pdf?: (base64: string, filename: string) => void;
   /** Sharesheet Android — sans jamais exposer l'URL d'hébergement */
   share?: (text: string) => void;
+  /** Notification locale de l'app (titre + corps) */
+  notify?: (title: string, body: string) => void;
 }
 
 declare global {
@@ -91,6 +93,18 @@ export function shareViaApp(text: string): boolean {
   if (!bridge?.share) return false;
   try {
     bridge.share(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Notification locale native (barre d'état de l'app). `true` si envoyée. */
+export function notifyViaApp(title: string, body: string): boolean {
+  const bridge = getColombesBridge();
+  if (!bridge?.notify) return false;
+  try {
+    bridge.notify(title, body);
     return true;
   } catch {
     return false;
