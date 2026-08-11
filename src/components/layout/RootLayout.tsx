@@ -109,19 +109,22 @@ export function RootLayout() {
       <MobileBottomNav />
       <WhatsAppFab />
       <AppUpdateMessenger />
+      {/* richColors volontairement absent : les pastilles vert/bleu de sonner
+          violent la palette — les couleurs sémantiques passent par notify.ts
+          (liseré gauche) et les tokens maison. */}
       <Toaster
         position="top-center"
-        richColors
         closeButton
         toastOptions={{
           duration: 4000,
           style: {
             borderRadius: "16px",
             backdropFilter: "blur(8px)",
-            background: "rgba(255,255,255,0.97)",
-            color: "var(--color-ink, #111827)",
+            background: "var(--app-surface, rgba(255,255,255,0.97))",
+            border: "1px solid var(--app-border, #EFC9D1)",
+            color: "var(--color-ink, #0B0B12)",
             fontSize: "13px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+            boxShadow: "0 8px 24px rgba(11,11,18,0.14)",
           },
           classNames: {
             toast: "lsc-toast",

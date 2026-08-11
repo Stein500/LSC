@@ -249,7 +249,7 @@ export default function Parametres() {
                   : "Les demandes en attente seront renvoyées dès que la connexion revient."}
               </p>
               <div className="mt-4 flex items-center gap-2">
-                <span className={`w-3 h-3 rounded-full shrink-0 ${online ? (pending > 0 ? "bg-amber-500" : "bg-[var(--color-citron)]") : "bg-red-500"}`} />
+                <span className={`w-3 h-3 rounded-full shrink-0 ${online ? (pending > 0 ? "bg-[var(--color-saffron)]" : "bg-[var(--color-citron)]") : "bg-[var(--color-citron-d)]"}`} />
                 <span className="text-sm font-medium break-words">
                   {online ? (pending > 0 ? `Statut : ${pending} à envoyer` : "Statut : actif") : "Statut : hors-ligne"}
                 </span>
@@ -410,7 +410,7 @@ function TicketRow({
         <button
           type="button"
           onClick={() => onDelete(ticket)}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-line)] hover:border-red-300 bg-white text-[var(--color-ink-soft)] shrink-0"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-line)] hover:border-[var(--color-citron)] bg-white text-[var(--color-ink-soft)] shrink-0"
           title="Retirer de la liste"
           aria-label="Supprimer"
         >

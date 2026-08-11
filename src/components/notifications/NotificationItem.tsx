@@ -30,12 +30,13 @@ const ICONS = {
   action: Zap,
 } as const;
 
+/* Sémantique couture (miroir de notify.ts) — zéro bleu/vert */
 const COLORS = {
-  success: "#10B981",
-  info: "#3B82F6",
-  warning: "#F59E0B",
-  error: "#EF4444",
-  action: "var(--color-orange, #FF6A00)",
+  success: "#8B4513",
+  info: "#B988A6",
+  warning: "#F4B860",
+  error: "#D1232A",
+  action: "var(--color-gold-thread, #C9A87C)",
 } as const;
 
 function timeAgo(ts: number): string {
@@ -131,7 +132,7 @@ export function NotificationItem({
       onTouchEnd={onTouchEnd}
     >
       <div
-        className="absolute inset-y-0 right-0 w-28 bg-red-500/90 text-white flex items-center justify-center"
+        className="absolute inset-y-0 right-0 w-28 bg-[var(--color-citron)]/90 text-white flex items-center justify-center"
         style={{ opacity: Math.min(Math.abs(swipe) / 90, 1) }}
         aria-hidden="true"
       >

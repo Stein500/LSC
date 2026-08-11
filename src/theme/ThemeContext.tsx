@@ -27,7 +27,7 @@ function resolveTheme(mode: ThemeMode): ResolvedTheme {
 function getThemeColor(theme: ResolvedTheme) {
   switch (theme) {
     case "dark":
-      return "#101b24";
+      return "#150D11";
     case "amoled":
       return "#000000";
     default:

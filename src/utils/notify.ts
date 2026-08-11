@@ -21,14 +21,18 @@ import { addNotification, type NotificationItem, type NotificationKind } from "@
 import { playNotificationAudio, speakSoft, type NotificationAudioKind } from "@/utils/notificationAudio";
 
 /* --------------------------------------------------------------
- * Couleurs du design system (alignées sur tokens CSS du site)
+ * Couleurs du design system — sémantique couture, zéro bleu/vert :
+ *   success = marron (c'est cousu, validé)   info  = mauve poudré
+ *   warning = safran (fil tendu, attention)  error = rouge colombe
+ *   action  = fil d'or (éclair d'atelier)
+ * Alignées sur les tokens CSS de src/index.css.
  * -------------------------------------------------------------- */
 const KIND_COLORS: Record<NotificationKind, string> = {
-  success: "#10B981",
-  info: "#3B82F6",
-  warning: "#F59E0B",
-  error: "#EF4444",
-  action: "var(--color-orange, #FF6A00)",
+  success: "#8B4513",
+  info: "#B988A6",
+  warning: "#F4B860",
+  error: "#D1232A",
+  action: "var(--color-gold-thread, #C9A87C)",
 };
 
 const KIND_DURATION: Record<NotificationKind, number> = {
@@ -63,13 +67,15 @@ function buildToastOptions(kind: NotificationKind, description?: string) {
     description,
     duration: KIND_DURATION[kind],
     style: {
-      borderLeft: `4px solid ${KIND_COLORS[kind]}`,
       borderRadius: "16px",
       backdropFilter: "blur(8px)",
-      background: "rgba(255,255,255,0.97)",
-      color: "var(--color-ink, #111827)",
+      background: "var(--app-surface, rgba(255,255,255,0.97))",
+      border: "1px solid var(--app-border, #EFC9D1)",
+      // Après `border` pour l'emporter : le liseré de gauche porte la couleur du kind
+      borderLeft: `4px solid ${KIND_COLORS[kind]}`,
+      color: "var(--color-ink, #0B0B12)",
       fontSize: "13px",
-      boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+      boxShadow: "0 8px 24px rgba(11,11,18,0.14)",
     },
     className: "lsc-toast",
   };

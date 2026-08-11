@@ -1,10 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-08-11T15:24:00Z",
-  "build_id": "arena-6e6c211-optimisations",
+  "content_version": "2026-08-11T15:49:00Z",
+  "build_id": "arena-898adbb-polish-nuit-cacao",
   "changelog": [
-    "📤 Boutons « Partager » sur Merci et vos tickets — Sharesheet Android dans l'app.",
-    "📱 Paramètres : la version de l'app s'affiche et confirme qu'elle est à jour.",
-    "🧹 Ménage : code mort retiré, polices allégées — l'app démarre encore plus vite."
+    "🌙 Nuit cacao : le thème sombre se réchauffe — fini le voile bleuté, place au noir rosé et au marron profond.",
+    "🔔 Toasts et notifications cousus main : marron, mauve, safran, rouge colombe, fil d'or — plus un gramme de bleu ni de vert.",
+    "✨ Chargements en soie qui glisse, cases et curseurs au rouge colombe, barre de défilement rose teintée."
   ]
 }

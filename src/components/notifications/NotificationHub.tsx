@@ -356,7 +356,7 @@ function MoodCard({ mood }: { mood: MoodCard }) {
   const palette = {
     citron: "bg-[var(--color-citron)]/20 text-[var(--color-ink)] border-[var(--color-citron)]/30",
     orange: "bg-[var(--color-orange)]/12 text-[var(--color-ink)] border-[var(--color-orange)]/25",
-    rose: "bg-pink-100 text-[var(--color-ink)] border-pink-200",
+    rose: "bg-[var(--color-blush)] text-[var(--color-ink)] border-[var(--color-line)]",
     nuit: "bg-[var(--color-rose-soft)] text-[var(--color-ink)] border-[var(--color-line)]",
   } as const;
 

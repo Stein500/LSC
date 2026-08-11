@@ -51,13 +51,13 @@ export function ConnectionStatusIcon({ size = "md", withLabel = true, className 
       label: "Connecté — tout est prêt",
     },
     stale: {
-      dot: "bg-amber-500",
-      icon: "text-amber-600",
+      dot: "bg-[var(--color-saffron)]",
+      icon: "text-[var(--color-orange)]",
       label: `Connecté — ${pending} demande${pending > 1 ? "s" : ""} à envoyer`,
     },
     offline: {
-      dot: "bg-red-500",
-      icon: "text-red-500",
+      dot: "bg-[var(--color-citron)]",
+      icon: "text-[var(--color-citron)]",
       label: pending > 0
         ? `Hors-ligne — ${pending} demande${pending > 1 ? "s" : ""} en attente`
         : "Hors-ligne",
@@ -114,7 +114,7 @@ export function ConnectionStatusIcon({ size = "md", withLabel = true, className 
         <span
           className={cn(
             "ml-2 pr-2 text-[12px] font-semibold",
-            tone === "offline" ? "text-red-600" : tone === "stale" ? "text-amber-700" : "text-[var(--color-ink)]",
+            tone === "offline" ? "text-[var(--color-citron)]" : tone === "stale" ? "text-[var(--color-orange)]" : "text-[var(--color-ink)]",
           )}
         >
           {tone === "offline" ? "Hors-ligne" : tone === "stale" ? `À envoyer (${pending})` : "En ligne"}

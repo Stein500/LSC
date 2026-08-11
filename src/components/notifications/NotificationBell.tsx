@@ -36,7 +36,7 @@ export function NotificationBell({
         <Bell className={size === "sm" ? "w-5 h-5" : "w-4 h-4"} />
         {unread > 0 && (
           <span
-            className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white"
+            className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[var(--color-citron)] text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white"
             aria-hidden="true"
           >
             {unread > 9 ? "9+" : unread}
