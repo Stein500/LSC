@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Smartphone, X } from "lucide-react";
-import { env } from "@/utils/env";
 import { trackCtaClick } from "@/utils/api";
-import { isColombesApp } from "@/utils/appBridge";
+import { resolveUpdateOffer, type UpdateOffer } from "@/utils/appUpdate";
 
 /**
  * AppUpdateMessenger — le messager à trois visages 🕊️
@@ -26,9 +25,12 @@ import { isColombesApp } from "@/utils/appBridge";
  * Destination : navigateur EXTERNE uniquement — l'URL n'est JAMAIS
  * affichée en clair (ni libellé, ni infobulle).
  *
- * 📱 CONTRAT app (passerelle site↔app) : DANS l'app Colombes, le messager
- *    reste muet — l'app possède son propre canal de mise à jour native
- *    (GitHub Releases). Hors app, il veille comme toujours.
+ * 📱 CONTRAT app (passerelle site↔app) et VEILLE DES VERSIONS :
+ *    le site interroge EN DIRECT les GitHub Releases « Colombes » —
+ *    · navigateur : proposer dès qu'une release existe (lien APK direct) ;
+ *    · dans l'app : proposer UNIQUEMENT si la release dépasse la version
+ *      installée (ColombesApp.getAppVersion) — sinon silence radio ;
+ *    · GitHub injoignable : navigateur → lien habituel ; app → silence.
  */
 const FIRST_MS = 120_000; // 2 minutes
 const EVERY_MS = 300_000; // 5 minutes
@@ -44,11 +46,22 @@ export function AppUpdateMessenger() {
   const snoozed = useRef(false); // × pressé → silence pour la session
   const timers = useRef<number[]>([]);
   const reduceMotion = useReducedMotion();
-  // 📱 L'app s'auto-met-à-jour : le messager web n'a pas voix au chapitre
-  const inApp = isColombesApp();
+  // 🏷️ L'offre de mise à jour — undefined = vérification GitHub en cours
+  const [offer, setOffer] = useState<UpdateOffer | null | undefined>(undefined);
+
+  // 🔎 Veille live : dernière release GitHub vs version installée
+  useEffect(() => {
+    let live = true;
+    void resolveUpdateOffer().then((o) => {
+      if (live) setOffer(o);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   useEffect(() => {
-    if (inApp) return;
+    if (!offer) return; // à jour (app) ou rien à proposer → silence
     const later = (fn: () => void, ms: number) => timers.current.push(window.setTimeout(fn, ms));
     const hide = (ms: number) => later(() => setChannel(null), ms);
 
@@ -71,12 +84,12 @@ export function AppUpdateMessenger() {
       timers.current.forEach((t) => window.clearTimeout(t));
       timers.current = [];
     };
-  }, [inApp]);
+  }, [offer]);
 
   /** Navigateur externe uniquement ; URL jamais affichée. */
-  const openExternally = (origin: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const openExternally = (origin: string, url: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
     trackCtaClick(origin);
-    const w = window.open(env.appUpdateUrl, "_blank", "noopener,noreferrer");
+    const w = window.open(url, "_blank", "noopener,noreferrer");
     if (w) {
       e.preventDefault();
       w.opener = null;
@@ -89,8 +102,8 @@ export function AppUpdateMessenger() {
     setChannel(null);
   };
 
-  // 📱 Dans l'app : silence complet (mises à jour gérées nativement)
-  if (inApp) return null;
+  // 🕊️ Silence : vérification en cours, app à jour, ou rien à proposer
+  if (!offer) return null;
 
   return (
     <AnimatePresence>
@@ -123,22 +136,22 @@ export function AppUpdateMessenger() {
                 className="block text-sm font-bold truncate"
                 style={{ fontFamily: "var(--font-display)", color: "var(--color-marron-d, #5C2E0C)" }}
               >
-                Nouvelle version de l'app ✨
+                {offer.version ? `Nouvelle version v${offer.version} ✨` : "Nouvelle version de l'app ✨"}
               </span>
               <span className="block text-[11px] leading-snug" style={{ color: "#7A5F3F" }}>
                 Un souci avec l'app actuelle ? La version corrigée t'attend.
               </span>
               <a
-                href={env.appUpdateUrl}
+                href={offer.url}
                 target="_blank"
                 rel="noopener noreferrer external"
-                onClick={openExternally("app_update_toast")}
+                onClick={openExternally("app_update_toast", offer.url)}
                 aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
                 className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide transition-transform hover:scale-105 active:scale-95"
                 style={{ background: "var(--color-citron)", color: "#FFFFFF", boxShadow: "0 3px 10px rgba(209,35,42,0.45)" }}
               >
                 <Smartphone className="w-3.5 h-3.5" strokeWidth={2.4} aria-hidden="true" />
-                Mettre à jour
+                {offer.version ? `Mettre à jour · v${offer.version}` : "Mettre à jour"}
               </a>
             </span>
 
@@ -159,10 +172,10 @@ export function AppUpdateMessenger() {
       {channel === "bubble" && (
         <motion.a
           key="app-bubble"
-          href={env.appUpdateUrl}
+          href={offer.url}
           target="_blank"
           rel="noopener noreferrer external"
-          onClick={openExternally("app_update_bubble")}
+          onClick={openExternally("app_update_bubble", offer.url)}
           initial={reduceMotion ? { opacity: 0 } : { y: 26, opacity: 0, scale: 0.72 }}
           animate={reduceMotion ? { opacity: 1 } : { y: 0, opacity: 1, scale: 1 }}
           exit={reduceMotion ? { opacity: 0 } : { y: 16, opacity: 0, scale: 0.8 }}
@@ -186,9 +199,9 @@ export function AppUpdateMessenger() {
               aria-hidden="true"
             />
           )}
-          <Smartphone className="w-5 h-5 shrink-0" strokeWidth={2.2} style={{ color: "#FF6B6B" }} aria-hidden="true" />
+          <Smartphone className="w-5 h-5 shrink-0" strokeWidth={2.2} style={{ color: "#FF9E9E" }} aria-hidden="true" />
           <span className="text-[11px] font-extrabold tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>
-            Mettre à jour l'app
+            {offer.version ? `Mise à jour v${offer.version}` : "Mettre à jour l'app"}
           </span>
           <button
             type="button"

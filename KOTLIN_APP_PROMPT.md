@@ -221,7 +221,7 @@ Quand `ColombesApp.isApp()` renvoie `true`, le site s'allège et **délègue au 
 | 📜 **Scroll** | `scroll-behavior: auto` — l'élan natif du téléphone fait la loi |
 | 📣 **Partage** | `ColombesApp.share(text)` = Sharesheet Android quand utilisé |
 | 🔔 **Notification** | `ColombesApp.notify(title, body)` disponible côté bridge |
-| 🪡 **Messager §14** | **masqué dans l'app** (canal natif GitHub Releases) ; hors app = veille normale, lien externe obligatoire |
+| 🪡 **Messager §14 (veille LIVE)** | Le site interroge en direct `api.github.com/repos/Stein500/LSC/releases/latest` : navigateur → propose l'APK direct dès qu'une release existe ; **app → ne propose QUE si `release > ColombesApp.getAppVersion()`** (sinon silence). Lien toujours externe, jamais affiché |
 | 📄 **app-manifest.json** | servi à `/app-manifest.json` — bump `content_version` + `changelog` à chaque déploiement (notif « ✨ Nouveautés ») |
 | 🎭 **Splash web** | garde `isApp()` + `aria-label="Ouverture de l'atelier"` **EXACT** (sélecteur CSS de masquage côté app — ne jamais renommer) |
 | 🧭 WhatsApp / tel / mail / maps | gérés par `shouldOverrideUrlLoading` (§5) — le site ne change rien |
