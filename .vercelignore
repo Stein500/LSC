@@ -7,6 +7,7 @@ node_modules/
 dist/
 *.log
 
-# Livrable zip (transport uniquement — jamais déployé)
+# Livrables zip (transport uniquement — jamais déployés)
 lsc-colombes-patch.zip
 lsc-colombes-complet.zip
+lsc-colombes-leger.zip
