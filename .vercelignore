@@ -8,4 +8,5 @@ dist/
 *.log
 
 # Livrable zip (transport uniquement — jamais déployé)
+lsc-colombes-patch.zip
 lsc-colombes-complet.zip
