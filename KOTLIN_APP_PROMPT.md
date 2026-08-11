@@ -206,4 +206,23 @@ Rythme : première apparition 2 min après l'arrivée, puis toutes les 5 minutes
 3. **L'URL de mise à jour ne s'affiche JAMAIS en clair** — ni dans l'UI, ni dans un Toast/Snackbar/dialogue, ni dans la barre de titre. Elle vit uniquement dans la configuration (`VITE_APP_UPDATE_URL` côté web, constante privée côté app).
 4. Même **depuis l'app installée**, le clic ouvre le navigateur externe : c'est le but (récupérer l'APK corrigé hors de l'app défaillante).
 
+### 15. « Mode App » côté site — l'app prend le relais (contrat web, déjà implémenté)
+
+Quand `ColombesApp.isApp()` renvoie `true`, le site s'allège et **délègue au natif** (couche `src/utils/appBridge.ts`, activée dès le boot — `html[data-colombes-app="true"]`, avant le premier paint) :
+
+| Domaine | Comportement web en Mode App |
+|---|---|
+| 📥 **Ticket PDF** | `window.ColombesApp.downloadBase64Pdf(base64, filename)` remplace le `<a download>` (inefficace en WebView) — DownloadManager + notification « Ticket reçu » |
+| 📊 **Barre de progression** | la barre web (`ScrollProgress`) **s'efface** — la barre native 3 dp règne |
+| 🎬 **Splash** | le splash web reste **muet** (le splash natif a déjà joué) |
+| 🍃 **Animations framer-motion** | `MotionConfig reducedMotion="always"` → plus de transforms/layouts JS ; fondus seulement ; transitions de page instantanées |
+| 🌫 **Aurora & halos flous** | retirés (GPU du téléphone épargné) — le rose poudré reste souverain |
+| ✨ **Animations CSS ambiantes** | `lsc-drift/bob/breathe/sheen/twinkle…` suspendues ; `backdrop-filter` → surfaces franches ; spotlight tactile désactivé |
+| 📜 **Scroll** | `scroll-behavior: auto` — l'élan natif du téléphone fait la loi |
+| 📣 **Partage** | `ColombesApp.share(text)` = Sharesheet Android quand utilisé |
+| 🪡 **Messager §14** | **inchangé** — jamais masqué, lien externe obligatoire |
+| 🧭 WhatsApp / tel / mail / maps | gérés par `shouldOverrideUrlLoading` (§5) — le site ne change rien |
+
+**Impératifs côté Kotlin :** injecter le bridge **avant** `loadUrl()` (`addJavascriptInterface` dans l'init de la WebView, jamais après), garder les 4 méthodes du §8 stables (le site teste leur présence une par une — une méthode absente = repli web silencieux, rien ne casse), et laisser `hardwareAccelerated="true"` pour que le CSS reste fluide.
+
 ## ══════════════ FIN DU PROMPT ══════════════

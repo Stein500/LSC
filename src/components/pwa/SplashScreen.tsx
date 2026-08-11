@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { isColombesApp } from "@/utils/appBridge";
 
 // ============================================================================
 // SPLASH « OUVERTURE DE MAISON » — v8 (2026)
@@ -48,7 +49,9 @@ export function SplashScreen() {
   const [acte, setActe] = useState(0);
   const timers = useRef<number[]>([]);
 
-  const inApp = typeof window !== "undefined" && (window as any).ColombesApp?.isApp?.();
+  // 📱 Dans l'app Colombes, le SPLASH NATIF a déjà fait le spectacle —
+  //    le splash web reste muet (double rideau = mauvais théâtre).
+  const inApp = isColombesApp();
   const skip = reduceMotion || inApp;
 
   const close = useCallback(() => setOpening(true), []);

@@ -5,6 +5,7 @@
  */
 
 import { isValidRef } from "./format";
+import { downloadPdfViaApp, isColombesApp } from "./appBridge";
 
 /**
  * Décode une chaîne base64 en ArrayBuffer.
@@ -21,6 +22,10 @@ function base64ToBuffer(b64: string): ArrayBuffer {
 /**
  * Déclenche le téléchargement d'un PDF à partir de sa représentation base64.
  * Retourne `true` si le téléchargement a été initié.
+ *
+ * 🪡 Dans l'app Colombes (WebView), un `<a download>` est sans effet :
+ * on remet le base64 au natif (DownloadManager + lecteur PDF) via le bridge.
+ * En navigateur, le blob classique prend le relais.
  */
 export function downloadPdfBase64(
   base64: string,
@@ -29,6 +34,8 @@ export function downloadPdfBase64(
 ): boolean {
   try {
     if (!base64 || !isValidRef(ref)) return false;
+    // 📱 L'app prend le relais — notification « Ticket reçu » côté natif
+    if (isColombesApp() && downloadPdfViaApp(base64, filename)) return true;
     const bytes = base64ToBuffer(base64);
     const blob = new Blob([bytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);

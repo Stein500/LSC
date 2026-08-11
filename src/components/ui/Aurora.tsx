@@ -1,9 +1,13 @@
 import { cn } from "@/utils/cn";
+import { isColombesApp } from "@/utils/appBridge";
 
 /**
  * Aurora — fond animé de halos de couleur (toujours la palette de
  * l'atelier : rose poudré, rouge colombe, marron doré) qui dérivent lentement.
- * 100% CSS (blur + keyframes), zéro JS par frame → aucun coût CPU.
+ * 100% CSS (blur + keyframes), zéro JS par frame → aucun coût CPU navigateur.
+ *
+ * 📱 Dans l'app Colombes (WebView) : les gros blurs animés coûtent cher au
+ * GPU du téléphone → l'Aurora se retire, le fond rose poudré reste souverain.
  *
  * Usage : <Aurora className="absolute inset-0 -z-10" intensity="soft" />
  */
@@ -16,6 +20,9 @@ export function Aurora({
   intensity?: "soft" | "normal" | "vivid";
   variant?: "sky" | "warm" | "night";
 }) {
+  // 📱 Relais natif : pas de halos animés dans la WebView (GPU épargné)
+  if (isColombesApp()) return null;
+
   const opacity =
     intensity === "soft" ? "opacity-50" : intensity === "vivid" ? "opacity-90" : "opacity-70";
 

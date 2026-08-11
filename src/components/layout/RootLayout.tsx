@@ -18,6 +18,7 @@ import { trackFormSubmit } from "@/utils/api";
 import { onSuccessSmartToast } from "@/hooks/useSmartToasts";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { PageTransition } from "@/components/motion/PageTransition";
+import { isColombesApp } from "@/utils/appBridge";
 
 /**
  * Layout racine — structure globale :
@@ -93,7 +94,9 @@ export function RootLayout() {
     >
       <SkipToContent />
       <SplashScreen />
-      <ScrollProgress />
+      {/* 📱 Dans l'app : la barre de progression native (3 dp, haut d'écran)
+          prend le relais — la barre web s'efface pour ne pas doubler. */}
+      {!isColombesApp() && <ScrollProgress />}
       <Nav />
       <main id="main-content" tabIndex={-1} className={`flex-1 ${NAV_PADDING}`}>
         <ErrorBoundary>
