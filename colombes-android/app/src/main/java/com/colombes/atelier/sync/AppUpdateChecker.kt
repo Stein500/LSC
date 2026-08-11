@@ -13,8 +13,8 @@ data class AppUpdate(
 )
 
 /**
- * Interroge la dernière Release GitHub du repo et compare avec la version
- * installée. Retourne null si aucune mise à jour.
+ * Interroge les Releases GitHub et compare avec la version installée.
+ * Ne propose une mise à jour que si une version strictement supérieure existe.
  */
 object AppUpdateChecker {
 
@@ -29,7 +29,6 @@ object AppUpdateChecker {
             val text = conn.inputStream.bufferedReader().use { it.readText() }
             val json = JSONArray(text)
 
-            // Cherche la plus haute version semver parmi toutes les releases
             var bestTag: String? = null
             var bestUrl: String? = null
             for (i in 0 until json.length()) {
