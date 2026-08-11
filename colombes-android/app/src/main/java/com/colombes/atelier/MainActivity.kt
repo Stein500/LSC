@@ -13,7 +13,6 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
@@ -26,13 +25,11 @@ import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -40,16 +37,12 @@ import com.colombes.atelier.databinding.ActivityMainBinding
 import com.colombes.atelier.notifications.NotificationHelper
 import com.colombes.atelier.notifications.NotificationScheduler
 import com.colombes.atelier.offline.OfflineFragment
-import com.colombes.atelier.sync.AppUpdate
-import com.colombes.atelier.sync.AppUpdateChecker
 import com.colombes.atelier.sync.UpdateWorker
 import com.colombes.atelier.web.ColombesJsBridge
 import com.colombes.atelier.web.ColombesWebChromeClient
 import com.colombes.atelier.web.ColombesWebView
 import com.colombes.atelier.web.ColombesWebViewClient
 import com.colombes.atelier.web.DownloadHelper
-import java.io.File
-import java.net.URL
 import java.util.concurrent.TimeUnit
 
 /**
@@ -122,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         scheduleUpdateCheck()
-        checkAppUpdate()
     }
 
     private fun loadPath(path: String) {
@@ -330,71 +322,6 @@ class MainActivity : AppCompatActivity() {
         handler.postDelayed({
             binding.splashOverlay.root.visibility = View.GONE
         }, 560)
-    }
-
-    // ------------------------------------------------------------------
-    // MAJ application (GitHub Releases)
-    // ------------------------------------------------------------------
-    private fun checkAppUpdate() {
-        Thread {
-            val update = AppUpdateChecker.checkForUpdate()
-            runOnUiThread {
-                if (update != null) promptUpdate(update)
-            }
-        }.start()
-    }
-
-    private fun promptUpdate(update: AppUpdate) {
-        val prefs = getSharedPreferences("colombes_prefs", MODE_PRIVATE)
-        if (prefs.getString("ignored_version", null) == update.versionName) return
-
-        AlertDialog.Builder(this)
-            .setTitle("✨ Nouvelle version disponible")
-            .setMessage(
-                "Une nouvelle version (${update.versionName}) est disponible.\n" +
-                        "Améliorez votre expérience Colombes."
-            )
-            .setPositiveButton("Mettre à jour") { _, _ -> downloadAndInstall(update) }
-            .setNegativeButton("Plus tard") { _, _ -> }
-            .setNeutralButton("Ignorer cette version") { _, _ ->
-                prefs.edit().putString("ignored_version", update.versionName).apply()
-            }
-            .setCancelable(true)
-            .show()
-    }
-
-    private fun downloadAndInstall(update: AppUpdate) {
-        Toast.makeText(this, "Téléchargement de la mise à jour…", Toast.LENGTH_SHORT).show()
-        Thread {
-            try {
-                val conn = URL(update.downloadUrl).openConnection()
-                conn.connect()
-                val input = conn.getInputStream()
-                val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
-                dir.mkdirs()
-                val file = File(dir, "colombes-atelier-${update.versionName}.apk")
-                file.outputStream().use { out -> input.copyTo(out) }
-                runOnUiThread { installApk(file) }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(this, "Téléchargement impossible. Réessaie plus tard.", Toast.LENGTH_LONG).show()
-                }
-            }
-        }.start()
-    }
-
-    private fun installApk(file: File) {
-        try {
-            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "application/vnd.android.package-archive")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Impossible d'ouvrir l'installation.", Toast.LENGTH_LONG).show()
-        }
     }
 
     // ------------------------------------------------------------------
