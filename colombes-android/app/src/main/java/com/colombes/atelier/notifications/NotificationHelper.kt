@@ -59,7 +59,7 @@ object NotificationHelper {
         )
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_stat_colombes)
-            .setColor(androidx.core.content.ContextCompat.getColor(context, R.color.citron))
+            .setColor(androidx.core.content.ContextCompat.getColor(context, R.color.rouge_colombe))
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
