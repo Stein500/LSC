@@ -26,14 +26,14 @@
         android:usesCleartextTraffic="false"
         android:theme="@style/Theme.Colombes">
 
-        <!-- HomeActivity : hub natif élégant (écran de démarrage) -->
+        <!-- HomeActivity : hub natif élégant (écran de démarrage), barre de statut rose -->
         <activity
             android:name=".HomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Colombes.Splash">
+            android:theme="@style/Theme.Colombes.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -181,6 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card"
+                android:elevation="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="18dp">
@@ -235,6 +236,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card"
+                android:elevation="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="18dp">
@@ -289,6 +291,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card"
+                android:elevation="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="18dp">
@@ -343,6 +346,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card"
+                android:elevation="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="18dp">

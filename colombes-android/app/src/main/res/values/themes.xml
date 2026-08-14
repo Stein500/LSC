@@ -22,4 +22,12 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <!-- Thème du hub natif : barre de statut rose poudré (pas noire) -->
+    <style name="Theme.Colombes.Home" parent="Theme.Colombes">
+        <item name="android:statusBarColor">@color/rose_poudre</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowBackground">@color/rose_poudre</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
 </resources>
