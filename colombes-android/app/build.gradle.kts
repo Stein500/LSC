@@ -21,10 +21,10 @@ android {
         applicationId = "com.colombes.atelier"
         minSdk = 24
         targetSdk = 35
-        versionCode = 14
-        versionName = "4.2.8"
+        versionCode = 15
+        versionName = "4.3.0"
 
-        // APK name: colombes-atelier-4.2.8-release.apk
+        // APK name: colombes-atelier-4.3.0-release.apk
         setProperty("archivesBaseName", "colombes-atelier-${versionName}")
     }
 

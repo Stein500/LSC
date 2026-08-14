@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/or_vif" />
+            <solid android:color="@color/rouge_colombe_dark" />
             <corners android:radius="30dp" />
         </shape>
     </item>
@@ -10,9 +10,9 @@
         <shape android:shape="rectangle">
             <gradient
                 android:angle="0"
-                android:startColor="@color/gold_clair"
-                android:centerColor="@color/or"
-                android:endColor="@color/or_vif" />
+                android:startColor="@color/rouge_colombe"
+                android:centerColor="@color/rouge_colombe"
+                android:endColor="@color/rouge_colombe_dark" />
             <corners android:radius="30dp" />
         </shape>
     </item>
