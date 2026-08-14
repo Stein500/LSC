@@ -49,6 +49,10 @@ class ColombesWebView @JvmOverloads constructor(
         // Fluidité
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
         overScrollMode = WebView.OVER_SCROLL_IF_CONTENT_SCROLLS
+
+        // Fond élégant (rose poudré) pendant le chargement — masque le blanc
+        // « navigateur » et rend la transition fluide vers le contenu.
+        setBackgroundColor(0xFFFBE7EB.toInt())
     }
 
     /** Charge la page d'accueil. */

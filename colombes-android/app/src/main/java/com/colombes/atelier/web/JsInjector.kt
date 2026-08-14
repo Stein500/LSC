@@ -23,6 +23,48 @@ object JsInjector {
                 } catch (e) {}
             }
 
+            // --- Injection CSS PREMIUM (sublime le site sans le modifier) ---
+            // Applique un habillage élégant par-dessus le site : polices,
+            // couleurs harmonisées, boutons arrondis, ombres douces.
+            (function injectPremiumCss() {
+                try {
+                    var style = document.createElement('style');
+                    style.id = 'colombes-premium';
+                    style.textContent =
+                        ':root {' +
+                        '  --colombes-rose: #FBE7EB;' +
+                        '  --colombes-rouge: #D1232A;' +
+                        '  --colombes-rouge-dark: #A31322;' +
+                        '  --colombes-marron: #5C2E0C;' +
+                        '  --colombes-or: #C9A87C;' +
+                        '}' +
+                        // Masque le scrollbar système (rendu "application")
+                        '::-webkit-scrollbar { width: 0 !important; height: 0 !important; }' +
+                        'html { scrollbar-width: none !important; }' +
+                        // Corps : fond doux + police moderne
+                        'body { font-family: "Poppins", system-ui, sans-serif !important; ' +
+                        '  background: #FBE7EB !important; -webkit-font-smoothing: antialiased; }' +
+                        // Titres en serif élégante
+                        'h1, h2, h3, .hero-title, [class*="title"] { ' +
+                        '  font-family: "Playfair Display", Georgia, serif !important; }' +
+                        // Boutons arrondis + ombre douce
+                        'button, [role="button"], a[href] { ' +
+                        '  border-radius: 999px !important; ' +
+                        '  -webkit-tap-highlight-color: transparent; }' +
+                        // Liens en rouge colombe
+                        'a { color: #A31322 !important; }' +
+                        // Transitions douces (effet premium)
+                        '* { transition: background-color .25s ease, transform .2s ease; }' +
+                        // Boutons au survol/tap léger
+                        'button:active, [role="button"]:active, a:active { ' +
+                        '  transform: scale(0.97); opacity: 0.92; }' +
+                        // Harmonise les images avec coins doux
+                        'img { border-radius: 16px; }' +
+                        '';
+                    (document.head || document.documentElement).appendChild(style);
+                } catch (e) {}
+            })();
+
             // --- Masque le splash du SITE dans l'app ---
             // C'est le splash NATIF de l'app qui s'exécute (fidèle au site).
             // On cache SEULEMENT le splash du site (via son aria-label), pas les

@@ -39,7 +39,7 @@ Le splash cinéma (`SplashScreen`) et le voile de boot (`SiteSplash`) doivent **
 
 ### 2.2 Le messager « Mettre à jour l'App » DOIT rester masqué in-app (déjà fait)
 `AppUpdateMessenger.tsx` (toast + bulle + footer) : garder le garde `isApp()` (ligne ~46).
-L'app a **son propre** système de mise à jour (GitHub Releases). Le messager du site ne doit **jamais** apparaître dans l'app.
+**L'app fait sa PROPRE veille de mise à jour** (Option B : elle vérifie les Releases GitHub et propose un téléchargement automatique + installation). Le messager du site ne doit **jamais** apparaître dans l'app, pour éviter le double affichage.
 
 ### 2.3 Le splash du site utilise `aria-label="Ouverture de l'atelier"` (CONTRAT)
 L'app masque le splash du site via ce sélecteur CSS :
@@ -86,16 +86,15 @@ L'app (hub natif) ouvre le site sur ces chemins. **Ne pas les changer** :
 
 ---
 
-## 5. Palette / identité (cohérence app ↔ site)
+## 5. Palette OFFICIELLE (synchronisée app ↔ site — NE PAS réintroduire bleu/vert)
 
-L'app reprend fidèlement les couleurs du site. Garde cette palette cohérente :
+L'app reprend fidèlement la palette du site. **Le bleu (`#87CEEB`) et le vert citron (`#BFFF00`) sont BANNIS** — remplacés par rose poudré + rouge colombe.
 | Rôle | Valeur |
 |---|---|
-| Fond clair / linen | `#F5EFE6` |
-| Accent or / fil d'or | `#C9A87C` |
-| Marron foncé (titres) | `#5C2E0C` |
-| Bleu ciel | `#87CEEB` |
-| Vert citron | `#BFFF00` |
+| Fond dominant | `#FBE7EB` (rose poudré) |
+| Accent signature | `#D1232A` (rouge colombe), foncé `#A31322` |
+| Secondaire | `#8B4513` / `#5C2E0C` (marron) |
+| Finitions | `#C9A87C` fil d'or, `#0B0B12` noir, `#FFFFFF` blanc |
 
 ---
 
@@ -106,6 +105,12 @@ L'app reprend fidèlement les couleurs du site. Garde cette palette cohérente :
 3. ✅ **Ne pas casser** les modales/drawers (notifications) — l'app ne les masque plus.
 4. ✅ **Maintenir** `public/app-manifest.json` à jour (bump `content_version` à chaque changement).
 5. ✅ **Garder** les routes `/`, `/services`, `/formation`, `/contact`, `/inspirations`.
-6. ✅ **Respecter** la palette (or, marron, bleu ciel, citron, linen).
+6. ✅ **Respecter** la palette (rose poudré, rouge colombe, marron, or) — **sans bleu ni vert**.
 
 **Si tu respectes ces 6 points, le site et l'app resteront parfaitement synchronisés.**
+
+---
+
+## 7. WebView premium (l'app sublime le site SANS le modifier)
+
+L'app injecte un habillage CSS/JS par-dessus le site (polices Playfair/Poppins, coins arrondis, couleurs harmonisées, scrollbar masqué, fond rose poudré). **Ne rien casser** : ne pas ajouter de fond/bordures durs qui bloqueraient ce surcouche. Le site reste inchangé dans son code.
