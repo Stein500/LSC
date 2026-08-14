@@ -74,7 +74,7 @@ class HomeActivity : AppCompatActivity() {
         }
         splashBinding?.splashBrandHome?.apply {
             alpha = 0f
-            translateY = 30f
+            translationY = 30f
             animate().alpha(1f).translationY(0f).setStartDelay(250).setDuration(600).start()
         }
         // Barre de progression
