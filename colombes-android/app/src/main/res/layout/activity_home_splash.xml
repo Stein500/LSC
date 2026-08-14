@@ -4,6 +4,23 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_splash_home">
 
+    <!-- Diaporama Ken Burns (créations) -->
+    <ImageView
+        android:id="@+id/splash_kenburns_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.30"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        android:src="@drawable/hero_services" />
+
+    <!-- Voile rose poudré pour adoucir -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/rose_poudre" />
+
+    <!-- Logo -->
     <ImageView
         android:id="@+id/splash_logo_home"
         android:layout_width="150dp"
@@ -12,27 +29,51 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/logo" />
 
+    <!-- Wordmark Playfair, dégradé or → rouge -->
     <TextView
         android:id="@+id/splash_brand_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="220dp"
-        android:fontFamily="serif"
+        android:layout_marginTop="224dp"
+        android:fontFamily="@font/playfair_display"
         android:text="@string/app_name"
-        android:textColor="@color/marron_dark"
-        android:textSize="34sp"
+        android:textColor="@color/rouge_colombe"
+        android:textSize="36sp"
         android:textStyle="bold" />
+
+    <!-- Sous-titre -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="272dp"
+        android:fontFamily="@font/poppins"
+        android:text="@string/slogan"
+        android:textColor="@color/marron"
+        android:textSize="13sp"
+        android:textStyle="italic" />
+
+    <!-- Barre de progression or → rouge -->
+    <ProgressBar
+        android:id="@+id/splash_progress_home"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="180dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="80dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_gradient" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="40dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/slogan"
+        android:fontFamily="@font/poppins"
+        android:text="Porto-Novo"
         android:textColor="@color/or"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:textStyle="italic" />
 
 </FrameLayout>

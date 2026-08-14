@@ -55,6 +55,13 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun animateSplash() {
+        // Ken Burns : zoom lent sur l'image de fond
+        splashBinding?.splashKenburnsHome?.apply {
+            scaleX = 1f
+            scaleY = 1f
+            animate().scaleX(1.15f).scaleY(1.15f).setDuration(2000)
+                .setInterpolator(DecelerateInterpolator()).start()
+        }
         splashBinding?.splashLogoHome?.apply {
             alpha = 0f
             scaleX = 0.8f
@@ -67,8 +74,25 @@ class HomeActivity : AppCompatActivity() {
         }
         splashBinding?.splashBrandHome?.apply {
             alpha = 0f
-            animate().alpha(1f).setStartDelay(250).setDuration(600).start()
+            translateY = 30f
+            animate().alpha(1f).translationY(0f).setStartDelay(250).setDuration(600).start()
         }
+        // Barre de progression
+        splashBinding?.splashProgressHome?.apply {
+            alpha = 0f
+            animate().alpha(1f).setStartDelay(100).setDuration(300).start()
+            animateProgressBar(this)
+        }
+    }
+
+    private fun animateProgressBar(pb: android.widget.ProgressBar) {
+        pb.progress = 0
+        object : android.os.CountDownTimer(2000, 40) {
+            override fun onTick(millisUntilFinished: Long) {
+                pb.progress = ((2000 - millisUntilFinished) * 100 / 2000).toInt()
+            }
+            override fun onFinish() { pb.progress = 100 }
+        }.start()
     }
 
     private fun setupCards() {
