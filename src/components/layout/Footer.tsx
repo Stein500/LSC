@@ -4,9 +4,11 @@ import type { LucideIcon } from "lucide-react";
 import { CONTACT } from "@/data/content";
 import { env } from "@/utils/env";
 import { buildWhatsAppUrl } from "@/utils/whatsapp";
-import { trackPhone, trackWhatsapp, trackCtaClick } from "@/utils/api";
+import { trackPhone, trackWhatsapp } from "@/utils/api";
 import { SmartImage } from "@/components/ui/SmartImage";
 import { isColombesApp } from "@/utils/appBridge";
+import { isPwaInstalled } from "@/hooks/useInstallPrompt";
+import { installAtelier } from "@/utils/install";
 
 const SUPPORT_EMAIL = env.atelierEmail.trim();
 
@@ -16,6 +18,8 @@ type FooterAction = {
   icon: LucideIcon;
   external?: boolean;
   onClick?: () => void;
+  /** Installe la PWA au clic (plus de lien sortant — tout simple). */
+  install?: boolean;
 };
 
 const MAILTO = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
@@ -36,9 +40,10 @@ export function Footer() {
     },
     ...(SUPPORT_EMAIL ? [{ label: "Email", href: MAILTO, icon: Mail as LucideIcon }] : []),
     { label: "Itinéraire", href: env.mapsUrl, icon: MapPin, external: true },
-    // 📱 Icône « App » masquée dans l'app elle-même (mises à jour natives §contrat)
-    ...(!isColombesApp()
-      ? [{ label: "App", href: env.appUpdateUrl, icon: Smartphone, external: true, onClick: () => trackCtaClick("app_update_footer") }]
+    // 🪡 Icône « Installer » — pose la PWA d'un geste. Masquée dans l'app
+    // Colombes native (déjà installée) et une fois la PWA posée.
+    ...(!isColombesApp() && !isPwaInstalled()
+      ? [{ label: "Installer", href: "#installer-l-atelier", icon: Smartphone, install: true }]
       : []),
     ...(env.facebookUrl ? [{ label: "Facebook", href: env.facebookUrl, icon: Facebook as LucideIcon, external: true }] : []),
     ...(env.instagramUrl ? [{ label: "Instagram", href: env.instagramUrl, icon: Instagram as LucideIcon, external: true }] : []),
@@ -106,7 +111,14 @@ export function Footer() {
             <a
               key={a.label}
               href={a.href}
-              onClick={a.onClick}
+              onClick={(e) => {
+                if (a.install) {
+                  e.preventDefault();
+                  void installAtelier("footer_install");
+                  return;
+                }
+                a.onClick?.();
+              }}
               {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="group flex flex-col items-center gap-2"
               aria-label={a.label}

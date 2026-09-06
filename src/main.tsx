@@ -23,19 +23,30 @@ try {
 }
 
 // ---------------------------------------------------------------
-// KILL-SWITCH — le site n'est plus une PWA.
-// Si un ancien visiteur a encore le service worker / les caches de
-// l'époque PWA, on les désinstalle une fois, proprement, puis on
-// ne re-touche plus à rien (perf : boucle courte, best-effort).
+// 🪡 PWA — l'atelier est installable : le bouton « Installer »
+// déclenche l'invite native (beforeinstallprompt → prompt()).
+// Le service worker garde la coquille sous le coude (statique en
+// cache, HTML réseau d'abord, /api jamais caché).
+// 📱 Dans l'app Colombes native (WebView) : PAS de SW — le natif
+// pilote déjà le cycle de vie, et l'ancienne PWA serait une rivale.
 // ---------------------------------------------------------------
 if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .getRegistrations()
-    .then((regs) => Promise.all(regs.map((r) => r.unregister())))
-    .catch(() => {});
-}
-if (typeof caches !== "undefined") {
-  caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))).catch(() => {});
+  try {
+    if (isColombesApp()) {
+      // Filet de propreté : si un reste d'ancien SW traîne dans la
+      // WebView legacy, on le désinstalle une fois, sans bruit.
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((regs) => Promise.all(regs.map((r) => r.unregister())))
+        .catch(() => {});
+    } else {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      });
+    }
+  } catch {
+    /* navigateur classique : rien à faire */
+  }
 }
 
 createRoot(document.getElementById("root")!).render(

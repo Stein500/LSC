@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Smartphone, Sun, Tickets } from "lucide-react";
+import { Bell, Download, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Smartphone, Sun, Tickets } from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -28,6 +28,8 @@ import { notify } from "@/utils/notify";
 import { formatDateFR } from "@/utils/format";
 import { isColombesApp, colombesAppVersion } from "@/utils/appBridge";
 import { resolveUpdateOffer, type UpdateOffer } from "@/utils/appUpdate";
+import { useInstallPrompt, isAppleTouch } from "@/hooks/useInstallPrompt";
+import { installAtelier } from "@/utils/install";
 
 export default function Parametres() {
   const { items: notifications, unread, clear: clearAll } = useNotifications();
@@ -169,6 +171,11 @@ export default function Parametres() {
                 </div>
               </Card>
             )}
+
+            {/* 🪡 Carte installation — visiteurs WEB uniquement (l'app,
+                elle, affiche sa version juste au-dessus). L'atelier
+                s'installe comme une PWA, sans store. */}
+            {!inApp && <InstallAtelierCard />}
 
           </div>
 
@@ -418,5 +425,50 @@ function TicketRow({
         </button>
       </div>
     </li>
+  );
+}
+
+/**
+ * InstallAtelierCard — la petite carte qui pose l'atelier dans la poche 🪡
+ * Visible côté WEB seulement (la version app Colombes a sa propre carte).
+ * Trois visages : installée → merci ; invite prête → bouton natif ;
+ * sinon → le mode d'emploi (iOS Partager / menu ⋮ Android-desktop).
+ */
+function InstallAtelierCard() {
+  const { canInstall, isInstalled } = useInstallPrompt();
+
+  return (
+    <Card className="p-6 min-w-0">
+      <div className="flex items-start justify-between gap-4 mb-5">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Installation</p>
+          <h3 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>L'atelier dans votre poche</h3>
+        </div>
+        <Download className="w-6 h-6 text-[var(--color-orange)]" />
+      </div>
+      {isInstalled ? (
+        <p className="text-sm text-[var(--color-ink-soft)]">
+          Colombes est déjà installée ici — cousue main 🕊️
+        </p>
+      ) : (
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            type="button"
+            onClick={() => void installAtelier("parametres_install_card")}
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white bg-[var(--color-citron)] shadow-[0_8px_20px_-8px_rgba(209,35,42,0.55)] transition-transform hover:scale-[1.03] active:scale-95"
+          >
+            <Download className="w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
+            Installer l'atelier
+          </button>
+          <p className="text-sm text-[var(--color-ink-soft)]">
+            {canInstall
+              ? "Un geste, et l'atelier rejoint l'écran d'accueil — sans passer par un store."
+              : isAppleTouch()
+              ? "Bouton Partager ↑ → « Sur l'écran d'accueil » → Ajouter."
+              : "Menu ⋮ du navigateur → « Installer l'application »."}
+          </p>
+        </div>
+      )}
+    </Card>
   );
 }

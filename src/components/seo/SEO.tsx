@@ -32,7 +32,7 @@ const DEFAULTS = {
   description: `${env.schoolName}, atelier de couture à Porto-Novo : confection sur mesure, mercerie, layette et formations professionnelles.`,
 };
 
-const HERO_OG = "/images/header-colombes.webp";
+// (plus de HERO_OG : le visuel de partage est UNIQUE — FALLBACK_OG partout)
 const FALLBACK_OG = "/images/og-share-preview.webp";
 
 /**
@@ -64,8 +64,11 @@ export function SEO({
 }: Props) {
   const t = title ? `${title} — ${env.schoolName}` : DEFAULTS.title;
   const d = description || DEFAULTS.description;
-  // og-image par page (override) → hero → fallback
-  const img = ogImage || image || HERO_OG;
+  // 🕊️ Visuel de partage UNIQUE : quelle que soit la page, c'est la même
+  // bannière signature (wax & rose poudré) qui s'affiche sur WhatsApp,
+  // Facebook, Twitter… (les props ogImage/image restent acceptées pour
+  // rétrocompat mais ne changent plus le visuel).
+  const img = FALLBACK_OG;
   const url = `${env.siteUrl}${path || ""}`;
   const ogImageFull = `${env.siteUrl}${img}`;
   const ogFallbackFull = `${env.siteUrl}${FALLBACK_OG}`;

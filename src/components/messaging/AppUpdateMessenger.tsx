@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Smartphone, X } from "lucide-react";
+import { Download, Smartphone, X } from "lucide-react";
 import { trackCtaClick } from "@/utils/api";
 import { resolveUpdateOffer, type UpdateOffer } from "@/utils/appUpdate";
+import { isColombesApp } from "@/utils/appBridge";
+import { useInstallPrompt } from "@/hooks/useInstallPrompt";
+import { installAtelier } from "@/utils/install";
 
 /**
  * AppUpdateMessenger — le messager à trois visages 🕊️
@@ -25,12 +28,12 @@ import { resolveUpdateOffer, type UpdateOffer } from "@/utils/appUpdate";
  * Destination : navigateur EXTERNE uniquement — l'URL n'est JAMAIS
  * affichée en clair (ni libellé, ni infobulle).
  *
- * 📱 CONTRAT app (passerelle site↔app) et VEILLE DES VERSIONS :
- *    le site interroge EN DIRECT les GitHub Releases « Colombes » —
- *    · navigateur : proposer dès qu'une release existe (lien APK direct) ;
- *    · dans l'app : proposer UNIQUEMENT si la release dépasse la version
- *      installée (ColombesApp.getAppVersion) — sinon silence radio ;
- *    · GitHub injoignable : navigateur → lien habituel ; app → silence.
+ * 📱 CONTRAT app (passerelle site↔app) et VEILLE DES VERSIONS — double voie :
+ *    · NAVIGATEUR (web) : le messager invite à INSTALLER la PWA —
+ *      « L'atelier dans ta poche », tout simple, sans store. Plus d'APK
+ *      proposé aux visiteurs web (l'ancienne voie est rangée).
+ *    · Dans l'app Colombes native (legacy) : proposer UNIQUEMENT si la
+ *      release GitHub dépasse la version installée — sinon silence radio.
  */
 const FIRST_MS = 120_000; // 2 minutes
 const EVERY_MS = 300_000; // 5 minutes
@@ -48,6 +51,10 @@ export function AppUpdateMessenger() {
   const reduceMotion = useReducedMotion();
   // 🏷️ L'offre de mise à jour — undefined = vérification GitHub en cours
   const [offer, setOffer] = useState<UpdateOffer | null | undefined>(undefined);
+  // 🪡 Double voie : web → PWA ; app native legacy → veille des releases
+  const inApp = isColombesApp();
+  const { isInstalled: pwaInstalled } = useInstallPrompt();
+  const visible = inApp ? !!offer : !pwaInstalled;
 
   // 🔎 Veille live : dernière release GitHub vs version installée
   useEffect(() => {
@@ -61,7 +68,7 @@ export function AppUpdateMessenger() {
   }, []);
 
   useEffect(() => {
-    if (!offer) return; // à jour (app) ou rien à proposer → silence
+    if (!visible) return; // à jour / déjà installée → silence
     const later = (fn: () => void, ms: number) => timers.current.push(window.setTimeout(fn, ms));
     const hide = (ms: number) => later(() => setChannel(null), ms);
 
@@ -84,7 +91,7 @@ export function AppUpdateMessenger() {
       timers.current.forEach((t) => window.clearTimeout(t));
       timers.current = [];
     };
-  }, [offer]);
+  }, [visible]);
 
   /** Navigateur externe uniquement ; URL jamais affichée. */
   const openExternally = (origin: string, url: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -102,8 +109,14 @@ export function AppUpdateMessenger() {
     setChannel(null);
   };
 
-  // 🕊️ Silence : vérification en cours, app à jour, ou rien à proposer
-  if (!offer) return null;
+  // 🪡 Geste unique du visage web : l'invite PWA, puis on laisse la place
+  const installAndClose = (origin: string) => () => {
+    void installAtelier(origin);
+    setChannel(null);
+  };
+
+  // 🕊️ Silence : vérification en cours, app à jour, PWA déjà posée…
+  if (!visible) return null;
 
   return (
     <AnimatePresence>
@@ -132,27 +145,53 @@ export function AppUpdateMessenger() {
             </span>
 
             <span className="min-w-0 flex-1">
-              <span
-                className="block text-sm font-bold truncate"
-                style={{ fontFamily: "var(--font-display)", color: "var(--color-marron-d, #5C2E0C)" }}
-              >
-                {offer.version ? `Nouvelle version v${offer.version} ✨` : "Nouvelle version de l'app ✨"}
-              </span>
-              <span className="block text-[11px] leading-snug" style={{ color: "#7A5F3F" }}>
-                Un souci avec l'app actuelle ? La version corrigée t'attend.
-              </span>
-              <a
-                href={offer.url}
-                target="_blank"
-                rel="noopener noreferrer external"
-                onClick={openExternally("app_update_toast", offer.url)}
-                aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
-                className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide transition-transform hover:scale-105 active:scale-95"
-                style={{ background: "var(--color-citron)", color: "#FFFFFF", boxShadow: "0 3px 10px rgba(209,35,42,0.45)" }}
-              >
-                <Smartphone className="w-3.5 h-3.5" strokeWidth={2.4} aria-hidden="true" />
-                {offer.version ? `Mettre à jour · v${offer.version}` : "Mettre à jour"}
-              </a>
+              {inApp && offer ? (
+                <>
+                  <span
+                    className="block text-sm font-bold truncate"
+                    style={{ fontFamily: "var(--font-display)", color: "var(--color-marron-d, #5C2E0C)" }}
+                  >
+                    {offer.version ? `Nouvelle version v${offer.version} ✨` : "Nouvelle version de l'app ✨"}
+                  </span>
+                  <span className="block text-[11px] leading-snug" style={{ color: "#7A5F3F" }}>
+                    Un souci avec l'app actuelle ? La version corrigée t'attend.
+                  </span>
+                  <a
+                    href={offer.url}
+                    target="_blank"
+                    rel="noopener noreferrer external"
+                    onClick={openExternally("app_update_toast", offer.url)}
+                    aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
+                    className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide transition-transform hover:scale-105 active:scale-95"
+                    style={{ background: "var(--color-citron)", color: "#FFFFFF", boxShadow: "0 3px 10px rgba(209,35,42,0.45)" }}
+                  >
+                    <Smartphone className="w-3.5 h-3.5" strokeWidth={2.4} aria-hidden="true" />
+                    {offer.version ? `Mettre à jour · v${offer.version}` : "Mettre à jour"}
+                  </a>
+                </>
+              ) : (
+                <>
+                  <span
+                    className="block text-sm font-bold truncate"
+                    style={{ fontFamily: "var(--font-display)", color: "var(--color-marron-d, #5C2E0C)" }}
+                  >
+                    L'atelier dans ta poche ✨
+                  </span>
+                  <span className="block text-[11px] leading-snug" style={{ color: "#7A5F3F" }}>
+                    Installe Colombes comme une app — sans store, tout simplement.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={installAndClose("app_install_toast")}
+                    aria-label="Installer l'atelier Colombes sur cet appareil"
+                    className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide transition-transform hover:scale-105 active:scale-95"
+                    style={{ background: "var(--color-citron)", color: "#FFFFFF", boxShadow: "0 3px 10px rgba(209,35,42,0.45)" }}
+                  >
+                    <Download className="w-3.5 h-3.5" strokeWidth={2.4} aria-hidden="true" />
+                    Installer l'atelier
+                  </button>
+                </>
+              )}
             </span>
 
             <button
@@ -170,18 +209,16 @@ export function AppUpdateMessenger() {
 
       {/* 🫧 Visage 2 — la bulle flottante (visiteur en lecture) */}
       {channel === "bubble" && (
-        <motion.a
+        <motion.div
           key="app-bubble"
-          href={offer.url}
-          target="_blank"
-          rel="noopener noreferrer external"
-          onClick={openExternally("app_update_bubble", offer.url)}
+          role={inApp ? undefined : "button"}
+          onClick={inApp ? undefined : installAndClose("app_install_bubble")}
           initial={reduceMotion ? { opacity: 0 } : { y: 26, opacity: 0, scale: 0.72 }}
           animate={reduceMotion ? { opacity: 1 } : { y: 0, opacity: 1, scale: 1 }}
           exit={reduceMotion ? { opacity: 0 } : { y: 16, opacity: 0, scale: 0.8 }}
           transition={{ type: "spring", stiffness: 380, damping: 22 }}
-          aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
-          className="fixed right-5 bottom-40 md:bottom-24 z-30 flex items-center gap-2 rounded-full pl-3 pr-2 py-2.5"
+          aria-label={inApp ? undefined : "Installer l'atelier Colombes sur cet appareil"}
+          className="fixed right-5 bottom-40 md:bottom-24 z-30 flex items-center gap-2 rounded-full pl-3 pr-2 py-2.5 cursor-pointer"
           style={{
             background: "radial-gradient(circle at 30% 25%, #2A2A36 0%, #0B0B12 70%)",
             border: "2px solid var(--color-citron)",
@@ -199,10 +236,28 @@ export function AppUpdateMessenger() {
               aria-hidden="true"
             />
           )}
-          <Smartphone className="w-5 h-5 shrink-0" strokeWidth={2.2} style={{ color: "#FF9E9E" }} aria-hidden="true" />
-          <span className="text-[11px] font-extrabold tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>
-            {offer.version ? `Mise à jour v${offer.version}` : "Mettre à jour l'app"}
-          </span>
+          {inApp && offer ? (
+            <a
+              href={offer.url}
+              target="_blank"
+              rel="noopener noreferrer external"
+              onClick={openExternally("app_update_bubble", offer.url)}
+              aria-label="Mettre à jour l'application Colombes — s'ouvre dans un navigateur externe"
+              className="flex items-center gap-2"
+            >
+              <Smartphone className="w-5 h-5 shrink-0" strokeWidth={2.2} style={{ color: "#FF9E9E" }} aria-hidden="true" />
+              <span className="text-[11px] font-extrabold tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>
+                {offer.version ? `Mise à jour v${offer.version}` : "Mettre à jour l'app"}
+              </span>
+            </a>
+          ) : (
+            <>
+              <Download className="w-5 h-5 shrink-0" strokeWidth={2.2} style={{ color: "#FF9E9E" }} aria-hidden="true" />
+              <span className="text-[11px] font-extrabold tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>
+                Installer l'atelier
+              </span>
+            </>
+          )}
           <button
             type="button"
             onClick={(e) => {
@@ -215,7 +270,7 @@ export function AppUpdateMessenger() {
           >
             <X className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
-        </motion.a>
+        </motion.div>
       )}
     </AnimatePresence>
   );

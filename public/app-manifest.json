@@ -1,10 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-08-11T16:20:00Z",
+  "content_version": "2026-09-06T17:05:00Z",
   "build_id": "arena-898adbb-polish-nuit-cacao",
   "changelog": [
-    "🌍 Le site vit sa double vie : visiteurs web et app Colombes partagent la même adresse — les mots de l'interface deviennent « atelier », hybrides et chaleureux pour tous.",
-    "🧡 Signature wax : un liseré de pagne (rouge colombe, curcuma, safran, marron) ourle chaque tête de page et le pied-de-page.",
-    "🔒 L'adresse reste invisible dans l'interface — SEO, sitemaps et schémas pointent désormais sur lesservicescolombes."
+    "🪡 « Installer » pose désormais la PWA : un geste dans le footer, le messager ou Paramètres — l'atelier rejoint l'écran d'accueil sans store.",
+    "🌺 Nouvelle garde-robe visuelle : héros et premières photos de l'atelier régénérés en wax (rouge, safran, marron, or) sur rose poudré, colombe en filigrane.",
+    "🕊️ Une seule et unique bannière de partage (1200×630) : coller le lien chante désormais la signature de l'atelier partout."
   ]
 }
