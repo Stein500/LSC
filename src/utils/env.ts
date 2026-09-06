@@ -73,7 +73,7 @@ export const env = {
   portalUrl: v("VITE_PORTAL_URL", ""),
 
   // SEO
-  siteUrl: v("VITE_SITE_URL", "https://couturecolombe.vercel.app"),
+  siteUrl: v("VITE_SITE_URL", "https://lesservicescolombes.vercel.app"),
 
   // 📱 Destination du badge « Mettre à jour l'App » (header).
   // ⚠️ Ne JAMAIS afficher cette URL en clair dans l'interface —
@@ -85,7 +85,7 @@ export const env = {
   appReleasesRepo: v("VITE_APP_RELEASES_REPO", "Stein500/LSC"),
 
   // API back — **relatif par défaut** : le même build fonctionne sur
-  // couturecolombe.vercel.app, sur les URLs de preview Vercel et en
+  // lesservicescolombes.vercel.app, sur les URLs de preview Vercel et en
   // dev local sans reconfiguration. Le token public ne protège que le
   // tracking (le vrai secret TRACK_TOKEN reste côté serveur).
   apiUrl: v("VITE_API_URL", "/api/track"),

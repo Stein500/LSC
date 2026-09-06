@@ -1,6 +1,7 @@
 # 🔐 Configuration des variables d'environnement — Les Services Colombes
 
-> **Site cible :** https://couturecolombe.vercel.app
+> **Site cible :** https://lesservicescolombes.vercel.app
+> 🧭 **Double vie** : cette adresse sert **à la fois** les visiteurs web ET la WebView de l'app Colombes. Les mots de l'interface restent « atelier » — hybrides par nature.
 > ⚠️ **Ce fichier ne contient AUCUNE valeur secrète** (le dépôt est public).
 > Les vraies valeurs vivent **uniquement** dans : le dashboard Vercel + ton `.env` local (gitignoré).
 
@@ -12,7 +13,7 @@ Si les variables existent déjà sur Vercel, récupère-les **automatiquement** 
 
 ```bash
 cd ~/lsc2           # ou le dossier du projet
-vercel link         # UNE SEULE FOIS : choisir le projet couturecolombe
+vercel link         # UNE SEULE FOIS : choisir le projet lesservicescolombes
                     # (inutile si tu as déjà déployé depuis ce dossier : .vercel/ existe)
 vercel env pull .env --environment=production
 ```
@@ -26,7 +27,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 
 ## 📝 Méthode manuelle — une par une dans Vercel
 
-> **Où ?** Dashboard Vercel → projet `couturecolombe` → **Settings → Environment Variables**
+> **Où ?** Dashboard Vercel → projet `lesservicescolombes` → **Settings → Environment Variables**
 > Pour chaque variable : **NAME** = le nom, **VALUE** = la valeur (sans guillemets),
 > **Environments** : cocher *Production*, *Preview* et *Development* → **Save**.
 > ⚠️ Après la dernière : **Deployments → ⋯ → Redeploy**.
@@ -86,7 +87,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 
 | NAME | VALUE |
 |------|-------|
-| `VITE_SITE_URL` | `https://couturecolombe.vercel.app` |
+| `VITE_SITE_URL` | `https://lesservicescolombes.vercel.app` |
 | `VITE_API_URL` | `/api/track` |
 | `VITE_TRACK_TOKEN` | 🔑 **SECRET — voir note tokens ci-dessous** |
 | `VITE_ATELIER_SOURCE_ID` | `atelier-colombes` |
@@ -135,7 +136,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 | `SMTP_PASS` | **mot de passe d'application** Google (Compte Google → Sécurité → Validation en 2 étapes → Mots de passe d'application) — PAS le mot de passe Gmail |
 | `MAIL_TO` | destinataire(s) des notifications — plusieurs : `a@x.com,b@x.com` |
 | `MAIL_FROM` | `Les Services Colombes <ton-adresse@gmail.com>` |
-| `ATELIER_LOGO_URL` | `https://couturecolombe.vercel.app/images/logo.webp` |
+| `ATELIER_LOGO_URL` | `https://lesservicescolombes.vercel.app/images/logo.webp` |
 
 > ⚠️ Sans le SMTP, les formulaires fonctionnent mais aucun email n'est envoyé.
 
@@ -143,8 +144,8 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 
 ## ✅ Vérification finale
 
-1. https://couturecolombe.vercel.app/api/ping → réponse **204** (page vide = OK)
-2. https://couturecolombe.vercel.app/api/track → `{"ok":true,"service":"colombes-track"…}`
+1. https://lesservicescolombes.vercel.app/api/ping → réponse **204** (page vide = OK)
+2. https://lesservicescolombes.vercel.app/api/track → `{"ok":true,"service":"colombes-track"…}`
 3. Soumettre un formulaire test → email reçu + ligne ajoutée dans Google Sheets
 
 ## 🗂️ Rappel sécurité

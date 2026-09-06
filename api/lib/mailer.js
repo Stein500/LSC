@@ -284,7 +284,7 @@ function buildSubmissionCore(type, data) {
   if (type === "formation") {
     subject = `[Formation — ${data.prenom || data.nom || "Postulant·e"}] Réf. ${ref}`;
     label = "Nouvelle candidature à la formation";
-    intro = "Une nouvelle candidature pour l'apprentissage de la couture vient d'être reçue sur le site.";
+    intro = "Une nouvelle candidature pour l'apprentissage de la couture vient d'être reçue en ligne.";
     fields = [
       ["Date de soumission", escHtml(dateSoumission)],
       ["Heure de soumission", escHtml(heureSoumission)],
@@ -303,7 +303,7 @@ function buildSubmissionCore(type, data) {
   } else if (type === "precommande") {
     subject = `[Pré-commande — ${data.nom || "Cliente"}] Réf. ${ref}`;
     label = "Nouvelle pré-commande";
-    intro = "Une nouvelle pré-commande de tenue vient d'être reçue sur le site.";
+    intro = "Une nouvelle pré-commande de tenue vient d'être reçue en ligne.";
     fields = [
       ["Date de soumission", escHtml(dateSoumission)],
       ["Heure de soumission", escHtml(heureSoumission)],
@@ -323,7 +323,7 @@ function buildSubmissionCore(type, data) {
   } else if (type === "contact") {
     subject = `[Contact — ${data.nom || "Visiteur"}] ${data.sujet ? labelSujet(data.sujet) : "Sans objet"} — Réf. ${ref}`;
     label = "Nouveau message de contact";
-    intro = "Un nouveau message vient d'être reçu via le formulaire de contact du site.";
+    intro = "Un nouveau message vient d'être reçu via le formulaire de contact en ligne.";
     fields = [
       ["Date de soumission", escHtml(dateSoumission)],
       ["Heure de soumission", escHtml(heureSoumission)],
@@ -337,7 +337,7 @@ function buildSubmissionCore(type, data) {
   } else {
     subject = `[${escHtml(ATELIER_NAME)}] ${type} — Réf. ${ref}`;
     label = `Événement : ${type}`;
-    intro = "Nouvel événement reçu via le système de suivi du site.";
+    intro = "Nouvel événement reçu via le système de suivi de l'atelier.";
     fields = [
       ["Date de soumission", escHtml(dateSoumission)],
       ["Heure de soumission", escHtml(heureSoumission)],
@@ -743,7 +743,7 @@ function buildAdminMail(type, data) {
       ${recapTable(fields, { compact: true })}
 
       <p style="margin:0;font-size:11px;color:${C.encre};opacity:0.55;line-height:1.5;">
-        Relais automatique du site · penser à marquer la demande « Traitée » dans Google Sheets après réponse.
+        Relais automatique de l'atelier en ligne · penser à marquer la demande « Traitée » dans Google Sheets après réponse.
       </p>
     </div>
     ${footerBlock()}

@@ -85,7 +85,7 @@ export default function Home() {
         images={GALLERY_ATELIER}
         introTitle="L'atelier en images"
         introSubtitle="Plongez dans l'univers des Services Colombes — du fil aux finitions."
-        introLabel="Ouverture de l'app"
+        introLabel="Bienvenue à l'atelier"
         seamCaption="L'atelier"
         maxHeight="min(58vh, 540px)"
       />

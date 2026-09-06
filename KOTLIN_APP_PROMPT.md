@@ -16,10 +16,11 @@ Tu es un développeur Android senior Kotlin. Crée une application Android **nat
 - **URL cible (constante unique, jamais affichée)** : la définir UNE SEULE FOIS dans `app/src/main/java/com/colombes/atelier/AppConfig.kt` :
   ```kotlin
   object AppConfig {
-      const val HOME_URL = "https://couturecolombe.vercel.app/"
+      const val HOME_URL = "https://lesservicescolombes.vercel.app/"
   }
   ```
   Partout ailleurs dans le code, utiliser `AppConfig.HOME_URL`. **Interdit** de l'afficher dans l'UI. Les écrans d'erreur affichent « La connexion a été interrompue » — jamais l'URL.
+  > 🔄 **Migration 08/2026** : l'adresse canonique du site est désormais `lesservicescolombes.vercel.app` (le site sert aussi les visiteurs web, plus seulement l'app). Si une build embarque encore l'ancienne constante, la mettre à jour ici — une seule ligne, un hotfix.
 - **Slogan** : « Atelier de Couture d'Exception — Porto-Novo »
 
 ### 2. Identité visuelle (LA MÊME que le site — respect strict)

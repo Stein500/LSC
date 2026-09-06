@@ -1,6 +1,6 @@
 # =============================================================
 # Robots.txt — Les Services Colombes
-# https://couturecolombe.vercel.app
+# https://lesservicescolombes.vercel.app
 # =============================================================
 
 # Règles globales : on laisse crawler les pages publiques (SEO)
@@ -20,8 +20,8 @@ Disallow: /og-*.html$
 Disallow: /*?spa=1$
 
 # Sitemaps
-Sitemap: https://couturecolombe.vercel.app/sitemap.xml
-Sitemap: https://couturecolombe.vercel.app/image-sitemap.xml
+Sitemap: https://lesservicescolombes.vercel.app/sitemap.xml
+Sitemap: https://lesservicescolombes.vercel.app/image-sitemap.xml
 
 # Crawl-delay raisonnable
 Crawl-delay: 1

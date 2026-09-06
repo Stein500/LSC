@@ -151,6 +151,9 @@ export function PageHero({
           transition={{ delay: 0.65, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
+
+      {/* Liseré wax en ourlet — la signature des pagnes sous chaque tête de page */}
+      <div className="lsc-wax-bande lsc-wax-bande--soft absolute bottom-0 inset-x-0" aria-hidden="true" />
     </section>
   );
 }

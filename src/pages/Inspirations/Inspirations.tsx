@@ -1,5 +1,6 @@
 
 import { SEO, SchemaBuilders } from '@/components/seo/SEO';
+import { env } from '@/utils/env';
 import { PageHeaderBand } from '@/components/ui/PageHeaderBand';
 import { Aurora } from '@/components/ui/Aurora';
 import { PageHero } from '@/components/ui/PageHero';
@@ -34,10 +35,10 @@ export default function Inspirations() {
           SchemaBuilders.collectionPage({
             name: 'Inspirations du monde',
             description: 'Profils multiculturels et inspirations couture de l\'atelier Les Services Colombes',
-            url: 'https://couturecolombe.vercel.app/inspirations',
+            url: `${env.siteUrl}/inspirations`,
             hasPart: PROFILES.map((p) => ({
               name: `${p.name} — ${p.city}`,
-              url: `https://couturecolombe.vercel.app/inspirations#${p.id}`,
+              url: `${env.siteUrl}/inspirations#${p.id}`,
               image: '/images/logo.webp',
             })),
           }),

@@ -27,6 +27,9 @@
   --color-linen: #F5EFE6;
   --color-saffron: #F4B860;
   --color-mauve: #B988A6;
+  /* Motifs wax — la fièvre des pagnes, sans jamais toucher au bleu ni au vert */
+  --color-wax-curcuma: #E9A319;   /* jaune profond des wax */
+  --color-wax-brule: #C75B12;     /* orange brûlé, feu doux des pagnes */
 
   --font-display: "Playfair Display", Georgia, serif;
   --font-sans: "Poppins", system-ui, sans-serif;
@@ -583,6 +586,34 @@ html[data-theme="amoled"] .lsc-text-silk {
 .lsc-stitch-line {
   stroke-linecap: round;
   animation: lsc-stitch-flow 1.4s linear infinite;
+}
+
+/* ---------- Bande wax — quatre fils de pagne cousus bord à bord ----------
+   Rouge colombe, curcuma, safran, marron : la signature africaine
+   de l'atelier, posée comme un liseré de wax sur les grandes surfaces. */
+.lsc-wax-bande {
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #D1232A 0%, #D1232A 25%,
+    #E9A319 25%, #E9A319 50%,
+    #F4B860 50%, #F4B860 75%,
+    #8B4513 75%, #8B4513 100%
+  );
+}
+html[data-theme="dark"] .lsc-wax-bande,
+html[data-theme="amoled"] .lsc-wax-bande {
+  background: linear-gradient(
+    90deg,
+    #D1232A 0%, #D1232A 25%,
+    #E9A319 25%, #E9A319 50%,
+    #F4B860 50%, #F4B860 75%,
+    #C9A87C 75%, #C9A87C 100%
+  );
+}
+.lsc-wax-bande--soft {
+  height: 2px;
+  opacity: 0.85;
 }
 
 /* ---------- Orbes / dérive douce ---------- */

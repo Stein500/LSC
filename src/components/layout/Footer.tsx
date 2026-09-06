@@ -57,6 +57,9 @@ export function Footer() {
 
   return (
     <footer className="relative bg-[var(--app-footer-bg)] text-white mt-24 overflow-hidden">
+      {/* Bande wax — quatre fils de pagne cousus en liseré : le pied-de-page
+          porte la signature africaine de l'atelier, sur le web comme dans l'app. */}
+      <div className="lsc-wax-bande relative" aria-hidden="true" />
       {/* Orbes aurora de nuit — discrètes */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div
