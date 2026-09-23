@@ -19,7 +19,7 @@ export default function Inspirations() {
     <>
       <SEO
         title="Inspirations du monde"
-        description="Galerie d'inspirations couture, profils multiculturels et matières de l'atelier Les Services Colombes à Porto-Novo. 18 visages, 4 matières, 1 vision."
+        description="Inspirations couture de l'atelier : profils, wax et matières d'ici et d'ailleurs — Porto-Novo."
         path="/inspirations"
         ogImage="/images/gallery/inspirations-page-01.webp"
         keywords={[

@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { env } from "@/utils/env";
+import { LEGAL } from "@/data/legal";
 
 type JsonLd =
   | Record<string, unknown>
@@ -28,8 +29,10 @@ type Props = {
 };
 
 const DEFAULTS = {
-  title: `${env.schoolName} | Atelier de Couture à Porto-Novo — Femmes, Filles & Layette`,
-  description: `${env.schoolName}, atelier de couture à Porto-Novo : confection sur mesure, mercerie, layette et formations professionnelles.`,
+  // 🎯 Référencement « 2-3 lignes, l'essentiel » : titre ≤ ~60 car.,
+  // description ≤ ~150 car. — ce que Google affiche, rien de plus.
+  title: `${env.schoolName} — Atelier de Couture à Porto-Novo`,
+  description: `Atelier de couture à Porto-Novo : sur mesure, tenues africaines & wax, layette et formations. 35 ans de savoir-faire béninois.`,
 };
 
 // (plus de HERO_OG : le visuel de partage est UNIQUE — FALLBACK_OG partout)
@@ -142,6 +145,15 @@ export const SchemaBuilders = {
       "@type": "Organization",
       "@id": `${env.siteUrl}#organization`,
       name: env.schoolName,
+      // 🧾 Identité officielle (src/data/legal.ts) — posée dès que les
+      // papiers la fournissent : confiance moteurs & partenaires B2B.
+      ...(LEGAL.legalName ? { legalName: LEGAL.legalName } : {}),
+      ...(LEGAL.ifu ? { taxID: LEGAL.ifu } : {}),
+      ...(LEGAL.rccm ? { identifier: { "@type": "PropertyValue", propertyID: "RCCM", value: LEGAL.rccm } } : {}),
+      ...(LEGAL.foundedYear ? { foundingDate: LEGAL.foundedYear } : {}),
+      ...(LEGAL.siege
+        ? { address: { "@type": "PostalAddress", streetAddress: LEGAL.siege, addressLocality: "Porto-Novo", addressCountry: "BJ" } }
+        : {}),
       url: env.siteUrl,
       logo: {
         "@type": "ImageObject",

@@ -36,7 +36,7 @@ export default function Services() {
     <>
       <SEO
         title="Services de couture sur mesure"
-        description="Confection sur mesure, finitions professionnelles, retouches et layette à Porto-Novo. Une collection élargie de modèles africains et béninois."
+        description="Confection sur mesure, retouches et layette à Porto-Novo — modèles africains & béninois, finitions pro."
         path="/services"
         ogImage="/images/hero-services.webp"
         jsonLd={[

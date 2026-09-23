@@ -9,6 +9,7 @@ import { SmartImage } from "@/components/ui/SmartImage";
 import { isColombesApp } from "@/utils/appBridge";
 import { isPwaInstalled } from "@/hooks/useInstallPrompt";
 import { installAtelier } from "@/utils/install";
+import { officialFooterLine } from "@/data/legal";
 
 const SUPPORT_EMAIL = env.atelierEmail.trim();
 
@@ -165,6 +166,11 @@ export function Footer() {
       <div className="relative border-t border-[var(--app-footer-border)]">
         <div className="max-w-5xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[11px] text-white/50">
           <p>© {year} {env.schoolName}. Tous droits réservés.</p>
+          {/* 🧾 Confiance officielle — affichée dès que RCCM/IFU sont
+              enregistrés dans src/data/legal.ts (sinon : silence). */}
+          {officialFooterLine() && (
+            <p className="tracking-wide text-white/45">Atelier déclaré · {officialFooterLine()}</p>
+          )}
           <Link to="/mentions-legales" className="hover:text-[var(--color-citron)] transition-colors">
             Mentions légales
           </Link>

@@ -21,7 +21,7 @@ export default function Contact() {
     <>
       <SEO
         title="Contact"
-        description="Contactez l'atelier Les Services Colombes à Porto-Novo : téléphone, WhatsApp, email. Atelier de couture et centre de formation, Les Services Colombes, Porto-Novo – Bénin."
+        description="Contacter l'atelier à Porto-Novo : téléphone, WhatsApp, e-mail, itinéraire. Devis clair, réponse de couturière."
         path="/contact"
         ogImage="/images/hero-contact.webp"
         jsonLd={[

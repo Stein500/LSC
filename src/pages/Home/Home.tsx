@@ -70,7 +70,7 @@ export default function Home() {
     <>
       <SEO
         title="Atelier de Couture à Porto-Novo"
-        description="Couture sur mesure, mercerie, layette et formations professionnelles à Porto-Novo. 35+ années d'expérience au service de votre style."
+        description="Atelier de couture à Porto-Novo : sur mesure, tenues wax, layette et formations. 35 ans de savoir-faire béninois."
         path="/"
         ogImage="/images/header-colombes.webp"
         jsonLd={[
