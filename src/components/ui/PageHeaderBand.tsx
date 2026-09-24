@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Scissors, X } from "lucide-react";
+import { X } from "lucide-react";
 import { ScissorGallery, type GalleryImage } from "@/components/ui/ScissorGallery";
 import { GalleryFusionSeam } from "@/components/ui/GalleryFusionSeam";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 /**
  * PageHeaderBand
@@ -10,47 +11,17 @@ import { GalleryFusionSeam } from "@/components/ui/GalleryFusionSeam";
  * Bande d'ouverture commune à toutes les pages — posée juste après
  * le header (la barre de navigation). Elle combine :
  *
- *   1. Une intro cisaille douce et longue (par défaut **3 000 ms**)
- *      qui présente la section à venir et s'efface avec un fondu.
+ *   1. Une intro **épurée** (09/2026 ✂️) : médaillon colombe, le
+ *      libellé de section, un titre, et **un fil wax qui se tend**.
+ *      Pose 2 400 ms (« dure » le temps de lire) — la valse des
+ *      ciseaux, barres de coupe et cascades a été rangée : simple,
+ *      élégant, intemporel.
  *   2. Une galerie "bibliothèque" propre à la page.
  *   3. Le séparateur coutura qui signe la transition vers le héros.
  *
- * Cette itération :
- *
- *   - Durée d'intro : **3 000 ms** (alignée sur PageIntroOverlay).
- *
- *   - Lisibilité :
- *       · libellé orange vif (au lieu de gris muted),
- *       · titre H2 plus grand, en serif contrasté,
- *       · corps de texte plus lisible (couleur `ink-soft` →
- *         `ink` pour un meilleur contraste),
- *       · carte opaque (white/95) au lieu de white/92.
- *
- *   - Couleurs :
- *       · picto ciseaux sur fond citron avec halo doux,
- *       · picto orange vif (au lieu de muted),
- *       · bordure orange subtile (rgba) et ombre profonde.
- *
- *   - Animations :
- *       · easeOutExpo custom (cohérent avec le splash),
- *       · ciseaux qui ondulent (rotation + scale combiné),
- *       · barre de coupe en miroir gauche → droite → gauche,
- *       · chute de fil en cascade (6 points).
- *
- *   - Clic :
- *       · clic sur le bandeau → skip (ferme l'intro),
- *       · bouton "Passer" explicite apparaît au survol,
- *       · raccourci clavier `Esc` aussi.
- *
- *   - Mémoire :
- *       · `bandKey` (basé sur introTitle) → mémorise la section
- *         déjà visitée dans la session. Au retour, l'intro est
- *         raccourcie à 800 ms (au lieu de rejouer 3 s en boucle).
- *
- * Accessibilité :
- *   - role="button" + aria-label sur le bandeau interactif,
- *   - skip purement visuel (`aria-hidden` sur les ornements).
- *   - Esc accessible aussi.
+ *   - Mémoire : section déjà vue (session) → intro raccourcie 800 ms ;
+ *   - Skip : clic sur la carte, bouton « Passer » au survol, ou Esc ;
+ *   - easeOutExpo maison, un seul élément animé (le fil wax).
  */
 export type PageHeaderBandProps = {
   /** Galerie propre à la page (atelier / créations / formation / contact) */
@@ -77,7 +48,7 @@ export function PageHeaderBand({
   introSubtitle = "Découvrez l'univers des Services Colombes.",
   introLabel = "Ouverture de section",
   seamCaption,
-  introDurationMs = 3000,
+  introDurationMs = 2400,
   autoPlayInterval = 6000,
   maxHeight = "min(56vh, 520px)",
 }: PageHeaderBandProps) {
@@ -88,7 +59,7 @@ export function PageHeaderBand({
   const skip = useCallback(() => setIntroVisible(false), []);
   const rememberRef = useRef<string | null>(null);
 
-  // easeOutExpo custom — coherence avec le splash / PageIntroOverlay
+  // easeOutExpo custom — cohérence avec le splash de l'application
   const easeOutExpo = [0.22, 1, 0.36, 1] as const;
 
   useEffect(() => {
@@ -138,21 +109,8 @@ export function PageHeaderBand({
               className="group block w-full max-w-md cursor-pointer rounded-[2rem] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-orange)] focus-visible:ring-offset-2"
             >
               <div
-                className="relative overflow-hidden rounded-[2rem] border-2 bg-white/95 px-6 py-5 backdrop-blur-xl transition-all group-hover:bg-white group-hover:-translate-y-0.5 group-hover:shadow-2xl"
-                style={{
-                  borderColor: "rgba(139, 69, 19, 0.25)",
-                  boxShadow:
-                    "0 18px 60px rgba(26,26,26,0.16), 0 0 0 1px rgba(255,255,255,0.6) inset",
-                }}
+                className="relative overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-white/95 px-6 py-5 backdrop-blur-md transition-all group-hover:bg-white group-hover:-translate-y-0.5 group-hover:shadow-2xl shadow-[0_18px_44px_-18px_rgba(60,38,20,0.30)]"
               >
-                {/* Halo doux derrière le picto */}
-                <motion.div
-                  className="absolute -top-10 left-6 h-28 w-28 rounded-full blur-2xl pointer-events-none"
-                  style={{ background: "rgba(209,35,42,0.55)" }}
-                  animate={{ scale: [1, 1.18, 1], opacity: [0.55, 1, 0.55] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                />
-
                 {/* Bouton "Passer" — apparaît au survol */}
                 <span
                   className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-[var(--color-line)]/60 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-ink-soft)] opacity-0 transition-opacity group-hover:opacity-100"
@@ -161,81 +119,45 @@ export function PageHeaderBand({
                   Passer <X className="w-3 h-3" />
                 </span>
 
-                {/* Ligne 1 : picto ciseaux + barre de coupe + chute de fil */}
-                <div className="relative flex items-center gap-3">
-                  {/* Picto ciseaux — ondule */}
-                  <motion.div
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-white shadow-sm"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, rgba(209,35,42,0.55) 0%, rgba(209,35,42,0.18) 100%)",
-                    }}
-                    animate={{
-                      rotate: [0, -12, 6, -10, 8, 0],
-                      scale: [1, 1.05, 1],
-                    }}
-                    transition={{ duration: 2, ease: easeOutExpo, repeat: Infinity }}
+                {/* Une seule respiration : médaillon, titres, fil wax */}
+                <div className="relative flex items-center gap-4">
+                  <span
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full overflow-hidden bg-white"
+                    style={{ border: "2px solid var(--color-citron)", boxShadow: "0 4px 14px rgba(92,46,12,0.25)" }}
                   >
-                    <Scissors className="h-5 w-5" strokeWidth={2.4} style={{ color: "var(--color-orange)" }} />
-                  </motion.div>
+                    <SmartImage src="/images/logo.webp" alt="" decorative className="h-full w-full object-cover" />
+                  </span>
 
-                  {/* Barre de coupe orange — passe en miroir */}
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--color-citron)]/30">
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className="text-[10px] font-bold uppercase tracking-[0.42em] text-[var(--color-orange)]"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {introLabel}
+                    </p>
+                    <h2
+                      className="mt-1 truncate text-xl md:text-2xl text-[var(--color-ink)] leading-tight"
+                      style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+                    >
+                      {introTitle}
+                    </h2>
+                    {introSubtitle ? (
+                      <p className="mt-0.5 truncate text-[13px] md:text-sm italic text-[var(--color-ink-soft)]">
+                        {introSubtitle}
+                      </p>
+                    ) : null}
+
+                    {/* Le fil wax qui se tend — quatre fils de pagne, un seul geste */}
                     <motion.span
-                      className="block h-full w-20 rounded-full"
-                      style={{
-                        background:
-                          "linear-gradient(90deg, var(--color-citron) 0%, var(--color-orange) 100%)",
-                      }}
-                      animate={{ x: ["-110%", "320%", "-110%"] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", times: [0, 0.55, 1] }}
+                      className="lsc-wax-bande lsc-wax-bande--soft mt-3 block rounded-full"
+                      style={{ transformOrigin: "left center" }}
+                      initial={{ scaleX: 0, opacity: 0 }}
+                      animate={{ scaleX: 1, opacity: 1 }}
+                      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+                      aria-hidden="true"
                     />
                   </div>
-
-                  {/* Cascade de points — chute de fil */}
-                  <div className="hidden sm:flex items-center gap-1">
-                    {[0, 1, 2].map((i) => (
-                      <motion.span
-                        key={i}
-                        className="block h-1.5 w-1.5 rounded-full bg-[var(--color-orange)]/85"
-                        animate={{ y: [0, 5, 0], opacity: [0.4, 1, 0.4] }}
-                        transition={{ duration: 1.3, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
-                      />
-                    ))}
-                  </div>
                 </div>
-
-                {/* Libellé — couleur orange pour ressortir du fond */}
-                <motion.p
-                  className="mt-4 text-[10px] font-bold uppercase tracking-[0.4em] text-[var(--color-orange)]"
-                  style={{ fontFamily: "var(--font-display)" }}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.08, duration: 0.35 }}
-                >
-                  {introLabel}
-                </motion.p>
-
-                {/* Titre — plus grand et contrasté */}
-                <motion.h2
-                  className="mt-1 text-2xl md:text-3xl text-[var(--color-ink)] leading-tight"
-                  style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.16, duration: 0.4 }}
-                >
-                  {introTitle}
-                </motion.h2>
-
-                {/* Sous-titre — meilleure lisibilité */}
-                <motion.p
-                  className="mt-2 text-[14px] md:text-[15px] leading-relaxed text-[var(--color-ink)]"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.24, duration: 0.4 }}
-                >
-                  {introSubtitle}
-                </motion.p>
               </div>
             </button>
           </motion.div>

@@ -34,12 +34,7 @@
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-01.webp</image:loc>
       <image:title>Boubous et ensembles africains</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-02.webp</image:loc>
-      <image:title>Pagne tissé — cérémonies</image:title>
-    </image:image>
-    <image:image>
+    </image:image>    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-03.webp</image:loc>
       <image:title>Bazin chic — raffinement</image:title>
     </image:image>
@@ -59,12 +54,7 @@
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-01.webp</image:loc>
       <image:title>Salle de formation en couture</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-03.webp</image:loc>
-      <image:title>Apprentissage de la prise de mesures</image:title>
-    </image:image>
-  </url>
+    </image:image>  </url>
 
   <!-- ============== INSPIRATIONS ============== -->
   <url>
@@ -114,13 +104,7 @@
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-03.webp</image:loc>
       <image:title>Table de travail de l'atelier</image:title>
       <image:caption>Un espace calme pour parler de votre projet</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-04.webp</image:loc>
-      <image:title>Espace d'accueil de l'atelier</image:title>
-      <image:caption>Bienvenue — on vous attend</image:caption>
-    </image:image>
-  </url>
+    </image:image>  </url>
 
   <!-- Mentions légales -->
   <url>

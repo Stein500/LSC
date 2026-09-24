@@ -3,129 +3,87 @@ import type { GalleryImage } from "@/components/ui/ScissorGallery";
 /**
  * Galeries du site — Les Services Colombes
  *
- * Toutes les images sont servies en WebP uniquement (chemin conservé :
- * `/images/gallery/...`). Le dossier /public/images/ doit être fourni
- * localement pour le dev et le déploiement. Voir GALERIE-IMAGES.md.
+ * ✂️ CHARTE 09/2026 — une seule silhouette pour toutes les photos :
+ *   - gabarit unique **1600×1200 (4:3 paysage)**, WebP q78 ;
+ *   - palette maison : rouge colombe, safran, marron, fil d'or sur rose poudré
+ *     (zéro bleu, zéro vert) ;
+ *   - filigrane colombe en bas à droite ;
+ *   - **curées, pas exhaustives** : peu d'images par page, toutes utiles —
+ *     le site reste léger et la lecture, limpide.
  *
- * Convention de nommage :
- *   - <theme>-NN.webp
- *
- * Le composant ScissorGallery s'adapte automatiquement au ratio
- * de chaque image (portrait, paysage, carré).
+ * La version de chaque image vit dans data/image-versions.json
+ * (cache-bust automatique côté SmartImage).
  */
 
-// ======================= GALERIE 1 — L'ATELIER =======================
-// Insérée sur la page d'accueil (Home), entre "Présentation" et "Services"
+// ======================= GALERIE 1 — L'ATELIER (Accueil) =======================
 export const GALLERY_ATELIER: GalleryImage[] = [
   {
     src: "/images/gallery/atelier-01.webp",
-    alt: "Vue d'ensemble de l'atelier Les Services Colombes à Porto-Novo",
+    alt: "Formatrice et apprenties autour de la table de coupe, atelier Les Services Colombes",
     caption: "L'atelier — un espace dédié à la création",
   },
   {
-    src: "/images/gallery/atelier-02.webp",
-    alt: "Les machines à coudre professionnelles de l'atelier",
-    caption: "Nos machines — un parc entretenu avec soin",
-  },
-  {
     src: "/images/gallery/atelier-03.webp",
-    alt: "Détail d'un travail de couture en cours",
+    alt: "Mains de couturière cousant un ourlet de wax rouge et safran",
     caption: "Chaque détail compte",
   },
   {
     src: "/images/gallery/atelier-04.webp",
-    alt: "La table de coupe et les patrons",
+    alt: "Patron tracé à la craie, ciseaux dorés et mètre ruban sur la table de coupe",
     caption: "La coupe — étape fondatrice du sur-mesure",
   },
   {
-    src: "/images/gallery/atelier-05.webp",
-    alt: "Vue de l'espace essayage",
-    caption: "L'essayage — pour une tenue qui vous va",
-  },
-  {
     src: "/images/gallery/atelier-06.webp",
-    alt: "Colombe au travail, en plein création",
+    alt: "Couturière ajustant une robe wax rouge et or sur mannequin de tailleur",
     caption: "Plus de 35 ans de passion et de savoir-faire",
   },
 ];
 
-// ======================= GALERIE 2 — LES CRÉATIONS =======================
-// ======================= GALERIE 2 — LES CRÉATIONS =======================
-// Insérée sur la page Accueil (CreationStrip) et la page Services.
-// ==================== GALERIE 2 — NOS CRÉATIONS (page Services) ====================
-// Les 6 classiques de la maison, restaurés du commit initial — ils n'auraient
-// JAMAIS dû partir. Affichés sur la page Services (carrousel 4:3 paysage).
+// ======================= GALERIE 2 — NOS CRÉATIONS (Services) =======================
 export const GALLERY_SERVICES: GalleryImage[] = [
   {
     src: "/images/gallery/creation-afrique-01.webp",
-    alt: "Tenue africaine béninoise sur mesure",
+    alt: "Grand boubou marron brodé de fil doré sur cintre",
     caption: "Boubous et ensembles — l'élégance africaine",
   },
   {
-    src: "/images/gallery/creation-afrique-02.webp",
-    alt: "Robe moderne en pagne tissé",
-    caption: "Pagne tissé — pour des cérémonies uniques",
-  },
-  {
     src: "/images/gallery/creation-afrique-03.webp",
-    alt: "Création en bazin chic",
+    alt: "Ensemble veste et pantalon en wax bordeaux, allure cérémonie",
     caption: "Bazin chic — raffinement et prestance",
   },
   {
     src: "/images/gallery/creation-afrique-04.webp",
-    alt: "Robe africaine moderne et fluide",
+    alt: "Robe africaine moderne et fluide en wax rouge et jaune safran",
     caption: "Robes modernes — entre tradition et contemporain",
   },
   {
     src: "/images/gallery/creation-afrique-05.webp",
-    alt: "Ensemble layette pour nouveau-né",
+    alt: "Layette blanc cassé : bavoir, brassière et chaussons cousus main",
     caption: "Layette — la douceur pour les tout-petits",
-  },
-  {
-    src: "/images/gallery/creation-afrique-06.webp",
-    alt: "Finitions et détails d'une tenue sur mesure",
-    caption: "Les finitions — la signature d'un travail bien fait",
   },
 ];
 
-// ============== GALERIE 3 — CRÉATIONS SIGNATURE (accueil uniquement) ==============
-// 8 visuels signature GÉNÉRÉS pour la maison & SIGNÉS au vrai logo
-// (cachet colombe cerclé d'or en bas à droite) — accueil → section Créations.
+// ============== GALERIE 3 — CRÉATIONS SIGNATURE (Accueil) ==============
 export const GALLERY_CREATIONS: GalleryImage[] = [
   {
     src: "/images/gallery/tenue-semaine-01.webp",
-    alt: "Femme africaine élégante et mature en robe wax citron et bleu ciel, coupe moderne",
-    caption: "Tenue de la semaine — la robe wax, prestance sourire",
-  },
-  {
-    src: "/images/gallery/tenue-semaine-02.webp",
-    alt: "Femme africaine mature en ensemble wax jupe longue et haut assorti, tons marron et or",
-    caption: "Jupe & haut wax — l'allure des grandes occasions",
-  },
-  {
-    src: "/images/gallery/tenue-semaine-03.webp",
-    alt: "Femme africaine majestueuse en grande robe wax bleu ciel et citron près d'une fenêtre lumineuse",
-    caption: "La grande robe wax — majesté au quotidien",
-  },
-  {
-    src: "/images/gallery/jeune-fille-02.webp",
-    alt: "Adolescente élégante en robe wax marron et or près d'une fenêtre de l'atelier",
-    caption: "Jeunes filles — la tendance wax bien coupée",
+    alt: "Femme africaine élégante en robe wax rouge grenat et or, en boutique",
+    caption: "Tenue de la semaine — la prestance, souriante",
   },
   {
     src: "/images/gallery/jeune-fille-01.webp",
-    alt: "Petite fille joyeuse en robe wax citron et bleu ciel qui tourbillonne",
+    alt: "Fillette joyeuse faisant tourner sa robe wax safran et rouge",
     caption: "Petites princesses — le wax qui fait danser",
   },
   {
-    src: "/images/gallery/layette-bebe-02.webp",
-    alt: "Bébé adorable en petite robe wax bleu ciel avec bandeau assorti, assise sur un fauteuil crème",
-    caption: "Layette — la douceur dès le premier âge",
+    src: "/images/gallery/jeune-fille-02.webp",
+    alt: "Adolescente en robe wax marron et or près de la fenêtre de l'atelier",
+    caption: "Jeunes filles — la tendance wax bien coupée",
   },
   {
     src: "/images/gallery/layette-bebe-01.webp",
-    alt: "Bébé souriant en barboteuse garnie de wax avec bonnet assorti dans l'atelier",
-    caption: "Barboteuses & bonnets — cousus avec tendresse",
+    alt: "Bébé souriant en tenue de layette blanc cassé brodée de fil safran",
+    caption: "Layette — la douceur dès le premier âge",
   },
   {
     src: "/images/gallery/famille-trio-01.webp",
@@ -135,114 +93,89 @@ export const GALLERY_CREATIONS: GalleryImage[] = [
 ];
 
 // ======================= GALERIE 4 — CONTACT (mini galerie) =======================
-// Insérée sur la page Contact, juste après le PageHero.
-// 4 photos (format "mini") pour conserver un rythme léger sur cette page.
 export const GALLERY_CONTACT: GalleryImage[] = [
   {
     src: "/images/gallery/atelier-01.webp",
-    alt: "L'atelier des Services Colombes à Porto-Novo",
+    alt: "L'équipe de l'atelier Les Services Colombes autour de la table de coupe",
     caption: "L'atelier — un lieu chaleureux, à découvrir",
   },
   {
-    src: "/images/gallery/atelier-02.webp",
-    alt: "Les machines à coudre professionnelles de l'atelier",
-    caption: "Du matériel entretenu avec soin",
-  },
-  {
-    src: "/images/gallery/atelier-05.webp",
-    alt: "Espace d'essayage et d'accueil de l'atelier",
-    caption: "Un espace d'accueil et d'essayage",
+    src: "/images/gallery/atelier-04.webp",
+    alt: "Table de coupe avec patron, ciseaux dorés et mètre ruban",
+    caption: "Un savoir-faire précis, du croquis à la coupe",
   },
   {
     src: "/images/gallery/atelier-06.webp",
-    alt: "Colombe, votre interlocutrice à l'atelier",
+    alt: "Robe wax ajustée sur mannequin de tailleur dans l'atelier",
     caption: "À très vite à l'atelier !",
   },
 ];
 
-// ============================================================================
+// ==================================================================
 // GALERIES DÉDIÉES AUX PAGES (Contact & Inspirations)
-// 4 images par page — photoréalistes, ambiance atelier Porto-Novo
-// Fichiers à déposer dans public/images/gallery/
-// ============================================================================
+// ==================================================================
 
 export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
   {
     src: "/images/gallery/contact-page-01.webp",
-    alt: "Façade de l'atelier Les Services Colombes à Porto-Novo, ambiance accueillante et professionnelle",
+    alt: "Robe wax rouge et or sur cintre, mur rose poudré de l'atelier",
     caption: "L'atelier — un lieu ouvert et coloré",
   },
   {
     src: "/images/gallery/contact-page-02.webp",
-    alt: "Mains d'une couturière tenant un téléphone portable lors d'une consultation client",
-    caption: "À votre écoute — par tous les canaux",
+    alt: "Portant de tenues africaines : safran, boubou marron-or, wax rouge",
+    caption: "Des modèles à essayer, des tissus à toucher",
   },
   {
     src: "/images/gallery/contact-page-03.webp",
-    alt: "Table de travail avec carnet ouvert, mètre ruban enroulé et tasse de thé fumante",
+    alt: "Carnet de patrons, nuancier de wax, ciseaux dorés et thé fumant",
     caption: "Un espace calme pour parler de votre projet",
-  },
-  {
-    src: "/images/gallery/contact-page-04.webp",
-    alt: "Espace d'accueil de l'atelier avec chaise en rotin, présentoir de tissus et fleurs séchées",
-    caption: "Bienvenue — on vous attend",
   },
 ];
 
 export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
   {
     src: "/images/gallery/inspirations-page-01.webp",
-    alt: "Pièce de wax multicolore drapée sur mannequin invisible, lumière studio douce",
+    alt: "Robe wax à volants superposés rouge grenat et or, sur mannequin de studio",
     caption: "Wax — la pièce signature",
   },
   {
     src: "/images/gallery/inspirations-page-02.webp",
-    alt: "Macro d'un mélange de tissus africains et européens, textures révélées par lumière rasante",
+    alt: "Éventails de pagnes wax rouge, safran et marron sur la table de l'atelier",
     caption: "Matières — wax, bazin, pagne, lin",
   },
   {
     src: "/images/gallery/inspirations-page-03.webp",
-    alt: "Silhouette éditoriale de dos en bazin bleu nuit richement brodé de fils dorés",
+    alt: "Silhouette de dos en grand boubou terracotta brodé d'or, au coucher du soleil",
     caption: "Silhouette — heure dorée",
   },
   {
     src: "/images/gallery/inspirations-page-04.webp",
-    alt: "Flat lay couture vue du dessus : bobines de fils, ciseaux dorés, patrons et craie tailleur",
+    alt: "Bobines de fil rouge et safran, ciseaux dorés et patrons, vus de dessus",
     caption: "Outils — le geste et la matière",
   },
 ];
 
-// ======================= GALERIE 3 — L'ÉCOLE DE COUTURE =======================
-// Insérée sur la page Formation, après les deux formules
+// ======================= GALERIE 5 — L'ÉCOLE DE COUTURE (Formation) =======================
 export const GALLERY_FORMATION: GalleryImage[] = [
   {
     src: "/images/gallery/formation-couture-01.webp",
-    alt: "Salle de formation en couture",
+    alt: "Salle de formation lumineuse : machines alignées et pagnes wax sur la table",
     caption: "La salle de formation — un cadre propice à l'apprentissage",
   },
   {
     src: "/images/gallery/formation-couture-02.webp",
-    alt: "Apprenante en cours de couture",
+    alt: "Apprenante cousant à la machine, vue de dos dans l'atelier",
     caption: "Encadrement personnalisé à chaque étape",
   },
   {
-    src: "/images/gallery/formation-couture-03.webp",
-    alt: "Apprentissage de la prise de mesures",
-    caption: "Les bases — de la mesure à la coupe",
-  },
-  {
     src: "/images/gallery/formation-couture-04.webp",
-    alt: "Démonstration sur machine à coudre",
+    alt: "Mains guidant le tissu wax sous l'aiguille de la machine à coudre",
     caption: "Les techniques — expliquées et pratiquées",
   },
   {
     src: "/images/gallery/formation-couture-05.webp",
-    alt: "Groupe d'apprenantes en pleine séance",
+    alt: "Groupe d'apprenantes en pleine séance autour des tissus",
     caption: "Une progression ensemble, dans la bonne humeur",
-  },
-  {
-    src: "/images/gallery/formation-couture-06.webp",
-    alt: "Présentation d'un projet de fin de formation",
-    caption: "Le résultat — des créations qui leur ressemblent",
   },
 ];
