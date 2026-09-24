@@ -1,10 +1,9 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-23T15:40:00Z",
+  "content_version": "2026-09-23T16:05:00Z",
   "build_id": "arena-898adbb-polish-nuit-cacao",
   "changelog": [
-    "🧾 Préférences d'identité : mentions légales, schéma et pied-de-page lisent désormais l'identité officielle depuis une source unique — prête pour RCCM & IFU.",
-    "🎯 Référencement resserré : titres ≤ 60 signes, descriptions ≤ 150 — 2-3 lignes, l'essentiel, partout (site, pages statiques, partages).",
-    "🗺️ Sitemap rafraîchi pour les moteurs."
+    "🌺 La garde-robe wax s'enrichit : 10 nouvelles photos de l'atelier (mannequin, portant, boubou brodé, salle de formation, layette, famille, tenue de la semaine) — rouge, safran, marron & or, colombe en filigrane.",
+    "🧹 Derniers visuels aux tons froids remplacés — la boutique n'affiche que les couleurs de la maison."
   ]
 }
