@@ -24,7 +24,7 @@ import type { GalleryImage } from "@/components/ui/ScissorGallery";
 export const GALLERY_ATELIER: GalleryImage[] = [
   {
     src: "/images/gallery/atelier-01.webp",
-    alt: "Formatrice et apprenties autour de la table de coupe, atelier Les Services Colombes",
+    alt: "Couturières en robes colorées autour de la table de coupe, grande plante verte près de la fenêtre",
     caption: "L'atelier — un espace dédié à la création",
   },
   {
@@ -48,8 +48,13 @@ export const GALLERY_ATELIER: GalleryImage[] = [
 export const GALLERY_SERVICES: GalleryImage[] = [
   {
     src: "/images/gallery/creation-afrique-01.webp",
-    alt: "Grand boubou marron brodé de fil doré sur cintre",
+    alt: "Grand boubou marron richement brodé de fil doré et de touches vert feuille, sur cintre",
     caption: "Boubous et ensembles — l'élégance africaine",
+  },
+  {
+    src: "/images/gallery/mariage-robe-01.webp",
+    alt: "Robe de mariée en bazin blanc cassé brodé de fil d'or, voile et bouquet rose-orange sur chaise bois",
+    caption: "Le grand jour — la mariée cousue d'or",
   },
   {
     src: "/images/gallery/creation-afrique-03.webp",
@@ -58,7 +63,7 @@ export const GALLERY_SERVICES: GalleryImage[] = [
   },
   {
     src: "/images/gallery/creation-afrique-04.webp",
-    alt: "Robe africaine moderne et fluide en wax rouge et jaune safran",
+    alt: "Robe moderne et fluide en wax rose poudré à motifs orange et feuilles vert citron, en mouvement",
     caption: "Robes modernes — entre tradition et contemporain",
   },
   {
@@ -72,27 +77,27 @@ export const GALLERY_SERVICES: GalleryImage[] = [
 export const GALLERY_CREATIONS: GalleryImage[] = [
   {
     src: "/images/gallery/tenue-semaine-01.webp",
-    alt: "Femme africaine élégante en robe wax rouge grenat et or, en boutique",
+    alt: "Femme élégante en robe wax orange safran à motifs marron et vert feuille, en boutique",
     caption: "Tenue de la semaine — la prestance, souriante",
   },
   {
     src: "/images/gallery/jeune-fille-01.webp",
-    alt: "Fillette joyeuse faisant tourner sa robe wax safran et rouge",
+    alt: "Fillette joyeuse faisant tournoyer sa robe wax orange safran à motifs rose et vert feuille",
     caption: "Petites princesses — le wax qui fait danser",
   },
   {
     src: "/images/gallery/jeune-fille-02.webp",
-    alt: "Adolescente en robe wax marron et or près de la fenêtre de l'atelier",
+    alt: "Adolescente en robe wax marron et or à ceinture vert feuille, près de la fenêtre de l’atelier",
     caption: "Jeunes filles — la tendance wax bien coupée",
   },
   {
     src: "/images/gallery/layette-bebe-01.webp",
-    alt: "Bébé souriant en tenue de layette blanc cassé brodée de fil safran",
+    alt: "Bébé souriant en petite robe de layette blanc cassé brodée de fil safran et vert feuille",
     caption: "Layette — la douceur dès le premier âge",
   },
   {
     src: "/images/gallery/famille-trio-01.webp",
-    alt: "Trois générations — grand-mère, maman et bébé — en tenues wax assorties",
+    alt: "Trois générations — grand-mère, maman et bébé — en robes wax assorties orange, rose et vert feuille",
     caption: "Trois générations, un même fil — les ensembles assortis",
   },
 ];
@@ -141,7 +146,7 @@ export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
 export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
   {
     src: "/images/gallery/inspirations-page-01.webp",
-    alt: "Robe wax à volants superposés rouge grenat et or, sur mannequin de studio",
+    alt: "Robe wax à volants superposés orange grenadine et or, touches de feuilles vert citron",
     caption: "Wax — la pièce signature",
   },
   {

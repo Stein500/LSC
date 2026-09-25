@@ -52,7 +52,11 @@
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-01.webp</image:loc>
       <image:title>Tenue africaine béninoise sur mesure</image:title>
       <image:caption>Boubous et ensembles — l'élégance africaine</image:caption>
-    </image:image>    <image:image>
+    </image:image>
+        <image:image>
+          <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-01.webp</image:loc>
+          <image:title>Robe de mariée en bazin blanc cassé brodé d'or — Couture Colombe et Merceries</image:title>
+        </image:image>    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-03.webp</image:loc>
       <image:title>Création en bazin chic</image:title>
       <image:caption>Bazin chic — raffinement et prestance</image:caption>

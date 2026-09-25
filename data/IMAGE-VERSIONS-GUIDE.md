@@ -51,13 +51,14 @@
 "/images/gallery/atelier-06.webp":          →  robe wax ajustée sur mannequin de tailleur
 ```
 
-## 🌍 Galerie 2 — Nos Créations (page /services, 4 photos)
+## 🌍 Galerie 2 — Nos Créations (page /services, 5 photos)
 
 ```json
-"/images/gallery/creation-afrique-01.webp":  →  grand boubou marron brodé d'or
-"/images/gallery/creation-afrique-03.webp":  →  ensemble veste-pantalon wax bordeaux
-"/images/gallery/creation-afrique-04.webp":  →  robe moderne wax rouge et safran
-"/images/gallery/creation-afrique-05.webp":  →  layette blanc cassé cousue main
+"/images/gallery/creation-afrique-01.webp":  →  grand boubou marron brodé d'or & vert feuille
+"/images/gallery/mariage-robe-01.webp":      →  🤍 la mariée en bazin blanc brodé d'or
+"/images/gallery/creation-afrique-03.webp":  →  ensemble jupe longue & chemisier wax feuilles
+"/images/gallery/creation-afrique-04.webp":  →  robe moderne wax rose, orange & vert citron
+"/images/gallery/creation-afrique-05.webp":  →  layette blanc cassé, petite robe de cérémonie
 ```
 
 ## 👗 Galerie 3 — Créations Signature (accueil, 5 photos)
