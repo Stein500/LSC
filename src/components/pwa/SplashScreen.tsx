@@ -2,28 +2,33 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { isColombesApp } from "@/utils/appBridge";
+import { LEGAL } from "@/data/legal";
 
 // ============================================================================
-// SPLASH « OUVERTURE DE MAISON » — v8 (2026)
-// À CHAQUE ouverture du site (plus de fenêtre de 2 h), mais PLUS COURT (~4,6 s)
-// et PLUS RICHE : la maison se présente en 3 actes avant la sortie en rideaux.
+// SPLASH « OUVERTURE DE MAISON » — v9 (09/2026) ✨
+// À CHAQUE ouverture du site, la maison se présente en 4 temps, tout
+// doucement, avant la sortie en rideaux :
 //
-//   Acte 1 — Bienvenue à l'atelier        (le lieu, la promesse)
-//   Acte 2 — Tenues femmes                (le wax d'exception sur mesure)
-//   Acte 3 — Filles · bébés · familles    (trois générations, un même fil)
+//   Actes 1-3 — l'atelier, les tenues, les familles (photos signées)
+//   Acte 4    — 🕊️ L'ANNONCE : « Les Services Colombes devient…
+//               Couture Colombe & Merceries » (le nouveau nom légal)
 //
-// En permanence : médaillon colombe + nom + promesse de la maison, barre de
-// progression fil d'or. Skippable (tap / « Passer › » / Échap).
-// reduced-motion : jamais affiché · in-app Kotlin : muet (splash natif).
+// Gestes de douceur : fondus longs, montées courtes, fil wax qui se tend.
+// Déjà vue dans la session → seule l'annonce est rejouée (~2,8 s).
+// Skippable (tap / « Passer › » / Échap) · reduced-motion : jamais affiché ·
+// in-app Kotlin : muet (splash natif).
 // ============================================================================
 
-const ACT_MS = 1250; // durée d'un acte (3 actes → 3,75 s de présentation)
+const ACT_MS = 1250; // durée d'un acte photo (3 actes → 3,75 s)
+const ANNOUNCE_MS = 2800; // durée de l'annonce du nouveau nom
 const OPEN_MS = 900; // rideaux
 const EASE_RIDEAU = [0.76, 0, 0.24, 1] as const;
+const EASE_DOUX = [0.22, 1, 0.36, 1] as const;
+const SEEN_KEY = "lsc_splash_v9_seen";
 
 const TAGLINE = "atelier · mercerie · centre de formation";
 
-// 🎬 Les 3 actes — uniquement des visuels SIGNÉS au cachet colombe.
+// 🎬 Les 3 actes photo — uniquement des visuels SIGNÉS au cachet colombe.
 const ACTES = [
   {
     src: "/images/gallery/splash-atelier-01.webp",
@@ -42,6 +47,8 @@ const ACTES = [
   },
 ];
 
+const ANNOUNCE_INDEX = ACTES.length; // l'acte d'annonce = le dernier temps
+
 export function SplashScreen() {
   const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
@@ -56,7 +63,8 @@ export function SplashScreen() {
 
   const close = useCallback(() => setOpening(true), []);
 
-  // 🎟️ À CHAQUE ouverture du site : pré-chauffe + lever de rideau immédiate
+  // 🎟️ À CHAQUE ouverture du site : pré-chauffe + lever de rideau immédiat.
+  //    La session se souvient de la première visite → annonce courte ensuite.
   useEffect(() => {
     if (skip) return;
     for (const a of ACTES) {
@@ -66,24 +74,38 @@ export function SplashScreen() {
     setVisible(true);
   }, [skip]);
 
-  // 🕰️ La partition : actes qui défilent, puis sortie une fois TOUT présenté
+  // 🕰️ La partition : actes qui défilent tout doucement, puis L'ANNONCE,
+  //    puis sortie une fois TOUT présenté. (Session vue → annonce seule.)
   useEffect(() => {
     if (!visible) return;
     const later = (fn: () => void, ms: number) => timers.current.push(window.setTimeout(fn, ms));
-    later(() => setActe(1), ACT_MS);
-    later(() => setActe(2), ACT_MS * 2);
-    later(close, ACT_MS * 3); // sortie seulement après le 3e acte
+    const alreadySeen = (() => {
+      try {
+        return sessionStorage.getItem(SEEN_KEY) === "1";
+      } catch {
+        return false;
+      }
+    })();
+
+    if (alreadySeen) {
+      setActe(ANNOUNCE_INDEX);
+      later(close, ANNOUNCE_MS);
+    } else {
+      try {
+        sessionStorage.setItem(SEEN_KEY, "1");
+      } catch {
+        /* mode privé : sans mémoire, tant pis */
+      }
+      later(() => setActe(1), ACT_MS);
+      later(() => setActe(2), ACT_MS * 2);
+      later(() => setActe(ANNOUNCE_INDEX), ACT_MS * 3);
+      later(close, ACT_MS * 3 + ANNOUNCE_MS);
+    }
     return () => {
       timers.current.forEach((t) => window.clearTimeout(t));
       timers.current = [];
     };
   }, [visible, close]);
-
-  // Précharge → premier acte déjà en place (évite un blanc au 1er fondu)
-  useEffect(() => {
-    if (!visible) return;
-    setActe(0);
-  }, [visible]);
 
   // Échap pour passer
   useEffect(() => {
@@ -97,7 +119,9 @@ export function SplashScreen() {
 
   if (skip) return null;
 
-  const current = ACTES[acte];
+  const isAnnounce = acte === ANNOUNCE_INDEX;
+  const current = isAnnounce ? null : ACTES[acte];
+  const stepCount = ACTES.length + 1;
 
   return (
     <AnimatePresence>
@@ -148,45 +172,71 @@ export function SplashScreen() {
             </motion.div>
           ))}
 
-          {/* ================= SCÈNE — fondus enchaînés + zoom lent ================= */}
+          {/* ================= SCÈNE — 3 actes photo, puis la Nuit cacao de l'annonce ================= */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             animate={opening ? { opacity: 0, scale: 1.03 } : { opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
             <AnimatePresence mode="popLayout">
-              <motion.img
-                key={current.src}
-                src={current.src}
-                alt=""
-                draggable={false}
-                loading="eager"
-                className="absolute inset-0 w-full h-full object-cover"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1.13 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  opacity: { duration: 0.55, ease: "easeInOut" },
-                  scale: { duration: 4.6, ease: "linear" },
-                }}
-              />
+              {isAnnounce ? (
+                // 🕊️ Nuit cacao — l'écrin de la nouvelle enseigne
+                <motion.div
+                  key="annonce"
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(120% 90% at 50% 38%, #2A1B22 0%, #1D1318 46%, #150D11 100%)",
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                >
+                  {/* trame pagne très douce */}
+                  <div
+                    className="absolute inset-0 opacity-[0.05]"
+                    style={{
+                      background:
+                        "repeating-linear-gradient(45deg, transparent 0 22px, rgba(233,163,25,0.9) 22px 24px), repeating-linear-gradient(-45deg, transparent 0 22px, rgba(201,168,124,0.9) 22px 24px)",
+                    }}
+                  />
+                </motion.div>
+              ) : (
+                <motion.img
+                  key={current!.src}
+                  src={current!.src}
+                  alt=""
+                  draggable={false}
+                  loading="eager"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1.13 }}
+                  exit={{ opacity: 0, transition: { duration: 0.65, ease: "easeInOut" } }}
+                  transition={{
+                    opacity: { duration: 0.75, ease: "easeInOut" },
+                    scale: { duration: 4.6, ease: "linear" },
+                  }}
+                />
+              )}
             </AnimatePresence>
             {/* Voile cinéma : lisibilité haut (marque) & bas (légende) */}
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 transition-opacity duration-700"
               style={{
+                opacity: isAnnounce ? 0 : 1,
                 background:
                   "linear-gradient(180deg, rgba(11,11,18,0.62) 0%, rgba(11,11,18,0.10) 30%, rgba(11,11,18,0.04) 55%, rgba(11,11,18,0.62) 100%)",
               }}
             />
           </motion.div>
 
-          {/* ================= MARQUE — présente du début à la sortie ================= */}
+          {/* ================= MARQUE — présente pendant les actes photo ================= */}
           <motion.div
             className="absolute top-14 inset-x-0 flex flex-col items-center gap-2.5 pointer-events-none"
-            animate={opening ? { opacity: 0, y: -18 } : { opacity: 1, y: 0 }}
+            animate={opening || isAnnounce ? { opacity: 0, y: -18 } : { opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: -18 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.55, ease: EASE_DOUX }}
           >
             <span
               className="w-16 h-16 rounded-full overflow-hidden bg-white"
@@ -198,7 +248,7 @@ export function SplashScreen() {
               className="text-white font-bold text-xl sm:text-2xl tracking-wide"
               style={{ fontFamily: "var(--font-display)", textShadow: "0 2px 18px rgba(0,0,0,0.65)" }}
             >
-              Les Services Colombes
+              {LEGAL.displayName}
             </span>
             <span
               className="text-[11px] sm:text-xs uppercase tracking-[0.28em]"
@@ -212,50 +262,129 @@ export function SplashScreen() {
               style={{ background: "linear-gradient(90deg, transparent, var(--color-gold-thread), var(--color-citron), transparent)" }}
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 150, opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.5, duration: 0.9, ease: EASE_DOUX }}
             />
           </motion.div>
 
-          {/* ================= L'ACTE EN COURS — kicker + légende ================= */}
-          <motion.div
-            className="absolute bottom-24 inset-x-0 flex flex-col items-center gap-1.5 px-6 pointer-events-none"
-            animate={opening ? { opacity: 0, y: 16 } : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={acte}
-                className="flex flex-col items-center gap-1.5"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <span
-                  className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.34em]"
-                  style={{ color: "var(--color-citron)", textShadow: "0 1px 10px rgba(0,0,0,0.75)" }}
+          {/* ================= ACTE PHOTO — kicker + légende ================= */}
+          {!isAnnounce && (
+            <motion.div
+              className="absolute bottom-24 inset-x-0 flex flex-col items-center gap-1.5 px-6 pointer-events-none"
+              animate={opening ? { opacity: 0, y: 16 } : { opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={acte}
+                  className="flex flex-col items-center gap-1.5"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.45, ease: EASE_DOUX }}
                 >
-                  {current.kicker}
-                </span>
-                <span
-                  className="text-white text-lg sm:text-2xl text-center"
-                  style={{ fontFamily: "var(--font-display)", fontStyle: "italic", textShadow: "0 2px 16px rgba(0,0,0,0.7)" }}
-                >
-                  « {current.caption} »
-                </span>
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
+                  <span
+                    className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.34em]"
+                    style={{ color: "var(--color-citron)", textShadow: "0 1px 10px rgba(0,0,0,0.75)" }}
+                  >
+                    {current!.kicker}
+                  </span>
+                  <span
+                    className="text-white text-lg sm:text-2xl text-center"
+                    style={{ fontFamily: "var(--font-display)", fontStyle: "italic", textShadow: "0 2px 16px rgba(0,0,0,0.7)" }}
+                  >
+                    « {current!.caption} »
+                  </span>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          )}
 
-          {/* ================= PROGRESSION — le fil d'or des 3 actes ================= */}
+          {/* ================= 🕊️ L'ANNONCE — le changement de nom, en 4 battements doux ================= */}
+          <AnimatePresence>
+            {isAnnounce && (
+              <motion.div
+                key="annonce-texte"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 pointer-events-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: opening ? 0 : 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                {/* Battement 1 — l'ancien nom s'efface doucement en mémoire */}
+                <motion.span
+                  className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.38em] text-[var(--color-gold-thread)]"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15, duration: 0.6, ease: EASE_DOUX }}
+                >
+                  {LEGAL.displayName}
+                </motion.span>
+
+                {/* Battement 2 — « devient… », le souffle */}
+                <motion.span
+                  className="text-lg sm:text-xl italic text-white/75"
+                  style={{ fontFamily: "var(--font-display)" }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.65, ease: EASE_DOUX }}
+                >
+                  devient…
+                </motion.span>
+
+                {/* Battement 3 — la NOUVELLE ENSEIGNE, en grandes lettres d'or */}
+                <motion.span
+                  className="mt-1 text-center text-3xl sm:text-4xl md:text-5xl font-bold leading-tight"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    background: "linear-gradient(120deg, #F4E7CE 0%, #E9A319 45%, #C9A87C 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                    textShadow: "none",
+                    padding: "0 0.2em",
+                  }}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.25, duration: 0.8, ease: EASE_DOUX }}
+                >
+                  Couture Colombe
+                  <br />
+                  <span className="text-2xl sm:text-3xl md:text-4xl">&amp; Merceries</span>
+                </motion.span>
+
+                {/* Battement 4 — le fil wax se tend sous le nouveau nom */}
+                <motion.span
+                  className="lsc-wax-bande lsc-wax-bande--soft mt-2 block w-48 sm:w-64 max-w-full rounded-full"
+                  style={{ transformOrigin: "center" }}
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ delay: 1.7, duration: 0.9, ease: EASE_DOUX }}
+                  aria-hidden="true"
+                />
+
+                {/* Le petit mot de la maison */}
+                <motion.span
+                  className="text-[11px] sm:text-xs text-white/55 italic"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2.05, duration: 0.6, ease: EASE_DOUX }}
+                >
+                  Le même fil, le même cœur — un nom d'officialité.
+                </motion.span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* ================= PROGRESSION — le fil d'or des 4 temps ================= */}
           <motion.div
             className="absolute bottom-14 inset-x-0 flex justify-center pointer-events-none"
             animate={opening ? { opacity: 0 } : { opacity: 1 }}
           >
             <div className="flex items-center gap-2.5">
-              {ACTES.map((a, i) => (
+              {Array.from({ length: stepCount }, (_, i) => (
                 <span
-                  key={a.src}
+                  key={i}
                   className="relative h-[5px] w-12 rounded-full overflow-hidden"
                   style={{ background: "rgba(255,255,255,0.22)" }}
                 >
@@ -266,7 +395,7 @@ export function SplashScreen() {
                       style={{ background: "linear-gradient(90deg, var(--color-citron), var(--color-gold-thread))" }}
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
-                      transition={{ duration: ACT_MS / 1000, ease: "linear" }}
+                      transition={{ duration: (i === ANNOUNCE_INDEX ? ANNOUNCE_MS : ACT_MS) / 1000, ease: "linear" }}
                     />
                   )}
                 </span>

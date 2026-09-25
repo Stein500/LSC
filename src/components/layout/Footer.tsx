@@ -9,7 +9,7 @@ import { SmartImage } from "@/components/ui/SmartImage";
 import { isColombesApp } from "@/utils/appBridge";
 import { isPwaInstalled } from "@/hooks/useInstallPrompt";
 import { installAtelier } from "@/utils/install";
-import { officialFooterLine } from "@/data/legal";
+import { officialFooterLine, LEGAL } from "@/data/legal";
 
 const SUPPORT_EMAIL = env.atelierEmail.trim();
 
@@ -156,6 +156,17 @@ export function Footer() {
             <MapPin className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} />
             {CONTACT.location}
           </p>
+
+          {/* ✨ La maison change de nom — la nouvelle enseigne officielle,
+              annoncée avec douceur au-dessus de la ligne déclarée. */}
+          {LEGAL.legalName && (
+            <p className="mt-1.5 text-center text-[12px] leading-relaxed text-white/60">
+              {LEGAL.displayName} devient{" "}
+              <span className="font-semibold" style={{ color: "var(--color-gold-thread, #C9A87C)" }}>
+                Couture Colombe &amp; Merceries
+              </span>
+            </p>
+          )}
         </div>
 
         {/* Fil d'or */}

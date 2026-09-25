@@ -33,7 +33,6 @@ export default function Mentions() {
               )}
               <p>Adresse : {LEGAL.siege || env.schoolLocationFull || env.schoolLocation}</p>
               <p>Téléphone : {env.schoolPhone}</p>
-              {LEGAL.dirigeante && <p>Directrice de la publication : {LEGAL.dirigeante}</p>}
               {LEGAL.rccm && (
                 <p>
                   RCCM : {LEGAL.rccm}
@@ -41,8 +40,6 @@ export default function Mentions() {
                 </p>
               )}
               {LEGAL.ifu && <p>IFU : {LEGAL.ifu}</p>}
-              {LEGAL.employeur && <p>Immatriculation employeur (CNSS) : {LEGAL.employeur}</p>}
-              {LEGAL.declaration && <p>Déclaration d'établissement : {LEGAL.declaration}</p>}
               {officiels && (
                 <p className="text-[var(--color-muted)]">Atelier déclaré — {officiels}.</p>
               )}

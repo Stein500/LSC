@@ -1,9 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-25T17:25:53Z",
+  "content_version": "2026-09-25T18:05:19Z",
   "build_id": "arena-898adbb-polish-nuit-cacao",
   "changelog": [
-    "🧾 L'atelier a ses papiers : Couture Colombe et Merceries — RCCM RB/PNO/26 A 129215, IFU et CNSS affichés aux Mentions légales et en pied de page.",
-    "🕊️ La confiance se lit d'un coup d'œil : atelier officiellement déclaré, actif depuis 1990, immatriculé en 2026."
+    "✨ Le splash s'ouvre en 4 temps tout doux — et annonce : « Les Services Colombes devient Couture Colombe & Merceries ».",
+    "🧾 Mentions resserrées à l'essentiel : RCCM + IFU seulement, la confiance sans étalage.",
+    "🕊️ L'application native prend sa retraite : l'atelier vit désormais pleinement sur le web (installable depuis le navigateur)."
   ]
 }

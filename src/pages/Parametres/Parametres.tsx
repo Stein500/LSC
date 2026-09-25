@@ -80,10 +80,10 @@ export default function Parametres() {
 
   return (
     <>
-      <SEO title="Paramètres" description="Réglages de l'atelier, messages et repères utiles — sur le web comme dans l'application Colombes." path="/parametres" />
+      <SEO title="Paramètres" description="Réglages de l'atelier, messages et repères utiles — la même douceur partout, sur tout l'écran web." path="/parametres" />
       <PageHero
         title="Paramètres"
-        subtitle="Réglages de l'atelier, messages et repères utiles — le même savoir-faire, sur le web comme dans l'application, avec une lecture simple et propre."
+        subtitle="Réglages de l'atelier, messages et repères utiles — le même savoir-faire partout, avec une lecture simple et propre."
         image="/images/hero-contact.webp"
         crumbs={[{ label: "Accueil", to: "/" }, { label: "Paramètres" }]}
       />

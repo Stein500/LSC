@@ -51,13 +51,16 @@ export function AppUpdateMessenger() {
   const reduceMotion = useReducedMotion();
   // 🏷️ L'offre de mise à jour — undefined = vérification GitHub en cours
   const [offer, setOffer] = useState<UpdateOffer | null | undefined>(undefined);
-  // 🪡 Double voie : web → PWA ; app native legacy → veille des releases
+  // 🕊️ 09/2026 — l'application native Colombes prend sa retraite : plus de
+  //     veille APK, même dans l'app legacy. Le messager ne sert plus que la
+  //     voie web → « Installer » la PWA (l'atelier dans la poche, sans store).
   const inApp = isColombesApp();
   const { isInstalled: pwaInstalled } = useInstallPrompt();
-  const visible = inApp ? !!offer : !pwaInstalled;
+  const visible = !inApp && !pwaInstalled;
 
-  // 🔎 Veille live : dernière release GitHub vs version installée
+  // 🔎 Veille des releases — réservée à l'app native, désormais muette.
   useEffect(() => {
+    if (!inApp) return;
     let live = true;
     void resolveUpdateOffer().then((o) => {
       if (live) setOffer(o);
@@ -65,7 +68,7 @@ export function AppUpdateMessenger() {
     return () => {
       live = false;
     };
-  }, []);
+  }, [inApp]);
 
   useEffect(() => {
     if (!visible) return; // à jour / déjà installée → silence
