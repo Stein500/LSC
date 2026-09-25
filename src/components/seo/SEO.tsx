@@ -32,7 +32,7 @@ const DEFAULTS = {
   // 🎯 Référencement « 2-3 lignes, l'essentiel » : titre ≤ ~60 car.,
   // description ≤ ~150 car. — ce que Google affiche, rien de plus.
   title: `${env.schoolName} — Atelier de Couture à Porto-Novo`,
-  description: `Atelier de couture à Porto-Novo : sur mesure, tenues africaines & wax, layette et formations. 35 ans de savoir-faire béninois.`,
+  description: `Atelier de couture à Porto-Novo depuis 1990 : tenues wax sur mesure, layette, mercerie, formation. Colombes devient Couture Colombe & Merceries.`,
 };
 
 // (plus de HERO_OG : le visuel de partage est UNIQUE — FALLBACK_OG partout)

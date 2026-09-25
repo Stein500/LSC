@@ -3,7 +3,7 @@
 **Gabarit unique : 1600×1200 (4:3 paysage), WebP q78, filigrane colombe.**
 
 Palette maison : rouge colombe, safran, curcuma, marron, fil d'or sur
-rose poudré. Zéro bleu, zéro vert.
+bleu roi, marron, orange safran et rose poudré — plus les couleurs du logo (rouge colombe, fil d'or, accent olive). Filigrane : logo + « Couture Colombe & Merceries ».
 
 Les galeries sont *curées* (peu d'images, toutes utiles) — listes dans
 `src/data/galleries.ts` ; versions cache-bust dans

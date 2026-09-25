@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, type PanInfo } from "framer-motion";
-import { ChevronLeft, ChevronRight, Pause, Play, Scissors } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Pause, Play, Scissors } from "lucide-react";
 import { SmartImage } from "./SmartImage";
 import { cn } from "@/utils/cn";
+import { notify } from "@/utils/notify";
 
 /**
  * Une photo dans la galerie.
@@ -108,6 +109,34 @@ export function ScissorGallery({
     else if (info.offset.x > threshold || info.velocity.x > velocity) prev();
   };
 
+  // 📥 Téléchargement — chaque image part chez le visiteur bien nommée
+  //    et signée (filigrane logo + nom de l'atelier, anti-fausse utilisation).
+  const handleDownload = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const img = images[index];
+      const base = img.src.split("/").pop()?.replace(/\.webp(\?.*)?$/, "") || "image";
+      const filename = `couture-colombe-merceries--${base}.webp`;
+      try {
+        const res = await fetch(img.src);
+        if (!res.ok) throw new Error(`http ${res.status}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 4000);
+        notify.success("Image téléchargée — signée Couture Colombe & Merceries 🕊️");
+      } catch {
+        notify.error("Le téléchargement a glissé entre les mailles — réessayez.");
+      }
+    },
+    [images, index],
+  );
+
   if (images.length === 0) return null;
 
   // Conteneur adaptatif : s'ajuste au ratio de l'image, borné par maxHeight
@@ -196,8 +225,16 @@ export function ScissorGallery({
           </div>
         )}
 
-        {/* Compteur + bouton play/pause en haut à droite */}
+        {/* Compteur + boutons (télécharger / play-pause) en haut à droite */}
         <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+          <button
+            onClick={handleDownload}
+            className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"
+            aria-label="Télécharger cette image (signée Couture Colombe et Merceries)"
+            title="Télécharger l'image"
+          >
+            <Download className="w-3.5 h-3.5" />
+          </button>
           {images.length > 1 && (
             <button
               onClick={() => setIsPaused((p) => !p)}

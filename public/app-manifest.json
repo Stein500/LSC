@@ -1,10 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-25T18:05:19Z",
+  "content_version": "2026-09-25T18:31:38Z",
   "build_id": "arena-898adbb-polish-nuit-cacao",
   "changelog": [
-    "✨ Le splash s'ouvre en 4 temps tout doux — et annonce : « Les Services Colombes devient Couture Colombe & Merceries ».",
-    "🧾 Mentions resserrées à l'essentiel : RCCM + IFU seulement, la confiance sans étalage.",
-    "🕊️ L'application native prend sa retraite : l'atelier vit désormais pleinement sur le web (installable depuis le navigateur)."
+    "🎨 Nouvelle garde-robe : bleu roi, marron, orange safran et rose — 10 visuels refaits, tous signés « Couture Colombe & Merceries ».",
+    "📥 Chaque photo de la galerie se télécharge d'un bouton, avec un beau nom signé.",
+    "📇 La carte de partage raconte la nouvelle enseigne : « Les Services Colombes devient Couture Colombe & Merceries »."
   ]
 }

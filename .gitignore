@@ -11,3 +11,6 @@ node_modules/
 
 # Artefact de build TypeScript
 tsconfig.tsbuildinfo
+
+# Ceniers de génération (art sources IA — jamais commités)
+tmp-gen/

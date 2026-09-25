@@ -3,13 +3,18 @@ import type { GalleryImage } from "@/components/ui/ScissorGallery";
 /**
  * Galeries du site — Les Services Colombes
  *
- * ✂️ CHARTE 09/2026 — une seule silhouette pour toutes les photos :
+ * ✂️ CHARTE 09/2026 (v2) — une seule silhouette pour toutes les photos :
  *   - gabarit unique **1600×1200 (4:3 paysage)**, WebP q78 ;
- *   - palette maison : rouge colombe, safran, marron, fil d'or sur rose poudré
- *     (zéro bleu, zéro vert) ;
- *   - filigrane colombe en bas à droite ;
+ *   - NOUVELLE palette maison : **bleu roi, marron, orange safran, rose
+ *     poudré** + les couleurs du logo (rouge colombe, fil d'or, accent
+ *     olive du rameau) ;
+ *   - filigrane signature **logo + « Couture Colombe & Merceries »** en
+ *     bas à droite (cachet anti-fausse-utilisation, posé par
+ *     scripts/stamp-signature.py) ;
  *   - **curées, pas exhaustives** : peu d'images par page, toutes utiles —
- *     le site reste léger et la lecture, limpide.
+ *     le site reste léger et la lecture, limpide ;
+ *   - chaque image est **téléchargeable** par le visiteur (bouton ⬇ de la
+ *     galerie) et porte un beau nom de fichier.
  *
  * La version de chaque image vit dans data/image-versions.json
  * (cache-bust automatique côté SmartImage).
