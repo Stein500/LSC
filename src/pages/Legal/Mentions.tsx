@@ -33,9 +33,16 @@ export default function Mentions() {
               )}
               <p>Adresse : {LEGAL.siege || env.schoolLocationFull || env.schoolLocation}</p>
               <p>Téléphone : {env.schoolPhone}</p>
-              {LEGAL.rccm && <p>RCCM : {LEGAL.rccm}</p>}
+              {LEGAL.dirigeante && <p>Directrice de la publication : {LEGAL.dirigeante}</p>}
+              {LEGAL.rccm && (
+                <p>
+                  RCCM : {LEGAL.rccm}
+                  {LEGAL.rccmDate ? ` — Tribunal de Commerce de Cotonou, le ${LEGAL.rccmDate}` : ""}
+                </p>
+              )}
               {LEGAL.ifu && <p>IFU : {LEGAL.ifu}</p>}
-              {LEGAL.employeur && <p>Immatriculation employeur : {LEGAL.employeur}</p>}
+              {LEGAL.employeur && <p>Immatriculation employeur (CNSS) : {LEGAL.employeur}</p>}
+              {LEGAL.declaration && <p>Déclaration d'établissement : {LEGAL.declaration}</p>}
               {officiels && (
                 <p className="text-[var(--color-muted)]">Atelier déclaré — {officiels}.</p>
               )}
@@ -44,7 +51,7 @@ export default function Mentions() {
               <h2 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>Activité</h2>
               <p>
                 Confection sur mesure, tenues africaines & wax, layette, mercerie et formations
-                professionnelles — depuis {LEGAL.foundedYear}.
+                professionnelles — depuis {LEGAL.foundedYear}. Atelier déclaré, immatriculé au RCCM en 2026.
               </p>
             </div>
             <div>
