@@ -46,8 +46,9 @@ export function ConnectionStatusIcon({ size = "md", withLabel = true, className 
 
   const toneStyles: Record<typeof tone, { dot: string; icon: string; label: string }> = {
     online: {
-      dot: "bg-[var(--color-citron)]",
-      icon: "text-[var(--color-citron)]",
+      // 🌿 vert citron feuille — l'accent frais de la maison (identité 09/2026)
+      dot: "bg-[var(--color-feuille)]",
+      icon: "text-[var(--color-feuille-f)]",
       label: "Connecté — tout est prêt",
     },
     stale: {

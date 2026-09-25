@@ -53,8 +53,8 @@ export const GALLERY_SERVICES: GalleryImage[] = [
   },
   {
     src: "/images/gallery/creation-afrique-03.webp",
-    alt: "Ensemble veste et pantalon en wax bordeaux, allure cérémonie",
-    caption: "Bazin chic — raffinement et prestance",
+    alt: "Ensemble jupe longue et chemisier à manches bouffantes en wax feuilles orange, marron et vert citron",
+    caption: "Jupe & chemisier — le duo qui fait la silhouette",
   },
   {
     src: "/images/gallery/creation-afrique-04.webp",
@@ -63,7 +63,7 @@ export const GALLERY_SERVICES: GalleryImage[] = [
   },
   {
     src: "/images/gallery/creation-afrique-05.webp",
-    alt: "Layette blanc cassé : bavoir, brassière et chaussons cousus main",
+    alt: "Layette blanc cassé : petite robe de cérémonie, bonnet, bavoir et chaussons bordés de rubans rose, safran et vert feuille",
     caption: "Layette — la douceur pour les tout-petits",
   },
 ];
@@ -170,17 +170,17 @@ export const GALLERY_FORMATION: GalleryImage[] = [
   },
   {
     src: "/images/gallery/formation-couture-02.webp",
-    alt: "Apprenante cousant à la machine, vue de dos dans l'atelier",
+    alt: "Apprenante en robe wax rose et orange cousant à la machine, vue de dos dans l'atelier",
     caption: "Encadrement personnalisé à chaque étape",
   },
   {
     src: "/images/gallery/formation-couture-04.webp",
-    alt: "Mains guidant le tissu wax sous l'aiguille de la machine à coudre",
+    alt: "Mains guidant un wax orange à motifs feuilles sous l'aiguille de la machine à coudre",
     caption: "Les techniques — expliquées et pratiquées",
   },
   {
     src: "/images/gallery/formation-couture-05.webp",
-    alt: "Groupe d'apprenantes en pleine séance autour des tissus",
+    alt: "Groupe d'apprenantes en robes wax colorées, en pleine séance autour des tissus",
     caption: "Une progression ensemble, dans la bonne humeur",
   },
 ];

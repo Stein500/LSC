@@ -3,7 +3,7 @@ import { motion, AnimatePresence, type PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight, Download, Pause, Play, Scissors } from "lucide-react";
 import { SmartImage } from "./SmartImage";
 import { cn } from "@/utils/cn";
-import { notify } from "@/utils/notify";
+import { downloadAtelierImage } from "@/utils/downloadImage";
 
 /**
  * Une photo dans la galerie.
@@ -109,30 +109,11 @@ export function ScissorGallery({
     else if (info.offset.x > threshold || info.velocity.x > velocity) prev();
   };
 
-  // 📥 Téléchargement — chaque image part chez le visiteur bien nommée
-  //    et signée (filigrane logo + nom de l'atelier, anti-fausse utilisation).
+  // 📥 Téléchargement — l'image signée part chez le visiteur, bien nommée.
   const handleDownload = useCallback(
     async (e: React.MouseEvent) => {
       e.stopPropagation();
-      const img = images[index];
-      const base = img.src.split("/").pop()?.replace(/\.webp(\?.*)?$/, "") || "image";
-      const filename = `couture-colombe-merceries--${base}.webp`;
-      try {
-        const res = await fetch(img.src);
-        if (!res.ok) throw new Error(`http ${res.status}`);
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 4000);
-        notify.success("Image téléchargée — signée Couture Colombe & Merceries 🕊️");
-      } catch {
-        notify.error("Le téléchargement a glissé entre les mailles — réessayez.");
-      }
+      await downloadAtelierImage(images[index].src);
     },
     [images, index],
   );

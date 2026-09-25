@@ -30,15 +30,16 @@ IVOIRE = (247, 235, 221)
 BLANC_85 = (255, 255, 255, 216)
 MARRON = (92, 46, 12)
 
-# bande wax — la nouvelle palette de la maison
+# bande wax — la palette de la maison (09/2026) : orange, safran, rose,
+# marron, fil d'or, rouge colombe, vert citron feuille — JAMAIS de bleu.
 WAX = [
-    (29, 63, 160),   # bleu roi
     (232, 116, 20),  # orange
     (244, 184, 96),  # safran
     (251, 231, 235), # rose poudré
     (92, 46, 12),    # marron
     (201, 168, 124), # fil d'or
     (209, 35, 42),   # rouge colombe
+    (124, 186, 69),  # vert citron feuille
 ]
 
 

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Download } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Aurora } from "@/components/ui/Aurora";
+import { downloadAtelierImage } from "@/utils/downloadImage";
 
 type Crumb = { label: string; to?: string };
 
@@ -151,6 +152,17 @@ export function PageHero({
           transition={{ delay: 0.65, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
+
+      {/* 📥 Télécharger la bannière — l'image signée part bien nommée */}
+      <button
+        type="button"
+        onClick={() => void downloadAtelierImage(finalImage)}
+        className="absolute bottom-6 right-4 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"
+        aria-label="Télécharger cette bannière (signée Couture Colombe et Merceries)"
+        title="Télécharger l'image"
+      >
+        <Download className="w-3.5 h-3.5" />
+      </button>
 
       {/* Liseré wax en ourlet — la signature des pagnes sous chaque tête de page */}
       <div className="lsc-wax-bande lsc-wax-bande--soft absolute bottom-0 inset-x-0" aria-hidden="true" />

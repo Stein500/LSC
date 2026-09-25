@@ -27,7 +27,13 @@
   --color-linen: #F5EFE6;
   --color-saffron: #F4B860;
   --color-mauve: #B988A6;
-  /* Motifs wax — la fièvre des pagnes, sans jamais toucher au bleu ni au vert */
+  /* 🌿 Vert citron — la feuille en bonne santé, accent frais de la maison
+     (identité 09/2026 : rose · orange · marron · noir · blanc · vert citron
+     + les couleurs du logo : rouge colombe et fil d'or) */
+  --color-feuille: #7CBA45;        /* vert citron vif — pastilles, statuts */
+  --color-feuille-f: #558B2F;      /* vert feuille profond — texte sur clair */
+  --color-feuille-doux: #EFF7E3;   /* fond pâle feuille — sélection, badges */
+  /* Motifs wax — la fièvre des pagnes, sans jamais toucher au bleu */
   --color-wax-curcuma: #E9A319;   /* jaune profond des wax */
   --color-wax-brule: #C75B12;     /* orange brûlé, feu doux des pagnes */
 
@@ -67,6 +73,10 @@ html[data-theme="dark"] {
   --color-linen: #2B2520;
   --color-saffron: #F4B860;
   --color-mauve: #7C5A71;
+  /* 🌿 Vert citron feuille — version nuit */
+  --color-feuille: #8CCB54;
+  --color-feuille-f: #A9DC7A;
+  --color-feuille-doux: #1F2C15;
   --app-bg: #150D11;
   --app-surface: rgba(29, 19, 24, 0.94);
   --app-surface-strong: #241820;
@@ -368,8 +378,8 @@ html[data-theme="amoled"] :root {
 
 /* Selection */
 ::selection {
-  background-color: #D1232A;
-  color: #FFFFFF;
+  background-color: var(--color-feuille-doux, #EFF7E3);
+  color: var(--color-feuille-f, #558B2F);
 }
 
 /* Safe area iOS */
