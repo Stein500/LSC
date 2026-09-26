@@ -10,7 +10,7 @@
  * Style : iOS 17 / One UI 6 / HarmonyOS 4 — sobre, rapide, sans bruit.
  *
  * Usage :
- *   notify.success("Précommande reçue !", { description: "On vous confirme par email." });
+ *   notify.success("Commande reçue !", { description: "On vous confirme par email." });
  *   notify.error("Oups, réessayez.", { duration: 8000 });
  *   notify.promise(submitFn(), { loading: "...", success: "...", error: "..." });
  *   notify.addItem({ type: "success", title: "Formation enregistrée", ... });  // → cloche
