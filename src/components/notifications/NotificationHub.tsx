@@ -23,7 +23,7 @@ type MoodCard = {
 const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "all", label: "Tout" },
   { key: "unread", label: "À lire" },
-  { key: "precommande", label: "Pré-commandes" },
+  { key: "precommande", label: "Commandes" },
   { key: "formation", label: "Formations" },
   { key: "contact", label: "Contacts" },
   { key: "mood", label: "Ambiance" },

@@ -58,7 +58,7 @@ function truncateText(text: string, max = 140): string {
 
 function categoryLabel(item: Item): string {
   const raw = String(item.category || item.metadata?.source || item.metadata?.kind || "").toLowerCase();
-  if (raw.includes("precommande")) return "Pré-commande";
+  if (raw.includes("precommande")) return "Commande";
   if (raw.includes("formation")) return "Formation";
   if (raw.includes("contact")) return "Contact";
   if (raw.includes("install")) return "Accueil";
@@ -67,7 +67,7 @@ function categoryLabel(item: Item): string {
 
 function stickerForItem(item: Item): { name: StickerName; label: string; rotate: number } {
   const raw = String(item.category || item.metadata?.source || item.metadata?.kind || item.type || "").toLowerCase();
-  if (raw.includes("precommande")) return { name: "pagne", label: "Pré-commande", rotate: -6 };
+  if (raw.includes("precommande")) return { name: "pagne", label: "Commande", rotate: -6 };
   if (raw.includes("formation")) return { name: "mannequin", label: "Formation", rotate: 4 };
   if (raw.includes("contact")) return { name: "button", label: "Contact", rotate: -3 };
   if (raw.includes("install")) return { name: "thread", label: "Accueil", rotate: 8 };

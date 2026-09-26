@@ -89,7 +89,7 @@ export function WhatsAppFab() {
           </p>
           {[
             { key: "general", label: "Infos générales", emoji: "💬" },
-            { key: "precommande", label: "Suivre ma pré-commande", emoji: "📦" },
+            { key: "precommande", label: "Suivre ma commande", emoji: "📦" },
             { key: "formation", label: "Inscription formation", emoji: "🎓" },
           ].map((opt) => (
             <button
