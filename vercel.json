@@ -157,7 +157,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -170,7 +170,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -183,7 +183,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -196,7 +196,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
+          "value": "no-cache, must-revalidate"
         },
         {
           "key": "Vary",
@@ -209,7 +209,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -222,7 +222,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -235,7 +235,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -257,7 +257,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -270,7 +270,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=86400, must-revalidate"
+          "value": "no-cache, must-revalidate"
         },
         {
           "key": "X-Robots-Tag",
@@ -325,7 +325,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -338,7 +338,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, must-revalidate"
         }
       ]
     },
@@ -368,6 +368,45 @@
         {
           "key": "X-DNS-Prefetch-Control",
           "value": "on"
+        }
+      ]
+    },
+    {
+      "source": "/(index.html)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/(manifest.webmanifest|app-manifest.json|sw.js)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/(sitemap.xml|image-sitemap.xml|robots.txt)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate"
+        },
+        {
+          "key": "Vary",
+          "value": "Accept"
         }
       ]
     }

@@ -7,7 +7,7 @@
    - statique (images, css, js, fonts) → cache d'abord, réseau à jour
    - /api/** → JAMAIS mis en cache (suivi live, tickets PDF)
    ============================================================ */
-const CACHE = "colombes-v2";
+const CACHE = "colombes-v3";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -46,20 +46,19 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Statique : cache d'abord (les noms Vite sont hashés, sûrs à garder).
+  // Statique : RÉSEAU D'ABORD, cache en secours — à chaque rafraîchissement,
+  // l'atelier montre le NEUF ; hors-ligne, le dernier fil reste là.
   if (/\.(webp|png|jpe?g|gif|ico|svg|woff2?|css|js|webmanifest)$/i.test(url.pathname)) {
     event.respondWith(
-      caches.match(request).then(
-        (hit) =>
-          hit ||
-          fetch(request).then((resp) => {
-            if (resp.ok) {
-              const copy = resp.clone();
-              caches.open(CACHE).then((c) => c.put(request, copy));
-            }
-            return resp;
-          })
-      )
+      fetch(request)
+        .then((resp) => {
+          if (resp.ok) {
+            const copy = resp.clone();
+            caches.open(CACHE).then((c) => c.put(request, copy));
+          }
+          return resp;
+        })
+        .catch(() => caches.match(request))
     );
   }
 });
