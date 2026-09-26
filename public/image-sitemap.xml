@@ -7,17 +7,17 @@
     <loc>https://lesservicescolombes.vercel.app/</loc>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/og-share-preview.webp</image:loc>
-      <image:title>Les Services Colombes — Atelier de Couture à Porto-Novo</image:title>
+      <image:title>Couture Colombe et Merceries — Couture à Porto-Novo</image:title>
       <image:caption>Atelier de couture d'exception à Porto-Novo, Bénin</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/header-colombes.webp</image:loc>
-      <image:title>Hero — Atelier Les Services Colombes</image:title>
+      <image:title>Hero — Atelier Couture Colombe et Merceries</image:title>
       <image:caption>Vue principale de l'atelier de couture à Porto-Novo</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/logo.webp</image:loc>
-      <image:title>Logo Les Services Colombes</image:title>
+      <image:title>Logo Couture Colombe et Merceries</image:title>
       <image:caption>Logo officiel de l'atelier de couture</image:caption>
     </image:image>
   </url>
@@ -27,7 +27,7 @@
     <loc>https://lesservicescolombes.vercel.app/</loc>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-01.webp</image:loc>
-      <image:title>Vue d'ensemble de l'atelier Les Services Colombes</image:title>
+      <image:title>Vue d'ensemble de l'atelier Couture Colombe</image:title>
       <image:caption>L'atelier — un espace dédié à la création</image:caption>
     </image:image>    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-03.webp</image:loc>
@@ -164,7 +164,7 @@
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-01.webp</image:loc>
       <image:title>Contact — Façade atelier</image:title>
-      <image:caption>Vue de l'atelier Les Services Colombes</image:caption>
+      <image:caption>Vue de l'atelier Couture Colombe</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-02.webp</image:loc>

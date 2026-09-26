@@ -60,7 +60,7 @@ async function getLogoPng(pdf) {
   }
 }
 
-const ATELIER_NAME = process.env.ATELIER_NAME || "Les Services Colombes";
+const ATELIER_NAME = process.env.ATELIER_NAME || "Couture Colombe et Merceries";
 const ATELIER_TAGLINE =
   process.env.ATELIER_TAGLINE || "Atelier · Mercerie · Centre de Formation";
 const ATELIER_PHONE = process.env.ATELIER_PHONE || "+229 01 67 40 94 08";
@@ -467,7 +467,7 @@ export async function buildSubmissionPdf(type, data) {
   pdf.setTitle(`${labelType(type)} — ${ATELIER_NAME}`);
   pdf.setAuthor(ATELIER_NAME);
   pdf.setSubject("Récapitulatif de votre demande");
-  pdf.setCreator("Les Services Colombes — Atelier de Couture");
+  pdf.setCreator("Couture Colombe et Merceries");
 
   const fonts = await getBrandFonts(pdf);
   const logoPng = await getLogoPng(pdf);
@@ -863,5 +863,5 @@ export async function buildSubmissionPdfBase64(type, data) {
  */
 export function pdfFilename(ref, type) {
   const safe = String(ref || "CLB").replace(/[^A-Z0-9_-]/gi, "");
-  return `Les-Services-Colombes_${safe}_${type || "demande"}.pdf`;
+  return `Couture-Colombe-et-Merceries_${safe}_${type || "demande"}.pdf`;
 }

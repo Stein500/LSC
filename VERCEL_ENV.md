@@ -1,4 +1,4 @@
-# 🔐 Configuration des variables d'environnement — Les Services Colombes
+# 🔐 Configuration des variables d'environnement — Couture Colombe et Merceries
 
 > **Site cible :** https://lesservicescolombes.vercel.app
 > 🧭 **Double vie** : cette adresse sert **à la fois** les visiteurs web ET la WebView de l'app Colombes. Les mots de l'interface restent « atelier » — hybrides par nature.
@@ -40,7 +40,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 
 | NAME | VALUE |
 |------|-------|
-| `VITE_ATELIER_NAME` | `Les Services Colombes` |
+| `VITE_ATELIER_NAME` | `Couture Colombe et Merceries` |
 | `VITE_ATELIER_SHORT_NAME` | `Colombes` |
 | `VITE_ATELIER_TAGLINE` | `Atelier de Couture d'Exception` |
 | `VITE_ATELIER_DESCRIPTION` | `Couture sur mesure, mercerie, layette & formations à Porto-Novo` |
@@ -51,8 +51,8 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 
 | NAME | VALUE |
 |------|-------|
-| `VITE_ATELIER_LOCATION` | `Les Services Colombes, Porto-Novo – Bénin` |
-| `VITE_ATELIER_LOCATION_FULL` | `Les Services Colombes, Porto-Novo – Bénin` |
+| `VITE_ATELIER_LOCATION` | `Couture Colombe et Merceries, Porto-Novo – Bénin` |
+| `VITE_ATELIER_LOCATION_FULL` | `Couture Colombe et Merceries, Porto-Novo – Bénin` |
 | `VITE_ATELIER_LAT` | `6.4922053` |
 | `VITE_ATELIER_LNG` | `2.6004269` |
 | `VITE_MAPS_URL` | `https://maps.app.goo.gl/A14pmkvWbbxpwS4J6` |
@@ -135,7 +135,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 | `SMTP_USER` | ton adresse Gmail d'envoi |
 | `SMTP_PASS` | **mot de passe d'application** Google (Compte Google → Sécurité → Validation en 2 étapes → Mots de passe d'application) — PAS le mot de passe Gmail |
 | `MAIL_TO` | destinataire(s) des notifications — plusieurs : `a@x.com,b@x.com` |
-| `MAIL_FROM` | `Les Services Colombes <ton-adresse@gmail.com>` |
+| `MAIL_FROM` | `Couture Colombe et Merceries <ton-adresse@gmail.com>` |
 | `ATELIER_LOGO_URL` | `https://lesservicescolombes.vercel.app/images/logo.webp` |
 
 > ⚠️ Sans le SMTP, les formulaires fonctionnent mais aucun email n'est envoyé.

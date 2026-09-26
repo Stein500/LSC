@@ -76,10 +76,9 @@ def main() -> None:
     base.alpha_composite(ring, (80, 78))
 
     x = 80
-    d.text((x + 112, 108), "LES SERVICES COLOMBES", font=f_brand, fill=GOLD)
-    d.text((x, 226), "devient…", font=f_dev, fill=BLANC_85)
-    d.text((x, 278), "Couture Colombe", font=f_nom, fill=IVOIRE, stroke_width=1, stroke_fill=IVOIRE)
-    d.text((x + 2, 392), "& Merceries", font=f_suite, fill=SAFRAN, stroke_width=1, stroke_fill=SAFRAN)
+    d.text((x + 112, 108), "ATELIER · MERCERIE · FORMATION", font=f_brand, fill=GOLD)
+        d.text((x, 250), "Couture Colombe", font=f_nom, fill=IVOIRE, stroke_width=1, stroke_fill=IVOIRE)
+    d.text((x + 2, 372), "& Merceries", font=f_suite, fill=SAFRAN, stroke_width=1, stroke_fill=SAFRAN)
     d.text((x, 470), "Atelier · Mercerie · Formation — Porto-Novo, depuis 1990", font=f_line, fill=(255, 255, 255, 185))
 
     # Bande wax en bas

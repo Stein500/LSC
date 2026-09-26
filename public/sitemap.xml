@@ -10,12 +10,12 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/header-colombes.webp</image:loc>
-      <image:title>Les Services Colombes — Atelier de Couture à Porto-Novo</image:title>
+      <image:title>Couture Colombe et Merceries — Couture à Porto-Novo</image:title>
       <image:caption>Vue de l'atelier de couture à Porto-Novo</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/og-share-preview.webp</image:loc>
-      <image:title>Les Services Colombes — Atelier de Couture d'Exception</image:title>
+      <image:title>Couture Colombe et Merceries — atelier cousue main</image:title>
       <image:caption>Logo / visuel officiel de l'atelier</image:caption>
     </image:image>
     <image:image>
@@ -132,7 +132,7 @@
     <priority>0.8</priority>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-01.webp</image:loc>
-      <image:title>Façade de l'atelier Les Services Colombes à Porto-Novo</image:title>
+      <image:title>Façade de l'atelier Couture Colombe à Porto-Novo</image:title>
       <image:caption>L'atelier — un lieu ouvert et coloré</image:caption>
     </image:image>
     <image:image>

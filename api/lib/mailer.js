@@ -34,7 +34,7 @@ const MAIL_TO = (process.env.MAIL_TO || "")
   .filter(Boolean);
 
 // Identité atelier (lue aussi depuis env si présente, sinon défaut)
-const ATELIER_NAME = process.env.ATELIER_NAME || "Les Services Colombes";
+const ATELIER_NAME = process.env.ATELIER_NAME || "Couture Colombe et Merceries";
 const ATELIER_TAGLINE = process.env.ATELIER_TAGLINE || "Atelier de Couture d'Exception";
 const ATELIER_PHONE = process.env.ATELIER_PHONE || "+229 01 67 40 94 08";
 const ATELIER_PHONE_2 = process.env.ATELIER_PHONE_2 || "+229 01 95 76 36 01";
