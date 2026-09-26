@@ -217,3 +217,85 @@ export const GALLERY_FORMATION: GalleryImage[] = [
     caption: "Une progression ensemble, dans la bonne humeur",
   },
 ];
+
+// ============ PAGE INSPIRATIONS — LE SHOW-ROOM DES MODÈLES (sections) ============
+export type InspirationSection = {
+  /** ancre d'URL (#mariages…) */
+  key: string;
+  titre: string;
+  /** tout-petit kicker au-dessus du titre */
+  note: string;
+  images: GalleryImage[];
+};
+
+/**
+ * La page Inspirations ne porte que des galeries : un modèle qui plaît
+ * se touche, puis « Télécharger » ou « Commander ce modèle ».
+ */
+export const INSPIRATIONS_SECTIONS: InspirationSection[] = [
+  {
+    key: "mariages",
+    titre: "Mariages & grands jours",
+    note: "🤍 Le grand jour",
+    images: [
+      { src: "/images/gallery/mariage-robe-01.webp", alt: "Robe de mariée en bazin blanc cassé brodé de fil d'or, voile et bouquet rose-orange", caption: "La mariée cousue d'or" },
+      { src: "/images/gallery/mariage-robe-04.webp", alt: "Mariée en robe sirène de dentelle ivoire brodée d'or, long voile, arche fleurie rose", caption: "La romantique — dentelle & voile" },
+      { src: "/images/gallery/mariage-robe-03.webp", alt: "Mariée traditionnelle en pagne tissé rouge colombe et or, couronne et colliers dorés", caption: "La traditionnelle — éclat du pagne" },
+      { src: "/images/gallery/mariage-robe-09.webp", alt: "Jeune mariée en robe corolle wax orange et feuille qui tourne sous les pétales", caption: "Le civil — la robe qui danse" },
+      { src: "/images/gallery/mariage-robe-02.webp", alt: "Trois demoiselles d'honneur en robes wax assorties rose, orange et vert feuille", caption: "Le cortège assorti" },
+      { src: "/images/gallery/mariage-robe-07.webp", alt: "Trois invitées en tenues aso-ebi assorties, turbans wax, rires en réception", caption: "L'aso-ebi des invitées" },
+      { src: "/images/gallery/mariage-robe-05.webp", alt: "Petite demoiselle d'honneur en robe safran à manches bouffantes, panier de pétales", caption: "La demoiselle d'honneur" },
+    ],
+  },
+  {
+    key: "robes",
+    titre: "Robes — signatures & nouveautés",
+    note: "👗 Du matin au soir",
+    images: [
+      { src: "/images/gallery/inspirations-05.webp", alt: "Femme élégante en robe midi boutonnée safran et rose poudré, sac crème, escarpins dorés", caption: "Bureau chic — midi boutonnée" },
+      { src: "/images/gallery/inspirations-06.webp", alt: "Robe de soirée longue sirène en wax noir profond à motifs fil d'or, manches dentelle", caption: "Soirée gala — sirène noir & or" },
+      { src: "/images/gallery/inspirations-07.webp", alt: "Robe-chemise ceinturée vert feuille et rose, marche dans une cour fleurie", caption: "Décontractée chic — chemise feuille" },
+      { src: "/images/gallery/inspirations-08.webp", alt: "Robe festive en pagne tissé rouge colombe et or qui tourne en dansant", caption: "La festive — rouge colombe" },
+      { src: "/images/gallery/inspirations-11.webp", alt: "Robe de cérémonie mi-longue en dentelle marron glacé brodée d'or, invitée d'honneur", caption: "Invitée d'honneur — dentelle" },
+      { src: "/images/gallery/inspirations-12.webp", alt: "Robe d'été longue vaporeuse rose poudré et orange, chapeau de paille, jardin fleuri", caption: "Robe d'été — vaporeuse" },
+      { src: "/images/gallery/inspirations-01.webp", alt: "Robe wax à volants superposés orange grenadine et or, touches feuilles vert citron", caption: "La signature — volants wax" },
+      { src: "/images/gallery/creation-afrique-04.webp", alt: "Robe moderne et fluide en wax rose poudré à motifs orange et feuilles vert citron", caption: "Moderne — fluide rose" },
+    ],
+  },
+  {
+    key: "ensembles",
+    titre: "Boubous & ensembles",
+    note: "🧵 La prestance",
+    images: [
+      { src: "/images/gallery/inspirations-09.webp", alt: "Grand boubou-robe royal en bazin safran illuminé de broderies au fil d'or, foulard assorti", caption: "Boubou royal — bazin & or" },
+      { src: "/images/gallery/inspirations-10.webp", alt: "Ensemble jupe crayon midi et chemisier pagne vert feuille & crème noué, tailleur moderne", caption: "Tailleur jupe — feuille & crème" },
+      { src: "/images/gallery/creation-afrique-01.webp", alt: "Grand boubou marron richement brodé de fil doré et touches vert feuille", caption: "Boubou marron — l'élégance" },
+      { src: "/images/gallery/creation-afrique-03.webp", alt: "Ensemble jupe longue et chemisier à manches bouffantes en wax feuilles orange et marron", caption: "Jupe & chemisier — le duo" },
+      { src: "/images/gallery/inspirations-03.webp", alt: "Silhouette de dos en grand boubou terracotta brodé d'or au coucher du soleil", caption: "Silhouette — heure dorée" },
+      { src: "/images/gallery/tenue-semaine-01.webp", alt: "Femme élégante en robe wax orange safran à motifs marron et vert feuille en boutique", caption: "La tenue de la semaine" },
+    ],
+  },
+  {
+    key: "filles",
+    titre: "Filles & layette",
+    note: "🌸 Les petites douceurs",
+    images: [
+      { src: "/images/gallery/jeune-fille-01.webp", alt: "Fillette joyeuse faisant tournoyer sa robe wax orange safran", caption: "La robe qui fait danser" },
+      { src: "/images/gallery/jeune-fille-02.webp", alt: "Adolescente en robe wax marron et or à ceinture vert feuille", caption: "Tendance wax bien coupée" },
+      { src: "/images/gallery/famille-trio-01.webp", alt: "Trois générations en robes wax assorties orange, rose et vert feuille", caption: "Trois générations assorties" },
+      { src: "/images/gallery/layette-bebe-01.webp", alt: "Bébé souriant en petite robe de layette blanc cassé brodée safran", caption: "Layette — la douceur" },
+      { src: "/images/gallery/creation-afrique-05.webp", alt: "Layette de cérémonie : petite robe, bonnet, bavoir et chaussons bordés de rubans", caption: "Cérémonie des tout-petits" },
+    ],
+  },
+  {
+    key: "matieres",
+    titre: "Matières & mercerie",
+    note: "🎀 Tout se vend ici aussi",
+    images: [
+      { src: "/images/gallery/mariage-accessoires-01.webp", alt: "Accessoires de mariée sur soie rose poudré : voile, gants, escarpins dorés, bijoux, bouquet", caption: "La trousse de la mariée" },
+      { src: "/images/gallery/inspirations-02.webp", alt: "Éventails de pagnes wax orange, rose, marron et vert citron en cascade", caption: "Pagnes & wax au mètre" },
+      { src: "/images/gallery/inspirations-04.webp", alt: "Bobines de fil orange, rouge colombe et or, ciseaux dorés, dé à coudre", caption: "Fils, ciseaux & dés" },
+      { src: "/images/gallery/contact-page-03.webp", alt: "Carnet de croquis de robes, nuancier wax, thé fumant et branche fraîche", caption: "Le coin des projets" },
+    ],
+  },
+];

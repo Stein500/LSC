@@ -1,118 +1,71 @@
-
 import { SEO, SchemaBuilders } from '@/components/seo/SEO';
 import { env } from '@/utils/env';
+import { LEGAL } from '@/data/legal';
 import { PageHeaderBand } from '@/components/ui/PageHeaderBand';
-import { Aurora } from '@/components/ui/Aurora';
-import { PageHero } from '@/components/ui/PageHero';
-import { Card } from '@/components/ui/Card';
-import { Reveal } from '@/components/ui/Reveal';
-import { SectionTitle } from '@/components/ui/SectionTitle';
-import { Masonry } from '@/components/ui/Masonry';
-import { HeartPulse } from '@/components/ui/HeartPulse';
-import { Sticker, type StickerName } from '@/components/ui/Sticker';
-import { StickerRegion, type RegionCode } from '@/components/ui/StickerRegion';
-import { GALLERY_INSPIRATIONS_PAGES } from '@/data/galleries';
-import { PROFILES } from '@/data/profiles';
+import { ModelGallery } from '@/components/ui/ModelGallery';
+import { StitchDivider } from '@/components/ui/StitchDivider';
+import { GALLERY_INSPIRATIONS_PAGES, INSPIRATIONS_SECTIONS } from '@/data/galleries';
 
+/**
+ * Page INSPIRATIONS — le show-room des modèles 👗
+ * ------------------------------------------------
+ * Que des galeries, section par section : mariages, robes, ensembles,
+ * filles & layette, matières & mercerie.
+ * Un modèle qui plaît ? On le touche → « Télécharger » ou « Commander ».
+ */
 export default function Inspirations() {
+  const tousLesModeles = INSPIRATIONS_SECTIONS.flatMap((s) =>
+    s.images.map((img) => ({
+      name: img.caption ?? img.alt,
+      url: `${env.siteUrl}/inspirations#${s.key}`,
+      image: img.src,
+    })),
+  );
+
   return (
     <>
       <SEO
-        title="Inspirations du monde"
-        description="Inspirations couture de l'atelier : profils, wax et matières d'ici et d'ailleurs — Porto-Novo."
+        title="Inspirations — les modèles de l'atelier"
+        description={`Robes, boubous, mariages, jupes & mercerie : le show-room de ${LEGAL.displayName}. Touchez un modèle pour le télécharger ou le commander.`}
         path="/inspirations"
-        ogImage="/images/gallery/inspirations-page-01.webp"
+        ogImage="/images/gallery/inspirations-06.webp"
         keywords={[
-          'inspirations couture Porto-Novo',
-          'atelier couture Bénin',
-          'tenues sur mesure multiculturelles',
-          'profils couture africains',
-          'bazin wax pagne',
-          'Couture Colombe et Merceries',
+          'modèles couture Porto-Novo',
+          'robes wax Bénin',
+          'boubous et ensembles africains',
+          'robes de mariage sur mesure',
+          'mercerie Porto-Novo',
+          LEGAL.displayName,
         ]}
         jsonLd={[
           SchemaBuilders.organization(),
+          SchemaBuilders.breadcrumb([
+            { name: 'Accueil', url: '/' },
+            { name: 'Inspirations', url: '/inspirations' },
+          ]),
           SchemaBuilders.collectionPage({
-            name: 'Inspirations du monde',
-            description: 'Profils multiculturels et inspirations couture de l\'atelier Couture Colombe et Merceries',
+            name: 'Inspirations — les modèles de l\u2019atelier',
+            description: `Le show-room de modèles de ${LEGAL.displayName} : mariages, robes, ensembles, filles & layette, matières & mercerie.`,
             url: `${env.siteUrl}/inspirations`,
-            hasPart: PROFILES.map((p) => ({
-              name: `${p.name} — ${p.city}`,
-              url: `${env.siteUrl}/inspirations#${p.id}`,
-              image: '/images/logo.webp',
-            })),
+            hasPart: tousLesModeles,
           }),
         ]}
       />
 
-      {/* ===================== BIBLIOTHÈQUE GALERIE (juste après le header) ===================== */}
+      {/* ===== BANDEAU-GALERIE (visuel, juste sous le header) ===== */}
       <PageHeaderBand
         images={GALLERY_INSPIRATIONS_PAGES}
-        introTitle="Un tour du monde en couture"
-        introSubtitle="Des pagnes béninois aux caftans marocains, des boubous sénégalais aux kimonos revisités."
+        introTitle="Le show-room des modèles"
+        introSubtitle="Touchez un modèle : téléchargez-le, ou commandez-le tel quel."
         introLabel="Galerie Inspirations"
-        seamCaption="Galerie couture"
+        seamCaption="Les modèles de l'atelier"
         maxHeight="min(54vh, 500px)"
       />
 
-      {/* ===================== HERO ===================== */}
-      <PageHero
-        title="Inspirations du monde"
-        subtitle="Une balade douce entre visages, matières et lumière ✨"
-        image="/images/gallery/inspirations-page-01.webp"
-        crumbs={[{ label: 'Accueil', to: '/' }, { label: 'Inspirations' }]}
-      />
+      {/* ===== LES SECTIONS DE MODÈLES — rien d'autre ===== */}
+      <ModelGallery sections={INSPIRATIONS_SECTIONS} />
 
-      {/* Intro */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Reveal>
-            <p className="text-lg md:text-xl text-[var(--color-ink-soft)] leading-relaxed italic" style={{ fontFamily: 'var(--font-display)' }}>
-              <span style={{ fontFamily: 'var(--font-display)', color: 'var(--color-orange)' }}>
-                {PROFILES.length} visages
-              </span>
-              , un même fil — du pagne béninois au kimono revisité.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="relative py-12 md:py-16 bg-[var(--color-cream)] overflow-hidden">
-        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            eyebrow="Profils"
-            title={<>Profils <span className="lsc-text-silk">inspirants</span></>}
-            align="left"
-          />
-          <Masonry columns={{ sm: 1, md: 2, lg: 3 }} gap={16}>
-            {PROFILES.map((profile) => (
-              <Card key={profile.id} className="mb-4 break-inside-avoid">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)]">{profile.city}</p>
-                  <StickerRegion code={profile.region as RegionCode} />
-                </div>
-                <h2 className="text-2xl mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-                  {profile.name}
-                </h2>
-                <div className="flex items-center gap-2 mb-4">
-                  <Sticker
-                    name={profile.stickerId as StickerName}
-                    size={20}
-                    className="text-[var(--color-orange)] shrink-0"
-                  />
-                  <p className="text-sm text-[var(--color-ink-soft)]">{profile.textile}</p>
-                </div>
-                <p className="text-sm leading-relaxed mb-4">{profile.story}</p>
-                <div className="flex items-center gap-2 text-[var(--color-orange)]">
-                  <HeartPulse size={16} />
-                  <span className="text-sm">♡ Inspiration couture</span>
-                </div>
-              </Card>
-            ))}
-          </Masonry>
-        </div>
-      </section>
+      <StitchDivider className="max-w-4xl mx-auto px-6 pb-10" accent label="Chaque modèle peut être le vôtre" />
     </>
   );
 }
