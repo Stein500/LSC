@@ -129,25 +129,6 @@ export const GALLERY_CREATIONS: GalleryImage[] = [
   },
 ];
 
-// ======================= GALERIE 4 — CONTACT (mini galerie) =======================
-export const GALLERY_CONTACT: GalleryImage[] = [
-  {
-    src: "/images/gallery/atelier-01.webp",
-    alt: "L'équipe de l'atelier Les Services Colombes autour de la table de coupe",
-    caption: "L'atelier — un lieu chaleureux, à découvrir",
-  },
-  {
-    src: "/images/gallery/atelier-04.webp",
-    alt: "Table de coupe avec patron, ciseaux dorés et mètre ruban",
-    caption: "Un savoir-faire précis, du croquis à la coupe",
-  },
-  {
-    src: "/images/gallery/atelier-06.webp",
-    alt: "Robe wax ajustée sur mannequin de tailleur dans l'atelier",
-    caption: "À très vite à l'atelier !",
-  },
-];
-
 // ==================================================================
 // GALERIES DÉDIÉES AUX PAGES (Contact & Inspirations)
 // ==================================================================
