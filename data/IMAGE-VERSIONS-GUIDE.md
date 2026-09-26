@@ -88,7 +88,23 @@
 "/images/gallery/contact-page-03.webp":     →  carnet de patrons, nuancier, thé fumant
 ```
 
-## 💡 Galerie page /inspirations (8 photos)
+## 💡 Page /inspirations = SHOW-ROOM interactif (sections de galeries, clic → Télécharger / Commander)
+
+> Le bandeau utilise les 8 images ci-dessous ; les sections ajoutent les modèles
+> inspirations-05…12 + mariages, ensembles, filles & layette, matières (30 modèles, voir galleries.ts → INSPIRATIONS_SECTIONS).
+
+```json
+"/images/gallery/inspirations-05.webp":  →  robe midi boutonnée safran & rose (bureau chic)
+"/images/gallery/inspirations-06.webp":  →  robe de soirée sirène noir & fil d'or
+"/images/gallery/inspirations-07.webp":  →  robe-chemise ceinturée vert feuille & rose
+"/images/gallery/inspirations-08.webp":  →  robe festive pagne rouge colombe & or
+"/images/gallery/inspirations-09.webp":  →  grand boubou-robe royal bazin safran & or
+"/images/gallery/inspirations-10.webp":  →  ensemble jupe crayon & chemisier feuille
+"/images/gallery/inspirations-11.webp":  →  robe invitée d'honneur dentelle marron glacé
+"/images/gallery/inspirations-12.webp":  →  robe d'été vaporeuse rose & orange
+```
+
+### Bandeau d'en-tête (8 photos)
 
 ```json
 "/images/gallery/inspirations-page-01.webp":  →  robe wax à volants orange & or (pièce signature)
