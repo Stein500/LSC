@@ -53,7 +53,7 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Atelier & Mercerie à Porto-Novo"
+        title="Atelier & Mercerie Porto-Novo"
         description="Couture Colombe et Merceries — atelier & mercerie à Porto-Novo : robes sur mesure, wax, layette, formation, depuis 1990."
         path="/"
         ogImage="/images/header-colombes.webp"

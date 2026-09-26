@@ -21,7 +21,7 @@ export default function Formation() {
   return (
     <>
       <SEO
-        title="Formation Couture Professionnelle"
+        title="Formation de couturière"
         description="Devenez Maîtresse Couturière avec une pro. Deux formules : Formation Courte ou Spécialisée à Porto-Novo."
         path="/formation"
         ogImage="/images/hero-formation.webp"

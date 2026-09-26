@@ -25,7 +25,7 @@ export default function Inspirations() {
   return (
     <>
       <SEO
-        title="Inspirations — les modèles de l'atelier"
+        title="Inspirations de l'atelier"
         description={`Robes, boubous, mariages, jupes & mercerie : le show-room de ${LEGAL.displayName}. Touchez un modèle pour le télécharger ou le commander.`}
         path="/inspirations"
         ogImage="/images/gallery/inspirations-06.webp"
