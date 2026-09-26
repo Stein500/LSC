@@ -1,7 +1,7 @@
 # 🔐 Configuration des variables d'environnement — Couture Colombe et Merceries
 
 > **Site cible :** https://lesservicescolombes.vercel.app
-> 🧭 **Double vie** : cette adresse sert **à la fois** les visiteurs web ET la WebView de l'app Colombes. Les mots de l'interface restent « atelier » — hybrides par nature.
+> 🧭 **Site autonome** : cette adresse sert les visiteurs web + l'installation PWA (l'ancienne application native est retirée). Les mots de l'interface restent « atelier » — chaleureux par nature.
 > ⚠️ **Ce fichier ne contient AUCUNE valeur secrète** (le dépôt est public).
 > Les vraies valeurs vivent **uniquement** dans : le dashboard Vercel + ton `.env` local (gitignoré).
 
@@ -41,7 +41,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 | NAME | VALUE |
 |------|-------|
 | `VITE_ATELIER_NAME` | `Couture Colombe et Merceries` |
-| `VITE_ATELIER_SHORT_NAME` | `Colombes` |
+| `VITE_ATELIER_SHORT_NAME` | `Couture Colombe` |
 | `VITE_ATELIER_TAGLINE` | `Atelier de Couture d'Exception` |
 | `VITE_ATELIER_DESCRIPTION` | `Couture sur mesure, mercerie, layette & formations à Porto-Novo` |
 | `VITE_ATELIER_FOUNDED` | `1990` |
@@ -90,7 +90,7 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 | `VITE_SITE_URL` | `https://lesservicescolombes.vercel.app` |
 | `VITE_API_URL` | `/api/track` |
 | `VITE_TRACK_TOKEN` | 🔑 **SECRET — voir note tokens ci-dessous** |
-| `VITE_ATELIER_SOURCE_ID` | `atelier-colombes` |
+| `VITE_ATELIER_SOURCE_ID` | `couture-colombe-merceries` |
 
 > 📝 `VITE_API_URL` reste **relatif** (`/api/track`) : le même build tourne en prod,
 > en preview Vercel et en local sans rien changer.

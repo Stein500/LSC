@@ -90,7 +90,7 @@ export const env = {
   // tracking (le vrai secret TRACK_TOKEN reste côté serveur).
   apiUrl: v("VITE_API_URL", "/api/track"),
   apiToken: v("VITE_TRACK_TOKEN", ""),
-  sourceId: v("VITE_ATELIER_SOURCE_ID", "atelier-colombes"),
+  sourceId: v("VITE_ATELIER_SOURCE_ID", "couture-colombe-merceries"),
 
   // --- Aliases rétrocompat (utilisés dans certains composants) ---
   get schoolName() { return this.atelierName; },

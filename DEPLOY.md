@@ -21,7 +21,7 @@
 # 1. Vide lsc2 et recopie le dossier patché
 cd ~/lsc2
 find . -maxdepth 1 ! -name "node_modules" ! -name "." ! -name ".." -exec rm -rf {} + 2>/dev/null
-unzip -o /sdcard/Download/lesservicescolombes-patched-v2.zip -d /sdcard/Web+/
+unzip -o /sdcard/Download/lsc-colombes-complet.zip -d /sdcard/Web+/
 cp -r /sdcard/Web+/patch/. ~/lsc2/
 cd ~/lsc2
 
@@ -96,7 +96,7 @@ npm install
 ```bash
 cd ~/lsc2
 find . -maxdepth 1 ! -name "node_modules" ! -name "." ! -name ".." -exec rm -rf {} + 2>/dev/null
-unzip -o /sdcard/Download/lesservicescolombes-patched-v2.zip -d /sdcard/Web+/
+unzip -o /sdcard/Download/lsc-colombes-complet.zip -d /sdcard/Web+/
 cp -r /sdcard/Web+/patch/. ~/lsc2/
 cd ~/lsc2
 vercel --prod --force 2>&1 | tee /sdcard/vercel-final.log

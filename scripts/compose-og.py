@@ -5,12 +5,10 @@ compose-og.py — la carte de visite sociale (1200×630) 🕊️
 Compose public/images/og-share-preview.webp à partir de
 tmp-gen/og-art.png (illustration wax générée) :
 
-  « LES SERVICES COLOMBES »  + médaillon colombe
-  devient…
-  COUTURE COLOMBE & MERCERIES   (lettres chaudes)
+  COUTURE COLOMBE & MERCERIES   (lettres chaudes) + médaillon colombe
   Atelier · Mercerie · Formation — Porto-Novo, depuis 1990
 
-  + bande wax en bas (bleu roi, safran, rose, marron, or, rouge colombe).
+  + bande wax en bas (safran, rose, marron, or, vert feuille, rouge colombe — jamais de bleu).
 """
 import os
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps

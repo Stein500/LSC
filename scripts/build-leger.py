@@ -44,8 +44,8 @@ for rel in files:
         shutil.copy2(src, dst)
 
 with open(os.path.join(STAGE, "LISEZMOI-PLACEHOLDERS.txt"), "w", encoding="utf-8") as f:
-    f.write("""LES SERVICES COLOMBES — ZIP LÉGER (placeholders)
-================================================
+    f.write("""COUTURE COLOMBE ET MERCERIES — ZIP LÉGER (placeholders)
+=======================================================
 
 Ce zip contient le PROJET COMPLET, mais chaque image
 (public/images/**, icônes, favicon…) a été remplacée par un
@@ -56,7 +56,7 @@ Pour retrouver le site en fleur :
   → déposez vos vraies images aux mêmes chemins en écrasant
     les placeholders (copie simple, tout se remet en place).
 
-Site + app partagent la même adresse : lesservicescolombes. 🧵
+Le site vit seul à son adresse — les images vraies lui rendent sa fleur. 🧵
 """)
 
 if os.path.exists(OUT): os.remove(OUT)
