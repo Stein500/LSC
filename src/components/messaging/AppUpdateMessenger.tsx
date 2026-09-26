@@ -186,7 +186,7 @@ export function AppUpdateMessenger() {
                   <button
                     type="button"
                     onClick={installAndClose("app_install_toast")}
-                    aria-label="Installer l'atelier Colombes sur cet appareil"
+                    aria-label="Installer Couture Colombe et Merceries sur cet appareil"
                     className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide transition-transform hover:scale-105 active:scale-95"
                     style={{ background: "var(--color-citron)", color: "#FFFFFF", boxShadow: "0 3px 10px rgba(209,35,42,0.45)" }}
                   >
@@ -220,7 +220,7 @@ export function AppUpdateMessenger() {
           animate={reduceMotion ? { opacity: 1 } : { y: 0, opacity: 1, scale: 1 }}
           exit={reduceMotion ? { opacity: 0 } : { y: 16, opacity: 0, scale: 0.8 }}
           transition={{ type: "spring", stiffness: 380, damping: 22 }}
-          aria-label={inApp ? undefined : "Installer l'atelier Colombes sur cet appareil"}
+          aria-label={inApp ? undefined : "Installer Couture Colombe et Merceries sur cet appareil"}
           className="fixed right-5 bottom-40 md:bottom-24 z-30 flex items-center gap-2 rounded-full pl-3 pr-2 py-2.5 cursor-pointer"
           style={{
             background: "radial-gradient(circle at 30% 25%, #2A2A36 0%, #0B0B12 70%)",

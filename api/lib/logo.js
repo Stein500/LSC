@@ -6,7 +6,7 @@
  * de la maison — colombe rousse à la branche d'olivier, bobine de fil d'or,
  * aiguille & swoosh doré — emblème seul sur disque blanc à coins transparents,
  * poli ×6 (lanczos + affûtage) pour rester net dans le moindre recoin.
- * (512×512 — le texte « LES SERVICES COLOMBES » vit dans la bannière polie.)
+ * (512×512 — la bannière d'origine est conservée telle quelle, médaillon sacré.)
  */
 export const LOGO_CID = "lsc-logo";
 

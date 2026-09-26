@@ -25,7 +25,7 @@ function v(key: keyof ImportMetaEnv, fallback: string): string {
 export const env = {
   // Identité
   atelierName: v("VITE_ATELIER_NAME", "Couture Colombe et Merceries"),
-  atelierShortName: v("VITE_ATELIER_SHORT_NAME", "Colombes"),
+  atelierShortName: v("VITE_ATELIER_SHORT_NAME", "Couture Colombe"),
   atelierTagline: v("VITE_ATELIER_TAGLINE", "Atelier de Couture d'Exception"),
   atelierDescription: v(
     "VITE_ATELIER_DESCRIPTION",

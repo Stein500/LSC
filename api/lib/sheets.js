@@ -399,7 +399,7 @@ export async function logEvent(payload) {
     timestamp: payload.timestamp || new Date().toISOString(),
     // Le discriminant principal est `atelier`, mais on garde `school`
     // en fallback pour ne pas casser les anciens envois.
-    atelier: payload.atelier || payload.school || "atelier-colombes",
+    atelier: payload.atelier || payload.school || "couture-colombe-merceries",
     source: payload.source || "site",
   };
 
@@ -519,7 +519,7 @@ async function ensureDashboard(force = false) {
   const sumDemandes = function (k) { return counts[3][k] + counts[4][k] + counts[5][k]; }; // Messages + Formations + Précommandes
 
   const rows = [
-    ["✂️ LES SERVICES COLOMBES — TABLEAU DE BORD"],
+    ["✂️ COUTURE COLOMBE ET MERCERIES — TABLEAU DE BORD"],
     ["Mis à jour automatiquement — dernière écriture : " + stamp],
     [],
     ["Période"].concat(DASH_TABS.map(function (t) { return t.label; }), ["Demandes totales"]),
