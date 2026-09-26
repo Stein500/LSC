@@ -3,11 +3,13 @@ import type { GalleryImage } from "@/components/ui/ScissorGallery";
 /**
  * Galeries du site — Les Services Colombes
  *
- * ✂️ CHARTE 09/2026 (v2) — une seule silhouette pour toutes les photos :
+ * ✂️ CHARTE 09/2026 (v3 — FINALE) — une seule silhouette pour toutes :
  *   - gabarit unique **1600×1200 (4:3 paysage)**, WebP q78 ;
- *   - NOUVELLE palette maison : **bleu roi, marron, orange safran, rose
- *     poudré** + les couleurs du logo (rouge colombe, fil d'or, accent
- *     olive du rameau) ;
+ *   - palette maison FINALE : **rose poudré dominante, orange/safran,
+ *     marron, noir, blanc, vert citron feuille** + les couleurs du logo
+ *     (rouge colombe, fil d'or, olive du rameau seulement) — **zéro bleu** ;
+ *   - tenues des modèles : **robes, jupes, chemisiers uniquement —
+ *     jamais de pantalon** (boubou = robe ✓, robes de mariage bienvenues) ;
  *   - filigrane signature **logo + « Couture Colombe & Merceries »** en
  *     bas à droite (cachet anti-fausse-utilisation, posé par
  *     scripts/stamp-signature.py) ;
@@ -42,6 +44,11 @@ export const GALLERY_ATELIER: GalleryImage[] = [
     alt: "Couturière en robe orange ajustant une robe wax rose à motifs feuille sur mannequin de tailleur",
     caption: "Plus de 35 ans de passion et de savoir-faire",
   },
+  {
+    src: "/images/gallery/mariage-robe-10.webp",
+    alt: "Robe de mariée en finition sur mannequin de tailleur, vraies manches longues en dentelle, épingles et mètre safran",
+    caption: "La robe de mariée — cousue ici, finie à la main",
+  },
 ];
 
 // ======================= GALERIE 2 — NOS CRÉATIONS (Services) =======================
@@ -55,6 +62,21 @@ export const GALLERY_SERVICES: GalleryImage[] = [
     src: "/images/gallery/mariage-robe-01.webp",
     alt: "Robe de mariée en bazin blanc cassé brodé de fil d'or, voile et bouquet rose-orange sur chaise bois",
     caption: "Le grand jour — la mariée cousue d'or",
+  },
+  {
+    src: "/images/gallery/mariage-robe-03.webp",
+    alt: "Mariée traditionnelle en pagne tissé rouge colombe et or, couronne dorée, colliers d'or et éventail tressé",
+    caption: "Mariage coutumier — l'éclat de la tradition",
+  },
+  {
+    src: "/images/gallery/mariage-robe-04.webp",
+    alt: "Mariée souriante en robe sirène de dentelle ivoire brodée d'or, long voile, bouquet safran devant une arche fleurie rose",
+    caption: "La mariée romantique — dentelle, voile et fil d'or",
+  },
+  {
+    src: "/images/gallery/mariage-robe-08.webp",
+    alt: "Mains de la mariée sur son bouquet : manche brodée de fil d'or et de perles, bague et bracelet dorés",
+    caption: "Le détail qui fait la robe — broderie main",
   },
   {
     src: "/images/gallery/creation-afrique-03.webp",
@@ -84,6 +106,11 @@ export const GALLERY_CREATIONS: GalleryImage[] = [
     src: "/images/gallery/jeune-fille-01.webp",
     alt: "Fillette joyeuse faisant tournoyer sa robe wax orange safran à motifs rose et vert feuille",
     caption: "Petites princesses — le wax qui fait danser",
+  },
+  {
+    src: "/images/gallery/mariage-robe-05.webp",
+    alt: "Petite demoiselle d'honneur rayonnante en robe safran à manches bouffantes, ceinture rose, panier de pétales",
+    caption: "Demoiselles d'honneur — la joie en safran",
   },
   {
     src: "/images/gallery/jeune-fille-02.webp",
@@ -153,6 +180,21 @@ export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
     src: "/images/gallery/mariage-robe-02.webp",
     alt: "Cortège de mariage africain : trois demoiselles d'honneur en robes wax assorties rose, orange et vert feuille",
     caption: "Le cortège — des robes assorties, cousues d'un même fil",
+  },
+  {
+    src: "/images/gallery/mariage-robe-07.webp",
+    alt: "Trois invitées élégantes en tenues aso-ebi assorties : robes wax rose poudré, orange et feuilles, turbans assortis",
+    caption: "L'aso-ebi — la famille habillée d'un même pagne",
+  },
+  {
+    src: "/images/gallery/mariage-robe-09.webp",
+    alt: "Jeune mariée en robe corolle wax orange et feuille vert citron qui tourne sous une pluie de pétales, devant la mairie rose",
+    caption: "Mariage civil — la robe qui danse",
+  },
+  {
+    src: "/images/gallery/mariage-accessoires-01.webp",
+    alt: "Accessoires de la mariée sur soie rose poudré : voile, gants de dentelle, escarpins dorés, bijoux, bouquet et mètre-ruban",
+    caption: "La trousse de la mariée — tout, jusqu'au dernier détail",
   },
   {
     src: "/images/gallery/inspirations-page-02.webp",

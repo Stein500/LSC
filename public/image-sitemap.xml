@@ -40,8 +40,18 @@
       <image:caption>La coupe — étape fondatrice du sur-mesure</image:caption>
     </image:image>    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-06.webp</image:loc>
-      <image:title>KOUKOUI COLOMBE en plein travail</image:title>
+      <image:title>Robe ajustée sur mannequin de tailleur</image:title>
       <image:caption>Plus de 35 ans de passion et de savoir-faire</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-10.webp</image:loc>
+      <image:title>Robe de mariée en finition — vraies manches en dentelle</image:title>
+      <image:caption>La robe de mariée — cousue ici, finie à la main</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-05.webp</image:loc>
+      <image:title>Demoiselle d'honneur en robe safran à manches bouffantes</image:title>
+      <image:caption>Demoiselles d'honneur — la joie en safran</image:caption>
     </image:image>
   </url>
 
@@ -56,10 +66,22 @@
         <image:image>
           <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-01.webp</image:loc>
           <image:title>Robe de mariée en bazin blanc cassé brodé d'or — Couture Colombe et Merceries</image:title>
-        </image:image>    <image:image>
+        </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-03.webp</image:loc>
+      <image:title>Mariée traditionnelle en pagne tissé rouge colombe et or — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-04.webp</image:loc>
+      <image:title>Mariée en robe sirène dentelle ivoire brodée d'or, arche fleurie rose — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-08.webp</image:loc>
+      <image:title>Broderie d'or de la manche, bague et bouquet — détail mariée</image:title>
+    </image:image>    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-03.webp</image:loc>
-      <image:title>Création en bazin chic</image:title>
-      <image:caption>Bazin chic — raffinement et prestance</image:caption>
+      <image:title>Ensemble jupe longue &amp; chemisier wax feuilles</image:title>
+      <image:caption>Jupe &amp; chemisier — le duo qui fait la silhouette</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-04.webp</image:loc>
@@ -112,6 +134,18 @@
           <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-02.webp</image:loc>
           <image:title>Demoiselles d'honneur en robes wax assorties — Couture Colombe et Merceries</image:title>
         </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-07.webp</image:loc>
+      <image:title>Invitées en tenues aso-ebi assorties rose poudré, orange et feuilles — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-09.webp</image:loc>
+      <image:title>Robe corolle wax orange et feuille qui tourne sous les pétales — mariage civil</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-accessoires-01.webp</image:loc>
+      <image:title>Voile, gants, escarpins dorés, bijoux et bouquet de la mariée</image:title>
+    </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-03.webp</image:loc>
       <image:title>Inspirations — Silhouette bazin</image:title>
