@@ -47,6 +47,22 @@
       "destination": "/icon-192.webp"
     },
     {
+      "source": "/icon-180.png",
+      "destination": "/icon-180.png"
+    },
+    {
+      "source": "/icon-192.png",
+      "destination": "/icon-192.png"
+    },
+    {
+      "source": "/icon-512.png",
+      "destination": "/icon-512.png"
+    },
+    {
+      "source": "/icon-512-maskable.png",
+      "destination": "/icon-512-maskable.png"
+    },
+    {
       "source": "/images/(.*)",
       "destination": "/images/$1"
     },

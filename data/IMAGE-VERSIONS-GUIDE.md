@@ -11,7 +11,8 @@
 
 - **Gabarit unique : 1600×1200 (4:3 paysage), WebP q78** pour toutes les photos de galerie
   (sauf OG 1200×630, logo et bannière — sacrés, jamais régénérés).
-- **Palette maison** : rouge colombe, safran, marron, fil d'or sur rose poudré — **zéro bleu, zéro vert**.
+- **Palette maison (v3 — finale)** : rose poudré dominante, orange/safran, marron, noir, blanc, **vert citron feuille** (bienvenu partout) + couleurs du logo (rouge colombe, fil d'or) — **zéro bleu**.
+- **Tenues des modèles** : robes, jupes, chemisiers uniquement — jamais de pantalon.
 - **Filigrane colombe** en bas à droite de chaque photo.
 - **Galeries curées** : peu d'images par page, toutes utiles — le site reste léger.
 
@@ -25,12 +26,15 @@
 "/images/header-colombes.webp":             →  header SEO par défaut (1600×1200)
 ```
 
-## 📱 Icônes PWA / favicon
+## 📱 Icônes PWA / favicon (à la racine de public/)
 
 ```json
-"/images/favicon-32.webp":                  →  favicon 32×32 (onglet navigateur)
-"/images/icon-192.webp":                    →  icône PWA Android
-"/images/icon-512.webp":                    →  icône PWA iOS / splash screen
+"/favicon-32.webp":                        →  favicon 32×32 (onglet navigateur)
+"/favicon.ico":                            →  repli navigateur classique
+"/icon-180.png":                           →  apple-touch-icon (iOS, fond rose poudré)
+"/icon-192.png":                           →  icône PWA standard
+"/icon-512.png":                           →  grande icône PWA
+"/icon-512-maskable.png":                  →  icône PWA maskable (Android, zone sûre)
 ```
 
 ## 🎬 Bannières principales (1 par page, 1600×1200)

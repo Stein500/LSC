@@ -12,7 +12,7 @@ initWebVitals();
 // 📱 MODE APP — si la SPA vit dans l'application Android Colombes,
 // on le marque AVANT le premier rendu : le CSS s'allège (plus de
 // halos flous animés), et les composants natifs-adjacent s'effacent
-// (barre de progression web, splash web muet…). L'app est cheffe.
+// (barre de progression web, splash web muet…). L'app mène la danse.
 // ---------------------------------------------------------------
 try {
   if (isColombesApp()) {

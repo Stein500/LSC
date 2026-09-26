@@ -50,11 +50,14 @@ function logMetric(metric: Metric) {
   }
 
   const unit = metric.name === "CLS" ? "" : "ms";
-  // eslint-disable-next-line no-console
-  console.log(
-    `${emoji} [Web Vitals] ${metric.name}: ${Math.round(metric.value)}${unit} (${rating})${culprit}`,
-    metric
-  );
+  // Journal de dev uniquement — la console de prod reste silencieuse.
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `${emoji} [Web Vitals] ${metric.name}: ${Math.round(metric.value)}${unit} (${rating})${culprit}`,
+      metric
+    );
+  }
 
   // En prod, hook ici : Sentry, Plausible, Vercel Analytics, etc.
   // if (import.meta.env.PROD) { sendToAnalytics(metric); }
