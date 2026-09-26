@@ -318,7 +318,7 @@ export function SplashScreen() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15, duration: 0.6, ease: EASE_DOUX }}
                 >
-                  {LEGAL.displayName}
+                  {LEGAL.oldName}
                 </motion.span>
 
                 {/* Battement 2 — « devient… », le souffle */}

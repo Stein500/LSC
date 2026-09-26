@@ -10,7 +10,7 @@ export type Mood = {
   emoji: string;        // ex: "🌅"
   stickerId: string;    // ex: "kente-pattern" — référence vers Sticker.tsx
   region: string;       // ex: "BJ"
-  message: string;      // ex: "Bonjour depuis l'atelier Les Services Colombes"
+  message: string;      // ex: "Bonjour depuis l'atelier Couture Colombe et Merceries"
   bgGradient: string;   // ex: "linear-gradient(...)"
 };
 
@@ -21,7 +21,7 @@ export const MOODS: Mood[] = [
     emoji: '🌅',
     stickerId: 'kente-pattern',
     region: 'BJ',
-    message: 'Bonjour, l\'atelier Les Services Colombes ouvre ses portes ✨',
+    message: 'Bonjour, l\'atelier Couture Colombe et Merceries ouvre ses portes ✨',
     bgGradient: 'linear-gradient(135deg, rgba(255,228,230,0.95), rgba(244,184,96,0.85))',
   },
   {

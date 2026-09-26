@@ -18,8 +18,10 @@
  *    destinées à être publiques vivent ici.
  */
 export const LEGAL = {
-  /** Nom commercial historique affiché partout (la vitrine). */
-  displayName: "Les Services Colombes",
+  /** Enseigne officielle affichée partout (la vitrine) — RCCM 23-09-2026. */
+  displayName: "Couture Colombe et Merceries",
+  /** Ancienne enseigne — citée UNIQUEMENT dans le rideau 1 du splash (la naissance). */
+  oldName: "Les Services Colombes",
   /** Dénomination exacte de l'extrait RCCM — la nouvelle enseigne. */
   legalName: "Couture Colombe et Merceries",
   /** Forme juridique. */

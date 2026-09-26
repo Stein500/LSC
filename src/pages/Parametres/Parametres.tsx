@@ -66,7 +66,7 @@ export default function Parametres() {
       setRefreshKey((v) => v + 1);
       if (result.synced > 0) {
         notify.success(`${result.synced} demande${result.synced > 1 ? "s" : ""} envoyée${result.synced > 1 ? "s" : ""}` , {
-          announce: `${result.synced} demande${result.synced > 1 ? "s" : ""} bien envoyée${result.synced > 1 ? "s" : ""}. Les Services Colombes vous reviennent.`,
+          announce: `${result.synced} demande${result.synced > 1 ? "s" : ""} bien envoyée${result.synced > 1 ? "s" : ""}. Couture Colombe et Merceries vous reviennent.`,
         });
       } else if (result.total === 0) {
         notify.info("Rien à envoyer pour l’instant — tout est déjà à jour");

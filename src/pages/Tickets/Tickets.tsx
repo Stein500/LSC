@@ -49,7 +49,7 @@ export default function Tickets() {
   //    révéler l'URL d'hébergement (le texte suffit à retrouver la demande).
   const handleShare = async (ticket: StoredTicket) => {
     trackCtaClick("ticket_partage");
-    const text = `🧵 Suivi ${getTicketLabel(ticket.source)} — référence ${ticket.ref} · statut : ${getTicketStatusLabel(ticket.status)} · Les Services Colombes, Porto-Novo`;
+    const text = `🧵 Suivi ${getTicketLabel(ticket.source)} — référence ${ticket.ref} · statut : ${getTicketStatusLabel(ticket.status)} · Couture Colombe et Merceries, Porto-Novo`;
     const channel = await shareText(text);
     if (channel === "clipboard") toast.success("Résumé copié — prêt à partager");
   };

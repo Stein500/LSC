@@ -18,11 +18,11 @@ const links = [
 
 /**
  * Texte du bandeau header — demandé explicitement par le client :
- *   - Titre      : "Les Services Colombes"
+ *   - Titre      : "Couture Colombe et Merceries"
  *   - Sous-titre : "atelier, mercerie, centre de formation"
  */
-const BAND_TITLE = "Les Services Colombes";
-const BAND_SUBTITLE = "atelier · mercerie · centre de formation";
+const BAND_TITLE = "Couture Colombe et Merceries";
+const BAND_SUBTITLE = "atelier · mercerie · formation";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -69,7 +69,7 @@ export function Nav() {
             >
               <SmartImage
                 src="/images/logo.webp"
-                alt="Les Services Colombes"
+                alt="Couture Colombe et Merceries"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
@@ -93,8 +93,8 @@ export function Nav() {
             <div className="leading-tight min-w-0 group">
               <p
                 className={cn(
-                  "font-bold tracking-wide truncate transition-all duration-300",
-                  scrolled ? "text-sm sm:text-base" : "text-base sm:text-lg md:text-xl",
+                  "font-bold tracking-wide leading-[1.08] whitespace-normal break-words transition-all duration-300",
+                  scrolled ? "text-[13px] sm:text-sm md:text-base" : "text-sm sm:text-base md:text-lg",
                 )}
                 style={{
                   fontFamily: "var(--font-display)",

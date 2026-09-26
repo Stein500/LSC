@@ -1,5 +1,5 @@
 # =============================================================
-# Robots.txt — Les Services Colombes
+# Robots.txt — Couture Colombe et Merceries
 # https://lesservicescolombes.vercel.app
 # =============================================================
 

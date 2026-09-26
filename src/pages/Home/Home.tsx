@@ -403,7 +403,7 @@ export default function Home() {
                 >
                   <img
                     src="/images/hero-formation.webp"
-                    alt="Formation couture à l'atelier Les Services Colombes"
+                    alt="Formation couture à l'atelier Couture Colombe et Merceries"
                     className="w-full h-[320px] md:h-[420px] object-cover"
                     loading="lazy"
                     decoding="async"

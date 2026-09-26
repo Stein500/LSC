@@ -19,7 +19,7 @@ function escAttr(value: string) {
  * Il garde la palette du site et affiche le nom de la marque.
  */
 const LOGO_FALLBACK_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 341" role="img" aria-label="Les Services Colombes">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 341" role="img" aria-label="Couture Colombe et Merceries">
   <rect width="512" height="341" rx="28" fill="transparent"/>
   <circle cx="256" cy="114" r="58" fill="#FFFFFF" fill-opacity="0.92" stroke="#D1232A" stroke-width="8"/>
   <g fill="none" stroke="#8B4513" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
@@ -45,4 +45,4 @@ const LOGO_FALLBACK_SVG = `
 export const LOGO_FALLBACK_SVG_DATA_URL =
   `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(LOGO_FALLBACK_SVG)}`;
 
-export const LOGO_ALT = "Les Services Colombes";
+export const LOGO_ALT = "Couture Colombe et Merceries";

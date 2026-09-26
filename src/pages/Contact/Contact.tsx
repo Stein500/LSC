@@ -118,7 +118,7 @@ export default function Contact() {
           <SectionTitle
             eyebrow="L'atelier"
             title={<>Venez <span style={{ color: "var(--color-orange)" }}>nous rendre visite</span></>}
-            subtitle="Les Services Colombes, Porto-Novo — facile à trouver sur Google Maps."
+            subtitle="Couture Colombe et Merceries, Porto-Novo — facile à trouver sur Google Maps."
           />
 
           <div className="grid lg:grid-cols-2 gap-8 items-stretch">
@@ -172,7 +172,7 @@ export default function Contact() {
                       <p className="font-semibold mb-1">Email</p>
                       {HAS_SUPPORT_EMAIL ? (
                         <a
-                          href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Demande d'information - Les Services Colombes")}&body=${encodeURIComponent(`Bonjour,
+                          href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Demande d'information - Couture Colombe et Merceries")}&body=${encodeURIComponent(`Bonjour,
 
 Je souhaite obtenir des informations supplémentaires.
 
@@ -197,7 +197,7 @@ Merci.`)}`}
                   {env.mapsEmbed ? (
                     <iframe
                       src={env.mapsEmbed}
-                      title="Carte — Les Services Colombes à Porto-Novo"
+                      title="Carte — Couture Colombe et Merceries à Porto-Novo"
                       className="absolute inset-0 w-full h-full"
                       style={{ border: 0 }}
                       loading="lazy"

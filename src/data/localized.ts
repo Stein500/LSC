@@ -11,9 +11,9 @@ export type ThankYou = {
 
 export const THANK_YOU: ThankYou[] = [
   { lang: 'fr', text: 'Merci, votre message est bien arrivé aux Services Colombes 🤍', region: 'BJ' },
-  { lang: 'ar', text: 'شكراً، تم استلام رسالتكم في Les Services Colombes 🤍', region: 'MA' },
-  { lang: 'zh', text: '谢谢，您的留言已收到 — Les Services Colombes 工作室', region: 'CN' },
-  { lang: 'en', text: 'Thank you, your message reached Les Services Colombes 🤍', region: 'FR' },
-  { lang: 'wo', text: 'Jërëjëf, sa xibaar bi dellu ci Les Services Colombes 🤍', region: 'SN' },
-  { lang: 'ff', text: 'A jaaraama, kaɓirgal maaɓe heɓii Les Services Colombes 🤍', region: 'BF' },
+  { lang: 'ar', text: 'شكراً، تم استلام رسالتكم في Couture Colombe et Merceries 🤍', region: 'MA' },
+  { lang: 'zh', text: '谢谢，您的留言已收到 — Couture Colombe et Merceries 工作室', region: 'CN' },
+  { lang: 'en', text: 'Thank you, your message reached Couture Colombe et Merceries 🤍', region: 'FR' },
+  { lang: 'wo', text: 'Jërëjëf, sa xibaar bi dellu ci Couture Colombe et Merceries 🤍', region: 'SN' },
+  { lang: 'ff', text: 'A jaaraama, kaɓirgal maaɓe heɓii Couture Colombe et Merceries 🤍', region: 'BF' },
 ];

@@ -14,7 +14,7 @@ export type ShareChannel = "app" | "native" | "clipboard" | "cancelled" | "faile
 
 export async function shareText(
   text: string,
-  title = "Les Services Colombes",
+  title = "Couture Colombe et Merceries",
 ): Promise<ShareChannel> {
   // 📱 L'app prend le relais
   if (shareViaApp(text)) return "app";

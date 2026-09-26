@@ -24,7 +24,7 @@ function v(key: keyof ImportMetaEnv, fallback: string): string {
 
 export const env = {
   // Identité
-  atelierName: v("VITE_ATELIER_NAME", "Les Services Colombes"),
+  atelierName: v("VITE_ATELIER_NAME", "Couture Colombe et Merceries"),
   atelierShortName: v("VITE_ATELIER_SHORT_NAME", "Colombes"),
   atelierTagline: v("VITE_ATELIER_TAGLINE", "Atelier de Couture d'Exception"),
   atelierDescription: v(
@@ -38,10 +38,10 @@ export const env = {
     "VITE_ATELIER_HERO_HOOK",
     "Trois décennies de savoir-faire, au service de votre élégance.",
   ),
-  atelierLocation: v("VITE_ATELIER_LOCATION", "Les Services Colombes, Porto-Novo – Bénin"),
+  atelierLocation: v("VITE_ATELIER_LOCATION", "Couture Colombe et Merceries, Porto-Novo – Bénin"),
   atelierLocationFull: v(
     "VITE_ATELIER_LOCATION_FULL",
-    v("VITE_ATELIER_LOCATION", "Les Services Colombes, Porto-Novo – Bénin"),
+    v("VITE_ATELIER_LOCATION", "Couture Colombe et Merceries, Porto-Novo – Bénin"),
   ),
 
   // Téléphones

@@ -28,7 +28,7 @@ export default function Merci() {
   //    L'URL d'hébergement n'apparaît jamais dans le texte.
   const handleShare = async () => {
     trackCtaClick("merci_partage");
-    const text = `🧵 Ma demande est entre de bonnes mains ! Ticket ${ref} — l'atelier Les Services Colombes (Porto-Novo) me répond sous 48 h ouvrées.`;
+    const text = `🧵 Ma demande est entre de bonnes mains ! Ticket ${ref} — l'atelier Couture Colombe et Merceries (Porto-Novo) me répond sous 48 h ouvrées.`;
     const channel = await shareText(text);
     if (channel === "clipboard") notify.success("Résumé copié — partagez-le où vous voulez 🕊️");
   };

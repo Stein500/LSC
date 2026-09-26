@@ -1,7 +1,7 @@
 import type { GalleryImage } from "@/components/ui/ScissorGallery";
 
 /**
- * Galeries du site — Les Services Colombes
+ * Galeries du site — Couture Colombe et Merceries
  *
  * ✂️ CHARTE 09/2026 (v3 — FINALE) — une seule silhouette pour toutes :
  *   - gabarit unique **1600×1200 (4:3 paysage)**, WebP q78 ;

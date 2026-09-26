@@ -23,28 +23,28 @@ import { buildWhatsAppUrl } from "@/utils/whatsapp";
 
 export const SMART_TOASTS = {
   formation: {
-    success: "Les Services Colombes a bien reçu votre demande de formation",
+    success: "Couture Colombe et Merceries a bien reçu votre demande de formation",
     description: (ref: string) =>
       `Merci pour votre confiance. Référence ${ref}. L’équipe vous recontactera par appel, WhatsApp ou mail.`,
     bellTitle: "Demande de formation enregistrée",
     bellDescription: (ref: string) => `Référence ${ref} · retour par appel, WhatsApp ou mail.`,
-    announce: "Les Services Colombes a bien reçu votre demande de formation.",
+    announce: "Couture Colombe et Merceries a bien reçu votre demande de formation.",
   },
   precommande: {
-    success: "Les Services Colombes a bien reçu votre pré-commande",
+    success: "Couture Colombe et Merceries a bien reçu votre pré-commande",
     description: (ref: string) =>
-      `Votre demande est bien arrivée. Référence ${ref}. Les Services Colombes vous revient dès que possible.`,
+      `Votre demande est bien arrivée. Référence ${ref}. Couture Colombe et Merceries vous revient dès que possible.`,
     bellTitle: "Pré-commande enregistrée",
     bellDescription: (ref: string) => `Référence ${ref} · suivi par appel, WhatsApp ou mail.`,
-    announce: "Les Services Colombes a bien reçu votre pré-commande.",
+    announce: "Couture Colombe et Merceries a bien reçu votre pré-commande.",
   },
   contact: {
-    success: "Les Services Colombes a bien reçu votre message",
+    success: "Couture Colombe et Merceries a bien reçu votre message",
     description: (ref: string) =>
       `Merci pour votre message. Référence ${ref}. Une réponse vous sera apportée par appel, WhatsApp ou mail.`,
     bellTitle: "Message de contact reçu",
     bellDescription: (ref: string) => `Référence ${ref} · réponse par appel, WhatsApp ou mail.`,
-    announce: "Les Services Colombes a bien reçu votre message.",
+    announce: "Couture Colombe et Merceries a bien reçu votre message.",
   },
 } as const;
 
@@ -82,7 +82,7 @@ export function onSuccessSmartToast({
     haptic: true,
     audioKind,
     announce: synced === false
-      ? "Les Services Colombes garde votre demande pour la suite."
+      ? "Couture Colombe et Merceries garde votre demande pour la suite."
       : t.announce,
   });
 
@@ -121,10 +121,10 @@ export function onErrorSmartToast({ kind, ref, error }: { kind: FormKind; ref: s
     duration: 8000,
     audioKind: "error",
     announce: kind === "formation"
-      ? "Les Services Colombes garde votre demande de formation en attente."
+      ? "Couture Colombe et Merceries garde votre demande de formation en attente."
       : kind === "precommande"
-        ? "Les Services Colombes garde votre pré-commande en attente."
-        : "Les Services Colombes garde votre message en attente.",
+        ? "Couture Colombe et Merceries garde votre pré-commande en attente."
+        : "Couture Colombe et Merceries garde votre message en attente.",
   });
   addNotification({
     type: "warning",

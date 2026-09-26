@@ -28,13 +28,13 @@ export default function Inspirations() {
           'tenues sur mesure multiculturelles',
           'profils couture africains',
           'bazin wax pagne',
-          'Les Services Colombes',
+          'Couture Colombe et Merceries',
         ]}
         jsonLd={[
           SchemaBuilders.organization(),
           SchemaBuilders.collectionPage({
             name: 'Inspirations du monde',
-            description: 'Profils multiculturels et inspirations couture de l\'atelier Les Services Colombes',
+            description: 'Profils multiculturels et inspirations couture de l\'atelier Couture Colombe et Merceries',
             url: `${env.siteUrl}/inspirations`,
             hasPart: PROFILES.map((p) => ({
               name: `${p.name} — ${p.city}`,

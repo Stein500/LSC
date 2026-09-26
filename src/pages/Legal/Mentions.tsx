@@ -13,7 +13,7 @@ export default function Mentions() {
 
   return (
     <>
-      <SEO title="Mentions légales" description="Mentions légales de l'atelier Les Services Colombes, Porto-Novo : éditeur, hébergement, données." path="/mentions-legales" />
+      <SEO title="Mentions légales" description="Mentions légales de l'atelier Couture Colombe et Merceries, Porto-Novo : éditeur, hébergement, données." path="/mentions-legales" />
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-8" style={{ fontFamily: "var(--font-display)" }}>

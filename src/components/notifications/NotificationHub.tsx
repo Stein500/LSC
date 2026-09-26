@@ -43,7 +43,7 @@ const MOOD_BY_HOUR = [
     from: 5,
     to: 11,
     title: "Bonjour tout doux",
-    text: "Les Services Colombes ouvre la journée avec une note claire, un petit mot tendre, et le bon rythme pour avancer avec grâce.",
+    text: "Couture Colombe et Merceries ouvre la journée avec une note claire, un petit mot tendre, et le bon rythme pour avancer avec grâce.",
     accent: "citron",
     sticker: "spool",
     stamp: "Matin",
@@ -52,7 +52,7 @@ const MOOD_BY_HOUR = [
     from: 11,
     to: 17,
     title: "Belle cadence",
-    text: "Les Services Colombes garde le cap avec calme, précision et une touche de grâce.",
+    text: "Couture Colombe et Merceries garde le cap avec calme, précision et une touche de grâce.",
     accent: "orange",
     sticker: "fabric",
     stamp: "Midi",
@@ -79,7 +79,7 @@ const MOOD_BY_HOUR = [
     from: 0,
     to: 5,
     title: "Nuit paisible",
-    text: "Les Services Colombes garde une atmosphère calme ici. Vos messages attendent sagement le prochain regard.",
+    text: "Couture Colombe et Merceries garde une atmosphère calme ici. Vos messages attendent sagement le prochain regard.",
     accent: "nuit",
     sticker: "button",
     stamp: "Nuit",
@@ -334,7 +334,7 @@ function buildMoodCards(now: Date, count = 3): MoodCard[] {
       text: hour < 12
         ? "Un ton tendre pour accueillir les demandes sans brusquerie, avec une belle lisibilité sur mobile."
         : hour < 18
-          ? "Les Services Colombes garde le fil des messages, puis ajuste avec calme quand il faut."
+          ? "Couture Colombe et Merceries garde le fil des messages, puis ajuste avec calme quand il faut."
           : "Les alertes se rangent gentiment pour laisser la place à une soirée légère.",
       accent: base.accent === "orange" ? "citron" : "orange",
       sticker: hour < 12 ? "button" : hour < 18 ? "pagne" : "thread",
@@ -343,7 +343,7 @@ function buildMoodCards(now: Date, count = 3): MoodCard[] {
     {
       key: `${base.stamp}-3`,
       title: "Rappel tendre",
-      text: "Les Services Colombes revient avec une présentation simple, féminine et très claire.",
+      text: "Couture Colombe et Merceries revient avec une présentation simple, féminine et très claire.",
       accent: "rose",
       sticker: "mannequin",
       stamp: "Tonalité",

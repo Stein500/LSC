@@ -24,7 +24,7 @@ type FooterAction = {
 };
 
 const MAILTO = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-  "Demande d'information - Les Services Colombes"
+  "Demande d'information - Couture Colombe et Merceries"
 )}&body=${encodeURIComponent("Bonjour,\n\nJe souhaite obtenir des informations supplémentaires.\n\nMerci.")}`;
 
 export function Footer() {
@@ -156,17 +156,6 @@ export function Footer() {
             <MapPin className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} />
             {CONTACT.location}
           </p>
-
-          {/* ✨ La maison change de nom — la nouvelle enseigne officielle,
-              annoncée avec douceur au-dessus de la ligne déclarée. */}
-          {LEGAL.legalName && (
-            <p className="mt-1.5 text-center text-[12px] leading-relaxed text-white/60">
-              {LEGAL.displayName} devient{" "}
-              <span className="font-semibold" style={{ color: "var(--color-gold-thread, #C9A87C)" }}>
-                Couture Colombe &amp; Merceries
-              </span>
-            </p>
-          )}
         </div>
 
         {/* Fil d'or */}

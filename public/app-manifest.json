@@ -1,10 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-26T13:34:12Z",
+  "content_version": "2026-09-26T14:49:25Z",
   "build_id": "arena-898adbb-polish-nuit-cacao",
   "changelog": [
-    "Grand ménage : fichiers parasites retirés (plan Kotlin obsolète, notes de build) 🧹",
-    "Code mort nettoyé — le site ne garde que ce qu'il utilise ✂️",
-    "Contrôle complet : zéro bleu, zéro nom personnel, galeries/nettoyage vérifiés ✔"
+    "La maison s'appelle officiellement Couture Colombe et Merceries — partout ✨",
+    "Le nom complet est enfin lisible en entier dans le bandeau, jamais coupé ✂️",
+    "Le message « devient » ne vit plus que dans le rideau d'accueil 🎬"
   ]
 }

@@ -35,7 +35,7 @@ export default function Formation() {
           SchemaBuilders.course({
             name: "Formation Couture Professionnelle à Porto-Novo",
             description:
-              "Devenez Maîtresse Couturière à l'atelier Les Services Colombes. Deux formules : Formation Courte (6-12 mois) ou Spécialisée (3-5 ans).",
+              "Devenez Maîtresse Couturière à l'atelier Couture Colombe et Merceries. Deux formules : Formation Courte (6-12 mois) ou Spécialisée (3-5 ans).",
             url: "/formation",
           }),
           SchemaBuilders.faqPage(FAQ_FORMATION),
@@ -55,7 +55,7 @@ export default function Formation() {
       {/* ===================== HERO ===================== */}
       <PageHero
         title="Devenez Maîtresse Couturière avec une Pro"
-        subtitle="Une formation pratique, encadrée par l'équipe de l'atelier Les Services Colombes, pour transformer votre passion en métier."
+        subtitle="Une formation pratique, encadrée par l'équipe de l'atelier Couture Colombe et Merceries, pour transformer votre passion en métier."
         image="/images/hero-formation.webp"
         crumbs={[{ label: "Accueil", to: "/" }, { label: "Formation" }]}
       />
