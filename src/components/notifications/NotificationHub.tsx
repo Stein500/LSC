@@ -30,7 +30,7 @@ const FILTERS: { key: FilterKey; label: string }[] = [
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
-  precommande: "Pré-commande",
+  precommande: "Commande",
   formation: "Formation",
   contact: "Contact",
   install: "Accueil",

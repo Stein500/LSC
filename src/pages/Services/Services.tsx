@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Scissors } from "lucide-react";
 import { SEO, SchemaBuilders } from "@/components/seo/SEO";
@@ -14,7 +15,7 @@ import { SERVICES } from "@/data/content";
 import { GALLERY_SERVICES } from "@/data/galleries";
 
 const FAQ = [
-  { q: "Combien de temps pour une tenue ?", a: "Entre 1 et 4 semaines selon la complexité et la charge de l'atelier. Nous confirmons un délai à la pré-commande." },
+  { q: "Combien de temps pour une tenue ?", a: "Entre 1 et 4 semaines selon la complexité et la charge de l'atelier. Nous confirmons un délai à la commande." },
   { q: "Travaillez-vous avec mon tissu ?", a: "Oui, vous pouvez apporter votre tissu ou nous le fournirons via nos partenaires mercerie." },
   { q: "Faites-vous les retouches ?", a: "Bien sûr — retouches, ajustements, transformations sont notre quotidien." },
   { q: "Comment se passe l'essayage ?", a: "Un essayage intermédiaire est prévu pour les pièces sur mesure, plus un essayage final avant livraison." },
@@ -24,6 +25,20 @@ export default function Services() {
   const [open, setOpen] = useState<number | null>(0);
   const [preset, setPreset] = useState<string | undefined>(undefined);
   const formAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  // Arrivée depuis la galerie Inspirations : modèle & photo déjà joints.
+  const [params] = useSearchParams();
+  const fromGallery = params.get("commande") === "1";
+  const presetModele = fromGallery ? (params.get("modele") ?? undefined) : undefined;
+  const presetPhoto = fromGallery ? (params.get("photo") ?? undefined) : undefined;
+
+  useEffect(() => {
+    if (!presetModele) return;
+    const t = window.setTimeout(() => {
+      formAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 450);
+    return () => window.clearTimeout(t);
+  }, [presetModele]);
 
   const handlePreset = (type: string) => {
     setPreset(type);
@@ -113,7 +128,7 @@ export default function Services() {
                     </h4>
                     <p className="text-xs text-[var(--color-muted)] leading-relaxed">{s.desc}</p>
                     <span className="mt-3 inline-block text-xs font-semibold lsc-arrow-nudge transition-transform duration-300 group-hover:translate-x-1" style={{ color: "var(--color-orange)" }}>
-                      Pré-commander →
+                      Commander →
                     </span>
                   </Card>
                 </button>
@@ -123,14 +138,14 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Formulaire de pré-commande */}
-      <section className="py-16 md:py-24 bg-white" id="precommande">
+      {/* Formulaire de commande */}
+      <section className="py-16 md:py-24 bg-white" id="commande">
         <div ref={formAnchorRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-10 items-start">
             <div className="lg:col-span-2">
               <SectionTitle
                 align="left"
-                eyebrow="Pré-commande"
+                eyebrow="Commande"
                 title={
                   <>
                     Lancez votre<br />
@@ -157,12 +172,18 @@ export default function Services() {
             <div className="lg:col-span-3">
               <Card hover={false} className="p-6 md:p-8">
                 <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                  Formulaire de pré-commande
+                  Formulaire de commande
                 </h3>
                 <p className="text-sm text-[var(--color-muted)] mb-6">
-                  {preset ? <>Type pré-rempli : <strong>{preset}</strong></> : "Tous les champs marqués * sont requis."}
+                  {presetModele ? (
+                    <>Modèle choisi : <strong>{presetModele}</strong> — sa photo est déjà jointe à votre demande.</>
+                  ) : preset ? (
+                    <>Type pré-rempli : <strong>{preset}</strong></>
+                  ) : (
+                    "Tous les champs marqués * sont requis."
+                  )}
                 </p>
-                <PrecommandeForm presetType={preset} />
+                <PrecommandeForm presetType={preset} presetModele={presetModele} presetPhoto={presetPhoto} />
               </Card>
             </div>
           </div>

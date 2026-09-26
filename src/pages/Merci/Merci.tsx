@@ -12,7 +12,7 @@ import { notify } from "@/utils/notify";
 
 const TYPE_LABEL: Record<string, string> = {
   formation: "demande d'apprentissage",
-  precommande: "pré-commande",
+  precommande: "commande",
   contact: "message",
 };
 

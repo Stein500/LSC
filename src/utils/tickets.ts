@@ -125,7 +125,7 @@ export function getTicketLabel(source: TicketSource): string {
     case "formation":
       return "Formation";
     case "precommande":
-      return "Pré-commande";
+      return "Commande";
     default:
       return "Contact";
   }

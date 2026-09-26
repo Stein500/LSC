@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,16 +25,25 @@ const STEPS = [
 ];
 
 /**
- * Formulaire de pré-commande — version multi-step :
+ * Formulaire de commande — version multi-step :
  *   1. Identité (nom, téléphone, email)
  *   2. Type de tenue + couleur / taille / date
  *   3. Description projet + mesures + budget
  *   4. Récap + envoi
  */
-export function PrecommandeForm({ presetType }: { presetType?: string } = {}) {
+export function PrecommandeForm({
+  presetType,
+  presetModele,
+  presetPhoto,
+}: { presetType?: string; presetModele?: string; presetPhoto?: string } = {}) {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<PrecommandeSchema | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(presetPhoto ?? null);
+  const [photoName, setPhotoName] = useState<string | null>(
+    presetPhoto ? (presetPhoto.split("/").pop() ?? "modele.webp") : null,
+  );
+  const photoObjectUrlRef = useRef<string | null>(null);
   const startedRef = useRef(false);
   const draftApi = useFormDraft<PrecommandeSchema>("precommande");
 
@@ -81,6 +90,33 @@ export function PrecommandeForm({ presetType }: { presetType?: string } = {}) {
 
   const type = watch("type_tenue");
 
+  // ----- Photo jointe à la commande (modèle galerie ou photo de la cliente) -----
+  useEffect(
+    () => () => {
+      if (photoObjectUrlRef.current) URL.revokeObjectURL(photoObjectUrlRef.current);
+    },
+    [],
+  );
+
+  const onPickPhoto = (e: ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (photoObjectUrlRef.current) URL.revokeObjectURL(photoObjectUrlRef.current);
+    const url = URL.createObjectURL(f);
+    photoObjectUrlRef.current = url;
+    setPhotoPreview(url);
+    setPhotoName(f.name);
+  };
+
+  const removePhoto = () => {
+    if (photoObjectUrlRef.current) {
+      URL.revokeObjectURL(photoObjectUrlRef.current);
+      photoObjectUrlRef.current = null;
+    }
+    setPhotoPreview(null);
+    setPhotoName(null);
+  };
+
   const onFocusFirst = () => {
     if (!startedRef.current) {
       startedRef.current = true;
@@ -110,11 +146,21 @@ export function PrecommandeForm({ presetType }: { presetType?: string } = {}) {
 
   const onSubmit = async (data: PrecommandeSchema) => {
     const ref = generateTicketId();
+    // Le modèle galerie et la photo jointe voyagent dans la description.
+    const notes: string[] = [];
+    if (presetModele) notes.push(`Modèle d'inspiration (galerie) : ${presetModele}`);
+    if (photoName) notes.push(`Photo jointe par la cliente : ${photoName}`);
+    if (notes.length) {
+      data = {
+        ...data,
+        description: [data.description, ...notes].filter(Boolean).join("\n").slice(0, 1500),
+      };
+    }
     const payload = { ...data, ref };
     saveTicket({
       ref,
       source: "precommande",
-      title: `Pré-commande de ${data.nom}`,
+      title: `Commande de ${data.nom}`,
       status: "pending",
       data: payload,
       createdAt: new Date().toISOString(),
@@ -267,6 +313,61 @@ export function PrecommandeForm({ presetType }: { presetType?: string } = {}) {
             </Field>
           </div>
 
+          <Field
+            label="Photo de votre tenue"
+            hint={
+              presetModele
+                ? "La photo du modèle choisi est jointe — remplacez-la si vous préférez la vôtre."
+                : "Optionnel — montrez-nous le modèle exact (photo, capture, image sauvegardée)."
+            }
+          >
+            {presetModele && (
+              <p
+                className="mb-2.5 text-sm rounded-2xl border px-3.5 py-2.5"
+                style={{
+                  background: "var(--color-feuille-doux,#EFF7E3)",
+                  borderColor: "color-mix(in srgb, var(--color-feuille,#7CBA45) 40%, transparent)",
+                  color: "var(--color-feuille-f,#558B2F)",
+                }}
+              >
+                🧵 Modèle choisi dans la galerie : <strong>{presetModele}</strong>
+              </p>
+            )}
+            <div className="flex items-center gap-4 flex-wrap">
+              {photoPreview && (
+                <div className="flex items-center gap-3">
+                  <img
+                    src={photoPreview}
+                    alt={`Photo jointe — ${photoName ?? "modèle"}`}
+                    className="w-20 h-20 object-cover rounded-2xl border border-[var(--color-line)] shadow-sm"
+                  />
+                  <div className="text-xs text-[var(--color-muted)] max-w-[190px]">
+                    <p className="font-semibold text-[var(--color-ink)] break-all">{photoName}</p>
+                    <p>jointe à votre demande</p>
+                  </div>
+                </div>
+              )}
+              <div className="flex gap-2 flex-wrap">
+                <label
+                  className="inline-flex items-center gap-2 rounded-2xl border-2 border-dashed px-4 py-2.5 text-sm font-semibold cursor-pointer transition-colors hover:bg-[var(--color-feuille-doux,#EFF7E3)]"
+                  style={{ borderColor: "var(--color-feuille,#7CBA45)", color: "var(--color-feuille-f,#558B2F)" }}
+                >
+                  📷 {photoPreview ? "Changer la photo" : "Ajouter une photo"}
+                  <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
+                </label>
+                {photoPreview && (
+                  <button
+                    type="button"
+                    onClick={removePhoto}
+                    className="px-3.5 py-2.5 rounded-2xl text-sm border border-[var(--color-line)] text-[var(--color-muted)] hover:bg-black/[0.03] transition-colors"
+                  >
+                    Retirer
+                  </button>
+                )}
+              </div>
+            </div>
+          </Field>
+
           <div className="flex justify-between pt-2">
             <Button type="button" onClick={back} variant="ghost" icon={<ArrowLeft className="w-4 h-4" />}>
               Retour
@@ -329,6 +430,8 @@ export function PrecommandeForm({ presetType }: { presetType?: string } = {}) {
             </p>
             <Row label="Identité" value={`${getValues("nom")} · ${getValues("telephone")}`} />
             <Row label="Email" value={getValues("email") || "—"} />
+            {presetModele && <Row label="Modèle" value={presetModele} />}
+            {photoName && <Row label="Photo jointe" value={photoName} />}
             <Row label="Type" value={type === "autre" ? `Autre (${getValues("tenue_autre") || "—"})` : type || "—"} />
             <Row label="Couleur" value={getValues("couleur_preferee") || "—"} />
             <Row label="Taille" value={getValues("taille") || "—"} />
@@ -346,7 +449,7 @@ export function PrecommandeForm({ presetType }: { presetType?: string } = {}) {
               Modifier
             </Button>
             <Button type="submit" loading={isSubmitting} size="lg" icon={<CheckCircle2 className="w-4 h-4" />} shimmer>
-              Envoyer ma pré-commande
+              Envoyer ma commande
             </Button>
           </div>
         </div>

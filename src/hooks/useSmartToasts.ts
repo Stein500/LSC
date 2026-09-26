@@ -31,12 +31,12 @@ export const SMART_TOASTS = {
     announce: "Couture Colombe et Merceries a bien reçu votre demande de formation.",
   },
   precommande: {
-    success: "Couture Colombe et Merceries a bien reçu votre pré-commande",
+    success: "Couture Colombe et Merceries a bien reçu votre commande",
     description: (ref: string) =>
       `Votre demande est bien arrivée. Référence ${ref}. Couture Colombe et Merceries vous revient dès que possible.`,
-    bellTitle: "Pré-commande enregistrée",
+    bellTitle: "Commande enregistrée",
     bellDescription: (ref: string) => `Référence ${ref} · suivi par appel, WhatsApp ou mail.`,
-    announce: "Couture Colombe et Merceries a bien reçu votre pré-commande.",
+    announce: "Couture Colombe et Merceries a bien reçu votre commande.",
   },
   contact: {
     success: "Couture Colombe et Merceries a bien reçu votre message",
@@ -123,7 +123,7 @@ export function onErrorSmartToast({ kind, ref, error }: { kind: FormKind; ref: s
     announce: kind === "formation"
       ? "Couture Colombe et Merceries garde votre demande de formation en attente."
       : kind === "precommande"
-        ? "Couture Colombe et Merceries garde votre pré-commande en attente."
+        ? "Couture Colombe et Merceries garde votre commande en attente."
         : "Couture Colombe et Merceries garde votre message en attente.",
   });
   addNotification({

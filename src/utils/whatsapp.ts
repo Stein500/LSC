@@ -21,7 +21,7 @@ export const WHATSAPP_TEMPLATES: Record<string, (name?: string, ref?: string) =>
   general: (name = "") =>
     `Bonjour${name ? " " + name : ""}, je suis intéressé(e) par vos services de couture COUTURE COLOMBE ET MERCERIES.`,
   precommande: (name = "") =>
-    `Bonjour, je m'appelle ${name || "[prénom]"}. Je viens de remplir le formulaire de pré-commande en ligne. Pouvez-vous me recontacter ?`,
+    `Bonjour, je m'appelle ${name || "[prénom]"}. Je viens de remplir le formulaire de commande en ligne. Pouvez-vous me recontacter ?`,
   formation: (name = "") =>
     `Bonjour, je m'appelle ${name || "[prénom]"}. Je souhaite m'inscrire à une formation chez COUTURE COLOMBE ET MERCERIES.`,
   contact: (name = "") =>

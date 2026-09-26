@@ -4,7 +4,7 @@
  * Bouton flottant WhatsApp (FAB) — refonte UX :
  *   - Pulse discret toutes les 8s (pas agressif)
  *   - Tooltip desktop
- *   - Mini menu au tap avec 3 canaux : infos / précommande / formation
+ *   - Mini menu au tap avec 3 canaux : infos / commande / formation
  *   - Adapté au mode sombre via tokens CSS
  *
  * Remplace l'ancien WhatsAppFAB (src/components/chat/WhatsAppFAB.tsx) :

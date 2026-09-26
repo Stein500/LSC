@@ -13,7 +13,7 @@ export default function NotificationsPage() {
       />
       <PageHero
         title="Mes notifications"
-        subtitle="Un petit carnet élégant pour suivre vos pré-commandes, vos demandes de formation et vos messages sans rien perdre, avec des alertes claires et douces."
+        subtitle="Un petit carnet élégant pour suivre vos commandes, vos demandes de formation et vos messages sans rien perdre, avec des alertes claires et douces."
         image="/images/hero-contact.webp"
         crumbs={[{ label: "Accueil", to: "/" }, { label: "Notifications" }]}
       />

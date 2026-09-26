@@ -60,7 +60,7 @@ export const formationSchema = z.object({
 
 export type FormationSchema = z.infer<typeof formationSchema>;
 
-// ----- Pré-commande -----
+// ----- Commande -----
 export const precommandeSchema = z.object({
   nom: nameSchema,
   telephone: phoneSchema,
