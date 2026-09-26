@@ -1,40 +1,21 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Phone, MessageCircle, Ruler, Scissors, Gem, GraduationCap, Clock4, Sparkles } from "lucide-react";
+import { ArrowRight, MessageCircle, Phone, Ruler, Scissors, Gem, ShoppingBag } from "lucide-react";
 import { SEO, SchemaBuilders } from "@/components/seo/SEO";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { Counter } from "@/components/ui/Counter";
 import { useTheme } from "@/theme/ThemeContext";
 import { Reveal, Stagger, RevealItem } from "@/components/ui/Reveal";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
 import { ResponsiveHeroBackground } from "@/components/ui/ResponsiveHeroBackground";
-import { PressingText } from "@/components/ui/PressingText";
-import { WallOfLove } from "@/components/sections/WallOfLove";
-import { CreationStrip } from "@/components/sections/CreationStrip";
-import { Marquee } from "@/components/ui/Marquee";
 import { Aurora } from "@/components/ui/Aurora";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { Spotlight } from "@/components/ui/Spotlight";
-import { SERVICES, CONTACT } from "@/data/content";
+import { CONTACT } from "@/data/content";
 import { GALLERY_ATELIER } from "@/data/galleries";
 import { env } from "@/utils/env";
 import { buildWhatsAppUrl } from "@/utils/whatsapp";
 import { trackCtaClick, trackPhone, trackWhatsapp } from "@/utils/api";
-
-// Vocabulaire du ruban défilant — l'ADN de l'atelier en un mouvement
-const MARQUEE_TERMS = [
-  "Boubous élégants",
-  "Layette bébé",
-  "Bazin chic",
-  "Pagne tissé",
-  "Sur mesure",
-  "Retouches fines",
-  "Cérémonies",
-  "Formations",
-  "Porto-Novo",
-];
 
 const PROCESS_STEPS = [
   { n: "01", icon: Ruler, title: "Mesures", desc: "Accueil, mesures, tissu choisi ensemble." },
@@ -42,15 +23,18 @@ const PROCESS_STEPS = [
   { n: "03", icon: Gem, title: "Finitions", desc: "Surfileuse, pressing — prête à briller." },
 ];
 
+const MERCERIE_ITEMS = [
+  { emoji: "🧵", label: "Fils & bobines" },
+  { emoji: "🔘", label: "Boutons & fermoirs" },
+  { emoji: "🎀", label: "Rubans & dentelles" },
+  { emoji: "📏", label: "Wax & tissus au mètre" },
+];
+
 export default function Home() {
   const { resolvedTheme } = useTheme();
   const reduce = useReducedMotion();
   const heroOverlayTone =
     resolvedTheme === "light" ? "light" : resolvedTheme === "amoled" ? "amoled" : "dark";
-  const heroTextShadow =
-    resolvedTheme === "light" ? undefined : { textShadow: "0 2px 18px rgba(0,0,0,0.35)" };
-
-  const heroSrc = "/images/header-colombes.webp";
 
   const heroParent = {
     hidden: {},
@@ -69,8 +53,8 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Atelier de Couture à Porto-Novo"
-        description="Atelier de couture à Porto-Novo : sur mesure, tenues wax, layette et formations. 35 ans de savoir-faire béninois."
+        title="Atelier & Mercerie à Porto-Novo"
+        description="Couture Colombe et Merceries — atelier & mercerie à Porto-Novo : robes sur mesure, wax, layette, formation, depuis 1990."
         path="/"
         ogImage="/images/header-colombes.webp"
         jsonLd={[
@@ -80,22 +64,15 @@ export default function Home() {
         ]}
       />
 
-      {/* ===================== GALERIE D'OUVERTURE ===================== */}
-      <PageHeaderBand
-        images={GALLERY_ATELIER}
-        introTitle="L'atelier en images"
-        introSubtitle="Plongez dans l'univers des Services Colombes — du fil aux finitions."
-        introLabel="Bienvenue à l'atelier"
-        seamCaption="L'atelier"
-        maxHeight="min(58vh, 540px)"
-      />
-
-      {/* ===================== HERO ===================== */}
-      <section className="relative overflow-hidden">
-        <Aurora className="absolute inset-0 z-0" variant="sky" intensity="soft" />
+      {/* ===================== HERO — LA MAISON, ROSE & FEUILLE ===================== */}
+      <section
+        className="relative overflow-hidden"
+        style={{ background: "linear-gradient(180deg, #FBE7EB 0%, #FDF3F5 52%, #FFFFFF 100%)" }}
+      >
+        <Aurora className="absolute inset-0 z-0" variant="warm" intensity="soft" />
         <ResponsiveHeroBackground
-          src={heroSrc}
-          alt={`${env.atelierName} — Atelier de Couture à Porto-Novo`}
+          src="/images/header-colombes.webp"
+          alt="Couture Colombe et Merceries — atelier de couture et mercerie à Porto-Novo"
           fallbackRatio={16 / 9}
           overlayTone={heroOverlayTone}
           steam
@@ -103,11 +80,11 @@ export default function Home() {
           halo
           minRatio={0.8}
           maxRatio={1.78}
-          minHeight="min(70vh, 560px)"
-          maxHeight="min(88vh, 760px)"
+          minHeight="min(72vh, 580px)"
+          maxHeight="min(90vh, 780px)"
         >
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full">
-            {/* Orbes flottants décoratifs (desktop) */}
+            {/* Orbes flottants — rouge colombe & feuille, la maison en deux couleurs */}
             {!reduce && (
               <>
                 <div
@@ -121,59 +98,60 @@ export default function Home() {
                 />
                 <div
                   className="absolute top-1/3 right-[3%] hidden lg:block w-40 h-40 rounded-full border border-dashed pointer-events-none lsc-spin-slow"
-                  style={{ borderColor: "rgba(201,168,124,0.5)" }}
+                  style={{ borderColor: "rgba(124,186,69,0.65)" }}
                   aria-hidden="true"
                 />
               </>
             )}
 
-            <motion.div
-              className="grid grid-cols-1 items-center"
-              variants={heroParent}
-              initial="hidden"
-              animate="show"
-            >
+            <motion.div variants={heroParent} initial="hidden" animate="show">
               <div className="max-w-3xl mx-auto text-center">
                 <motion.div variants={heroChild} className="flex flex-wrap items-center justify-center gap-2 mb-8">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.18em] uppercase lsc-glass-strong text-[var(--color-ink)] lsc-badge-breathe">
+                  <div
+                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.16em] uppercase text-[var(--color-ink)] lsc-badge-breathe"
+                    style={{ background: "var(--color-feuille-doux)", border: "1px solid rgba(85,139,47,0.35)" }}
+                  >
                     <span className="relative flex w-1.5 h-1.5">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-orange)] opacity-75 animate-ping" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--color-orange)]" />
+                      <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: "var(--color-feuille-f)" }} />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: "var(--color-feuille-f)" }} />
                     </span>
-                    Atelier de Couture · Porto-Novo
+                    Atelier · Mercerie · Formation — Porto-Novo
                   </div>
                 </motion.div>
 
                 <motion.h1
                   variants={heroChild}
-                  className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6"
-                  style={{ fontFamily: "var(--font-display)", ...heroTextShadow }}
+                  className="font-bold leading-[1.06] mb-6 text-[clamp(2.4rem,7.5vw,4.6rem)]"
+                  style={{ fontFamily: "var(--font-display)" }}
                 >
-                  <span className="block text-[var(--color-ink)]">Un rendu</span>
-                  <span className="block">
-                    <PressingText
-                      words={["pli parfait", "lisse", "impeccable", "soyeux", "finition soignée", "éclat", "tendu"]}
-                      className="italic"
-                      wordClassName="!text-[var(--color-orange)]"
-                    />
-                  </span>
+                  <span className="block text-[var(--color-ink)]">Couture Colombe</span>
+                  <span className="block lsc-text-silk italic">et Merceries</span>
                 </motion.h1>
 
                 <motion.p
                   variants={heroChild}
-                  className="text-lg md:text-xl italic font-semibold max-w-xl mx-auto"
-                  style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)", ...(heroTextShadow || {}) }}
+                  className="text-lg md:text-xl italic font-semibold max-w-xl mx-auto text-[var(--color-ink-soft)]"
+                  style={{ fontFamily: "var(--font-display)" }}
                 >
-                  Couture d'exception pour femmes, filles & bébés.
+                  La maison qui coud, vend et transmet — robes sur mesure, wax & bazin,
+                  layette, mercerie. L'élégance béninoise cousue main depuis {env.atelierFounded}.
                 </motion.p>
 
-                {/* CTA — on regarde, on clique. Pas un mot de trop. */}
                 <motion.div variants={heroChild} className="mt-9 flex flex-wrap justify-center gap-3">
                   <Magnetic strength={0.18}>
                     <Link to="/services" onClick={() => trackCtaClick("hero_commander")} className="inline-block">
                       <Button size="lg" icon={<ArrowRight className="w-4 h-4" />} shimmer>
                         Commander ma tenue
                       </Button>
+                    </Link>
+                  </Magnetic>
+                  <Magnetic strength={0.18}>
+                    <Link
+                      to="/inspirations"
+                      onClick={() => trackCtaClick("hero_modeles")}
+                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white bg-[linear-gradient(135deg,#7CBA45,#558B2F)] shadow-[0_12px_28px_-10px_rgba(85,139,47,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(85,139,47,0.72)] active:scale-[0.97]"
+                    >
+                      🌿 Explorer les modèles
                     </Link>
                   </Magnetic>
                   <Magnetic strength={0.18}>
@@ -206,93 +184,68 @@ export default function Home() {
         </ResponsiveHeroBackground>
       </section>
 
-      {/* ===================== RUBAN DÉFILANT ===================== */}
+      {/* ===================== L'ATELIER EN IMAGES (signées, téléchargeables) ===================== */}
+      <div style={{ background: "linear-gradient(180deg, #FFFFFF 0%, var(--color-rose-soft) 26%, #FFF3F5 60%, #FFFFFF 100%)" }}>
+        <PageHeaderBand
+          images={GALLERY_ATELIER}
+          introLabel="Bienvenue à l'atelier"
+          introTitle="L'atelier en images"
+          introSubtitle="Cinq regards sur la maison — du fil aux finitions."
+          seamCaption="L'atelier"
+          maxHeight="min(58vh, 540px)"
+        />
+      </div>
+
+      {/* ===================== LA MERCERIE — TOUT SE VEND ICI AUSSI ===================== */}
       <section
-        className="relative py-5 border-y backdrop-blur-sm overflow-hidden"
-        style={{
-          borderColor: "var(--color-line)",
-          background: "linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.45))",
-        }}
-        aria-label="Spécialités de l'atelier"
+        className="relative py-14 md:py-20 overflow-hidden text-white"
+        aria-label="La mercerie de la maison"
+        style={{ background: "linear-gradient(135deg, #7CBA45 0%, #558B2F 58%, #3E6B1F 100%)" }}
       >
-        <Marquee duration={30}>
-          {MARQUEE_TERMS.map((term) => (
-            <span key={term} className="flex items-center shrink-0">
-              <span
-                className="mx-6 text-2xl md:text-3xl italic font-bold whitespace-nowrap"
-                style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
-              >
-                {term}
-              </span>
-              <span className="text-[var(--color-orange)] text-sm" aria-hidden="true">✦</span>
-            </span>
-          ))}
-        </Marquee>
-      </section>
-
-      {/* ===================== ACCROCHE — UNE SEULE PHRASE, GÉANTE ===================== */}
-      <section className="relative py-20 md:py-28 bg-white overflow-hidden" aria-label="Notre promesse">
-        <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="absolute inset-0 pointer-events-none opacity-25" aria-hidden="true"
+          style={{ background: "radial-gradient(60% 90% at 85% 10%, rgba(255,255,255,0.55), transparent 60%)" }}
+        />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <p className="text-xs sm:text-sm uppercase tracking-[0.4em] text-[var(--color-muted)] mb-6"
-              style={{ fontFamily: "var(--font-display)" }}>
-              Depuis {env.atelierFounded}
+            <p className="inline-flex items-center gap-2 text-[11px] sm:text-xs uppercase tracking-[0.32em] text-white/85 mb-4">
+              <ShoppingBag className="w-4 h-4" aria-hidden="true" /> La mercerie de la maison
             </p>
-            <h2
-              className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.12] italic"
-              style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
-            >
-              Trois décennies de savoir-faire,{" "}
-              <span className="lsc-text-silk not-italic">au service de votre élégance.</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.1] mb-4" style={{ fontFamily: "var(--font-display)" }}>
+              Ici, tout se vend aussi.
             </h2>
-            <div
-              className="mx-auto mt-10 h-1 w-20 rounded-full"
-              style={{ background: "linear-gradient(90deg, var(--color-citron), var(--color-gold-thread))" }}
-              aria-hidden
-            />
+            <p className="text-white/85 text-base md:text-lg max-w-xl mx-auto mb-8">
+              Fil, boutons, rubans, tissus au mètre — le comptoir de la mercerie est ouvert
+              à toutes et à tous, au détail.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2.5 mb-9">
+              {MERCERIE_ITEMS.map((item) => (
+                <span
+                  key={item.label}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-white/12 border border-white/25 text-white backdrop-blur-sm"
+                >
+                  <span aria-hidden="true">{item.emoji}</span> {item.label}
+                </span>
+              ))}
+            </div>
+            <Magnetic strength={0.16}>
+              <Link
+                to="/services"
+                onClick={() => trackCtaClick("home_mercerie")}
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-base font-bold bg-white text-[#3E6B1F] shadow-[0_14px_30px_-10px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_38px_-10px_rgba(0,0,0,0.45)] active:scale-[0.97]"
+              >
+                Voir la mercerie <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Magnetic>
           </Reveal>
         </div>
       </section>
 
-      {/* ===================== GALERIE CINÉMA ===================== */}
-      <CreationStrip />
-
-      {/* ===================== L'ATELIER EN 1 REGARD ===================== */}
-      <section className="py-16 md:py-24 scroll-mt-header" id="about">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <Spotlight className="rounded-[2rem]">
-              <Card hover={false} className="lsc-glass-strong p-8 md:p-10 rounded-[2rem] border-[var(--color-line)]">
-                <div className="grid md:grid-cols-5 gap-8 items-center">
-                  <div className="md:col-span-3 text-center md:text-left">
-                    <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)] mb-2">L'atelier · Maîtresse Couturière</p>
-                    <h3 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
-                      Colombe
-                    </h3>
-                    <p className="text-base md:text-lg text-[var(--color-ink-soft)] leading-relaxed">
-                      Créations uniques, tradition et modernité — depuis plus de 35 ans.
-                    </p>
-                  </div>
-                  <div className="md:col-span-2 grid grid-cols-2 gap-3">
-                    <Counter end={35} suffix="+" label="Années" icon="⭐" />
-                    <Counter end={500} suffix="+" label="Créations" icon="✂️" />
-                    <Counter end={30} suffix="+" label="Apprenantes" icon="🎓" />
-                    <Counter end={100} suffix="%" label="Satisfaction" icon="💯" />
-                  </div>
-                </div>
-              </Card>
-            </Spotlight>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ===================== PROCESS — LE GESTE COLOMBES ===================== */}
+      {/* ===================== PROCESS — LE GESTE DE LA MAISON ===================== */}
       <section className="relative py-16 md:py-24 overflow-hidden" aria-labelledby="process-title">
         <Aurora className="absolute inset-0" variant="warm" intensity="soft" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
-            eyebrow="Le geste Colombes"
+            eyebrow="Le geste de la maison"
             title={
               <>
                 De votre idée…<br />
@@ -300,21 +253,15 @@ export default function Home() {
               </>
             }
           />
-
           <Stagger className="grid md:grid-cols-3 gap-5">
             {PROCESS_STEPS.map((step, idx) => (
               <RevealItem key={step.n} className="relative">
                 {idx < PROCESS_STEPS.length - 1 && (
-                  <svg
-                    className="hidden md:block absolute top-12 left-[calc(100%-1rem)] w-8 h-[2px] z-10"
-                    aria-hidden="true"
-                  >
+                  <svg className="hidden md:block absolute top-12 left-[calc(100%-1rem)] w-8 h-[2px] z-10" aria-hidden="true">
                     <line x1="0" y1="1" x2="40" y2="1" stroke="var(--color-gold-thread)" strokeWidth="1.6" strokeDasharray="5 6" className="lsc-stitch-line" />
                   </svg>
                 )}
                 <Card className="h-full relative overflow-hidden text-center p-6">
-                  {/* Grand numéro en filigrane, À L'INTÉRIEUR de la carte :
-                      fini le débordement coupé en haut sur mobile */}
                   <span
                     className="absolute top-2 right-4 text-7xl font-bold select-none pointer-events-none leading-none"
                     style={{ fontFamily: "var(--font-display)", color: "var(--color-citron)", opacity: 0.4 }}
@@ -325,9 +272,7 @@ export default function Home() {
                   <div className="relative w-12 h-12 mx-auto rounded-2xl lsc-glass-strong flex items-center justify-center mb-4">
                     <step.icon className="w-5 h-5" style={{ color: "var(--color-orange)" }} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>
-                    {step.title}
-                  </h3>
+                  <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>{step.title}</h3>
                   <p className="text-sm text-[var(--color-muted)] leading-relaxed">{step.desc}</p>
                 </Card>
               </RevealItem>
@@ -336,151 +281,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===================== SERVICES — ICONIQUES, SANS BAVARDAGE ===================== */}
-      <section className="relative py-16 md:py-24 bg-white overflow-hidden">
-        <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            eyebrow="Nos Services"
-            title={
-              <>
-                Vos tenues africaines<br />
-                <span className="lsc-text-silk">sur mesure</span>
-              </>
-            }
-          />
-
-          <Stagger className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-            {SERVICES.slice(0, 6).map((s) => (
-              <RevealItem key={s.title}>
-                <Link
-                  to="/services"
-                  onClick={() => trackCtaClick(`home_service_${s.title.slice(0, 12)}`)}
-                  className="block group h-full"
-                >
-                  <Card className="h-full text-center !p-5">
-                    <div className="w-14 h-14 rounded-2xl bg-[var(--color-citron)]/30 flex items-center justify-center text-2xl mb-3 mx-auto transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-[var(--color-citron)]/50">
-                      {s.emoji}
-                    </div>
-                    <h4 className="font-bold text-sm md:text-base leading-snug" style={{ fontFamily: "var(--font-display)" }}>
-                      {s.title}
-                    </h4>
-                  </Card>
-                </Link>
-              </RevealItem>
-            ))}
-          </Stagger>
-
-          <div className="text-center">
-            <Magnetic strength={0.16}>
-              <Link to="/services" onClick={() => trackCtaClick("home_services_voir_tout")} className="inline-block">
-                <Button size="lg" variant="secondary" icon={<ArrowRight className="w-4 h-4" />}>
-                  Voir tous les services
-                </Button>
-              </Link>
-            </Magnetic>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================== FORMATION — BLOC VISUEL (plus de listes) ===================== */}
-      <section className="relative py-16 md:py-24 overflow-hidden" aria-label="Formations couture">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Visuel */}
-            <Reveal>
-              <div className="relative">
-                <div
-                  className="absolute -inset-3 rounded-[2.25rem] pointer-events-none"
-                  style={{ border: "2px dashed var(--color-gold-thread)", opacity: 0.5, transform: "rotate(-1.5deg)" }}
-                  aria-hidden="true"
-                />
-                <motion.div
-                  className="relative rounded-[2rem] overflow-hidden lsc-grain"
-                  style={{ boxShadow: "0 32px 64px -24px rgba(60,38,20,0.45)" }}
-                  whileHover={reduce ? undefined : { scale: 1.02, rotate: 0.5 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                >
-                  <img
-                    src="/images/hero-formation.webp"
-                    alt="Formation couture à l'atelier Couture Colombe et Merceries"
-                    className="w-full h-[320px] md:h-[420px] object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(180deg, transparent 55%, rgba(11,9,7,0.75) 100%)" }}
-                  />
-                  <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-white/70 mb-1">Deviens pro</p>
-                      <p className="text-xl md:text-2xl font-bold text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                        Maîtresse Couturière
-                      </p>
-                    </div>
-                    <div className="w-11 h-11 rounded-2xl lsc-glass-strong flex items-center justify-center shrink-0">
-                      <GraduationCap className="w-5 h-5" style={{ color: "var(--color-orange)" }} />
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </Reveal>
-
-            {/* Contenu — trois puces, un bouton. C'est tout. */}
-            <div className="text-center md:text-left">
-              <Reveal delay={0.08}>
-                <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-muted)] mb-4">Formation Couture</p>
-                <h2 className="text-3xl md:text-5xl font-bold leading-[1.12] mb-6" style={{ fontFamily: "var(--font-display)" }}>
-                  Apprends avec<br />
-                  <span className="lsc-text-silk">une vraie Pro</span>
-                </h2>
-                <div className="flex flex-wrap justify-center md:justify-start gap-2.5 mb-8">
-                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold lsc-glass-strong text-[var(--color-ink)]">
-                    <Clock4 className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} /> 6–12 mois · Rapide
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold lsc-glass-strong text-[var(--color-ink)]">
-                    <GraduationCap className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} /> 3–5 ans · Complète
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold lsc-glass-strong text-[var(--color-ink)]">
-                    <Sparkles className="w-3.5 h-3.5" style={{ color: "var(--color-orange)" }} /> Machines fournies
-                  </span>
-                </div>
-                <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                  <Magnetic strength={0.16}>
-                    <Link to="/formation" onClick={() => trackCtaClick("home_formation_bloc")} className="inline-block">
-                      <Button size="lg" icon={<ArrowRight className="w-4 h-4" />} shimmer>
-                        Voir les formations
-                      </Button>
-                    </Link>
-                  </Magnetic>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <WallOfLove />
-
-      {/* ===================== CTA FINAL ===================== */}
-      <section
-        className="py-16 md:py-24 relative overflow-hidden cta-dark-section lsc-grain"
-        aria-labelledby="cta-final-title"
-      >
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(180deg, #0B0B12 0%, #000000 50%, #0B0B12 100%)" }}
-        />
+      {/* ===================== CTA FINAL — PARLONS DE VOTRE PROJET ===================== */}
+      <section className="py-16 md:py-24 relative overflow-hidden cta-dark-section lsc-grain" aria-labelledby="cta-final-title">
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #0B0B12 0%, #000000 50%, #0B0B12 100%)" }} />
         <Aurora className="absolute inset-0" variant="night" intensity="vivid" />
         <div className="absolute inset-0 pointer-events-none cta-dots" aria-hidden="true" />
         <div
-          className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl lsc-drift"
-          style={{ backgroundColor: "rgba(209, 35, 42, 0.22)", animationDuration: "12s" }}
-        />
-        <div
           className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full blur-3xl lsc-drift"
-          style={{ backgroundColor: "rgba(139, 69, 19, 0.35)", animationDuration: "16s", animationDelay: "-6s" }}
+          style={{ backgroundColor: "rgba(124, 186, 69, 0.22)", animationDuration: "16s", animationDelay: "-6s" }}
         />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" style={{ color: "#ffffff" }}>
@@ -505,13 +313,6 @@ export default function Home() {
               <a href={`tel:${CONTACT.phone1Raw}`} onClick={() => trackPhone(CONTACT.phone1Raw)} className="inline-block">
                 <Button size="lg" icon={<Phone className="w-4 h-4" />} shimmer>
                   {CONTACT.phone1}
-                </Button>
-              </a>
-            </Magnetic>
-            <Magnetic strength={0.2}>
-              <a href={`tel:${CONTACT.phone2Raw}`} onClick={() => trackPhone(CONTACT.phone2Raw)} className="inline-block">
-                <Button size="lg" variant="outline" className="!border-white/40 !text-white hover:!bg-white/10" icon={<Phone className="w-4 h-4" />}>
-                  {CONTACT.phone2}
                 </Button>
               </a>
             </Magnetic>

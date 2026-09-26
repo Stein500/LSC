@@ -45,7 +45,7 @@ export type PageHeaderBandProps = {
 export function PageHeaderBand({
   images,
   introTitle = "Bienvenue",
-  introSubtitle = "Découvrez l'univers des Services Colombes.",
+  introSubtitle = "Découvrez l'univers de Couture Colombe et Merceries.",
   introLabel = "Ouverture de section",
   seamCaption,
   introDurationMs = 2400,

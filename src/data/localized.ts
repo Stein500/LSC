@@ -10,7 +10,7 @@ export type ThankYou = {
 };
 
 export const THANK_YOU: ThankYou[] = [
-  { lang: 'fr', text: 'Merci, votre message est bien arrivé aux Services Colombes 🤍', region: 'BJ' },
+  { lang: 'fr', text: 'Merci, votre message est bien arrivé chez Couture Colombe et Merceries 🤍', region: 'BJ' },
   { lang: 'ar', text: 'شكراً، تم استلام رسالتكم في Couture Colombe et Merceries 🤍', region: 'MA' },
   { lang: 'zh', text: '谢谢，您的留言已收到 — Couture Colombe et Merceries 工作室', region: 'CN' },
   { lang: 'en', text: 'Thank you, your message reached Couture Colombe et Merceries 🤍', region: 'FR' },
