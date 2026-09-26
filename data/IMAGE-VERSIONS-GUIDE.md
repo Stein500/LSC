@@ -79,13 +79,14 @@
 "/images/gallery/contact-page-03.webp":     →  carnet de patrons, nuancier, thé fumant
 ```
 
-## 💡 Galerie page /inspirations (4 photos)
+## 💡 Galerie page /inspirations (5 photos)
 
 ```json
-"/images/gallery/inspirations-page-01.webp":  →  robe wax à volants (pièce signature)
-"/images/gallery/inspirations-page-02.webp":  →  éventails de pagnes (matières)
+"/images/gallery/inspirations-page-01.webp":  →  robe wax à volants orange & or (pièce signature)
+"/images/gallery/mariage-robe-02.webp":       →  💐 cortège : demoiselles d'honneur assorties
+"/images/gallery/inspirations-page-02.webp":  →  éventails de pagnes orange-rose-feuille (matières)
 "/images/gallery/inspirations-page-03.webp":  →  silhouette boubou terracotta (heure dorée)
-"/images/gallery/inspirations-page-04.webp":  →  bobines, ciseaux, patrons (outils)
+"/images/gallery/inspirations-page-04.webp":  →  bobines, ciseaux, pagnes feuille (outils)
 ```
 
 ## 🎓 Galerie Formation (page /formation, 4 photos)

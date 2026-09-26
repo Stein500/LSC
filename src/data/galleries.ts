@@ -34,12 +34,12 @@ export const GALLERY_ATELIER: GalleryImage[] = [
   },
   {
     src: "/images/gallery/atelier-04.webp",
-    alt: "Patron tracé à la craie, ciseaux dorés et mètre ruban sur la table de coupe",
+    alt: "Patron de robe tracé à la craie, ciseaux dorés, mètre safran et wax orange à motifs feuille",
     caption: "La coupe — étape fondatrice du sur-mesure",
   },
   {
     src: "/images/gallery/atelier-06.webp",
-    alt: "Couturière ajustant une robe wax rouge et or sur mannequin de tailleur",
+    alt: "Couturière en robe orange ajustant une robe wax rose à motifs feuille sur mannequin de tailleur",
     caption: "Plus de 35 ans de passion et de savoir-faire",
   },
 ];
@@ -128,7 +128,7 @@ export const GALLERY_CONTACT: GalleryImage[] = [
 export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
   {
     src: "/images/gallery/contact-page-01.webp",
-    alt: "Robe wax rouge et or sur cintre, mur rose poudré de l'atelier",
+    alt: "Robe wax orange safran à motifs feuille sur cintre bois, mur rose poudré de l'atelier",
     caption: "L'atelier — un lieu ouvert et coloré",
   },
   {
@@ -138,7 +138,7 @@ export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
   },
   {
     src: "/images/gallery/contact-page-03.webp",
-    alt: "Carnet de patrons, nuancier de wax, ciseaux dorés et thé fumant",
+    alt: "Carnet de patrons, nuancier wax rose-orange et vert feuille, thé fumant et branche fraîche",
     caption: "Un espace calme pour parler de votre projet",
   },
 ];
@@ -150,18 +150,23 @@ export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
     caption: "Wax — la pièce signature",
   },
   {
+    src: "/images/gallery/mariage-robe-02.webp",
+    alt: "Cortège de mariage africain : trois demoiselles d'honneur en robes wax assorties rose, orange et vert feuille",
+    caption: "Le cortège — des robes assorties, cousues d'un même fil",
+  },
+  {
     src: "/images/gallery/inspirations-page-02.webp",
-    alt: "Éventails de pagnes wax rouge, safran et marron sur la table de l'atelier",
+    alt: "Éventails de pagnes wax orange, rose, marron et vert citron feuille en cascade sur la table",
     caption: "Matières — wax, bazin, pagne, lin",
   },
   {
     src: "/images/gallery/inspirations-page-03.webp",
-    alt: "Silhouette de dos en grand boubou terracotta brodé d'or, au coucher du soleil",
+    alt: "Silhouette de dos en grand boubou terracotta brodé d'or et de touches vert feuille, au coucher du soleil",
     caption: "Silhouette — heure dorée",
   },
   {
     src: "/images/gallery/inspirations-page-04.webp",
-    alt: "Bobines de fil rouge et safran, ciseaux dorés et patrons, vus de dessus",
+    alt: "Bobines de fil orange, rouge colombe et fil d’or, ciseaux dorés et bords de pagnes feuille, vus de dessus",
     caption: "Outils — le geste et la matière",
   },
 ];
@@ -170,7 +175,7 @@ export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
 export const GALLERY_FORMATION: GalleryImage[] = [
   {
     src: "/images/gallery/formation-couture-01.webp",
-    alt: "Salle de formation lumineuse : machines alignées et pagnes wax sur la table",
+    alt: "Salle de formation lumineuse : machines alignées, pagnes wax orange-rose-feuille et plante verte près de la fenêtre",
     caption: "La salle de formation — un cadre propice à l'apprentissage",
   },
   {

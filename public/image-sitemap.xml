@@ -108,6 +108,10 @@
       <image:title>Inspirations — Macro de tissus</image:title>
       <image:caption>Mélange wax, bazin, pagne, lin</image:caption>
     </image:image>
+        <image:image>
+          <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-02.webp</image:loc>
+          <image:title>Demoiselles d'honneur en robes wax assorties — Couture Colombe et Merceries</image:title>
+        </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-03.webp</image:loc>
       <image:title>Inspirations — Silhouette bazin</image:title>
