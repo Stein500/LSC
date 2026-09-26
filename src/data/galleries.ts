@@ -149,6 +149,11 @@ export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
     alt: "Carnet de patrons, nuancier wax rose-orange et vert feuille, thé fumant et branche fraîche",
     caption: "Un espace calme pour parler de votre projet",
   },
+  {
+    src: "/images/gallery/contact-page-04.webp",
+    alt: "Coin accueil de l'atelier : fauteuil en rotin, pagnes wax et bazins pliés orange, rose et vert feuille sur présentoir bois",
+    caption: "Bienvenue — on vous attend",
+  },
 ];
 
 export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
