@@ -1,12 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Download, LaptopMinimal, MessageCircle, Moon, RotateCw, Settings2, Smartphone, Sun, Tickets } from "lucide-react";
+import {
+  Activity,
+  Bell,
+  Download,
+  LaptopMinimal,
+  MessageCircle,
+  Moon,
+  RotateCw,
+  Settings2,
+  Smartphone,
+  Sun,
+  Ticket,
+} from "lucide-react";
 import { SEO } from "@/components/seo/SEO";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { CONTACT } from "@/data/content";
 import { env } from "@/utils/env";
 import {
@@ -15,10 +26,11 @@ import {
   deleteTicket,
   getTicketLabel,
   getTicketStatusLabel,
-  getTicketStatusTone,
   getTickets,
   openTicketWhatsApp,
+  TICKET_SOURCE_EMOJI,
   type StoredTicket,
+  type TicketStatus,
 } from "@/utils/tickets";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useTheme, type ThemeMode } from "@/hooks/useTheme";
@@ -31,6 +43,22 @@ import { resolveUpdateOffer, type UpdateOffer } from "@/utils/appUpdate";
 import { useInstallPrompt, isAppleTouch } from "@/hooks/useInstallPrompt";
 import { installAtelier } from "@/utils/install";
 
+/**
+ * Paramètres — le comptoir des réglages de la maison 🪡
+ * ------------------------------------------------------
+ * Refondu pour être lu d'un coup d'œil :
+ *   🩺 « Mon atelier en pleine forme » — trois voyants qui vérifient
+ *        EN DIRECT la boutique (mails, tableau Google, réglages) ;
+ *   🌗 le thème, 🧵 les demandes à renvoyer, 📮 les alertes,
+ *   📍 les repères utiles. Toujours la palette de la maison.
+ */
+
+const STATUS_DOT: Record<TicketStatus, string> = {
+  synced: "bg-[var(--color-feuille-f,#558B2F)]",
+  pending: "bg-[#F4B860]",
+  error: "bg-[#D1232A]",
+};
+
 export default function Parametres() {
   const { items: notifications, unread, clear: clearAll } = useNotifications();
   const online = useOnlineStatus();
@@ -41,7 +69,6 @@ export default function Parametres() {
   const tickets = useMemo(() => getTickets(), [refreshKey]);
 
   // 📱 Pastille version — visible uniquement dans l'app Colombes.
-  //    La veille GitHub confirme « à jour » ou annonce la nouvelle version.
   const inApp = isColombesApp();
   const [appUpdate, setAppUpdate] = useState<UpdateOffer | null | undefined>(undefined);
   useEffect(() => {
@@ -57,7 +84,7 @@ export default function Parametres() {
 
   const handleResync = async () => {
     if (!online) {
-      notify.error("Connexion requise pour envoyer la mise à jour");
+      notify.error("Connexion requise pour renvoyer les demandes en route");
       return;
     }
     setSyncing(true);
@@ -65,13 +92,13 @@ export default function Parametres() {
       const result = await syncPendingTickets();
       setRefreshKey((v) => v + 1);
       if (result.synced > 0) {
-        notify.success(`${result.synced} demande${result.synced > 1 ? "s" : ""} envoyée${result.synced > 1 ? "s" : ""}` , {
-          announce: `${result.synced} demande${result.synced > 1 ? "s" : ""} bien envoyée${result.synced > 1 ? "s" : ""}. Couture Colombe et Merceries vous reviennent.`,
-        });
+        notify.success(
+          `${result.synced} demande${result.synced > 1 ? "s" : ""} bien reçue${result.synced > 1 ? "s" : ""} à l'atelier ✔`,
+        );
       } else if (result.total === 0) {
-        notify.info("Rien à envoyer pour l’instant — tout est déjà à jour");
+        notify.info("Tout est déjà cousu — rien à renvoyer");
       } else {
-        notify.error(`La mise à jour n’a pas pu partir (${result.failed}/${result.total})`);
+        notify.error("Certaines demandes attendent encore un meilleur fil (connexion ou réglages)");
       }
     } finally {
       setSyncing(false);
@@ -80,20 +107,23 @@ export default function Parametres() {
 
   return (
     <>
-      <SEO title="Paramètres" description="Réglages de l'atelier, messages et repères utiles — la même douceur partout, sur tout l'écran web." path="/parametres" />
+      <SEO title="Paramètres" description="Réglages de l'atelier, santé de la boutique en direct, alertes et repères utiles." path="/parametres" />
       <PageHero
         title="Paramètres"
-        subtitle="Réglages de l'atelier, messages et repères utiles — le même savoir-faire partout, avec une lecture simple et propre."
+        subtitle="Le comptoir des réglages — la santé de la boutique vérifiée en direct, les demandes sous la main, les alertes en douceur."
         image="/images/hero-contact.webp"
         crumbs={[{ label: "Accueil", to: "/" }, { label: "Paramètres" }]}
       />
 
-      <section className="py-12 md:py-16 bg-white">
+      <section className="py-12 md:py-16 bg-[var(--color-cream,#FBE7EB)]/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <SectionTitle
             eyebrow="Votre atelier"
-            title={<>Réglages <span style={{ color: "var(--color-orange)" }}>de l'atelier</span></>}
+            title={<>Réglages <span style={{ color: "var(--color-orange)" }}>de la maison</span></>}
           />
+
+          {/* 🩺 LA SANTÉ DE LA BOUTIQUE — EN DIRECT */}
+          <SanteCard />
 
           <div className="grid lg:grid-cols-2 gap-4">
             <Card className="p-6 min-w-0">
@@ -121,14 +151,14 @@ export default function Parametres() {
                       className={(
                         "flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all min-h-[56px] " +
                         (active
-                          ? "border-[var(--color-citron)] bg-[var(--color-citron)]/15 shadow-sm"
-                          : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]")
+                          ? "border-[var(--color-feuille,#7CBA45)] bg-[var(--color-feuille-doux,#EFF7E3)] shadow-sm"
+                          : "border-[var(--color-line)] bg-white hover:border-[var(--color-gold-thread,#C9A87C)]")
                       )}
                       aria-pressed={active}
                     >
                       <span className={(
                         "flex h-10 w-10 items-center justify-center rounded-2xl " +
-                        (active ? "bg-[var(--color-citron)]/30" : "bg-black/5")
+                        (active ? "bg-[var(--color-feuille,#7CBA45)]/25" : "bg-black/5")
                       )}>
                         <Icon className="w-4 h-4" />
                       </span>
@@ -156,8 +186,8 @@ export default function Parametres() {
                 </div>
                 <div className="flex items-center gap-3 flex-wrap">
                   <span
-                    className="inline-flex items-center rounded-full px-4 py-2 text-sm font-extrabold tracking-wide bg-[var(--color-citron)] text-white shadow-sm"
-                    style={{ fontFamily: "var(--font-display)" }}
+                    className="inline-flex items-center rounded-full px-4 py-2 text-sm font-extrabold tracking-wide text-white shadow-sm"
+                    style={{ fontFamily: "var(--font-display)", background: "linear-gradient(135deg, #558B2F, #7CBA45)" }}
                   >
                     v{colombesAppVersion()}
                   </span>
@@ -165,21 +195,92 @@ export default function Parametres() {
                     {appUpdate === undefined
                       ? "Vérification des nouveautés…"
                       : appUpdate?.version
-                      ? <>Nouvelle version <strong style={{ color: "var(--color-citron-d)" }}>v{appUpdate.version}</strong> disponible ✨ — la carte de mise à jour vous guidera.</>
+                      ? <>Nouvelle version <strong style={{ color: "var(--color-feuille-f,#558B2F)" }}>v{appUpdate.version}</strong> disponible ✨</>
                       : "Votre app est à jour — cousue main 🕊️"}
                   </span>
                 </div>
               </Card>
             )}
 
-            {/* 🪡 Carte installation — visiteurs WEB uniquement (l'app,
-                elle, affiche sa version juste au-dessus). L'atelier
-                s'installe comme une PWA, sans store. */}
             {!inApp && <InstallAtelierCard />}
-
           </div>
 
-          {/* === Section notifications refondue === */}
+          {/* 🧵 Les demandes — porte-tickets miniature */}
+          <Card className="p-6 min-w-0">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-3 min-w-0">
+              <div>
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Mes demandes</p>
+                <h3 className="text-2xl font-bold break-words" style={{ fontFamily: "var(--font-display)" }}>
+                  Le porte-tickets en poche
+                </h3>
+              </div>
+              <Ticket className="w-6 h-6 text-[var(--color-orange)]" />
+            </div>
+            <p className="text-sm text-[var(--color-ink-soft)] mb-4 break-words">
+              {pending === 0
+                ? "Tout est cousu : aucune demande n'attend de fil."
+                : `${pending} demande${pending > 1 ? "s" : ""} attend${pending > 1 ? "ent" : ""} son fil — ${online ? "un geste et c'est reparti." : "dès que la connexion sourit."}`}
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-4 min-w-0">
+              <Button
+                variant="outline"
+                size="sm"
+                icon={<RotateCw className="w-3.5 h-3.5" />}
+                onClick={handleResync}
+                loading={syncing}
+                disabled={!online || pending === 0}
+              >
+                Renvoyer tout
+              </Button>
+              <Link to="/tickets" className="inline-flex">
+                <Button variant="secondary" size="sm" icon={<Ticket className="w-3.5 h-3.5" />}>
+                  Ouvrir le porte-tickets
+                </Button>
+              </Link>
+              {tickets.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!window.confirm("Vider toute la liste des demandes ?")) return;
+                    clearTickets();
+                    setRefreshKey((v) => v + 1);
+                    notify.success("La liste est vide — tout est rangé");
+                  }}
+                  className="text-xs font-semibold text-[var(--color-muted)] hover:text-[#D1232A] px-3 py-2 transition-colors"
+                >
+                  Vider
+                </button>
+              )}
+            </div>
+
+            {tickets.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[var(--color-line)] p-5 text-center text-sm text-[var(--color-muted)] break-words">
+                Aucune demande pour l'instant. Vos prochains messages se coudront ici. 🎟️
+              </div>
+            ) : (
+              <ul className="space-y-2 max-h-80 overflow-y-auto pr-1 min-w-0">
+                {tickets.slice(0, 6).map((ticket) => (
+                  <MiniTicketRow
+                    key={ticket.ref}
+                    ticket={ticket}
+                    onWhatsApp={(t) => {
+                      const url = openTicketWhatsApp(t, env.whatsappGeneralRaw);
+                      window.open(url, "_blank", "noopener,noreferrer");
+                    }}
+                    onDelete={(t) => {
+                      if (!window.confirm(`Retirer la demande ${t.ref} ?`)) return;
+                      deleteTicket(t.ref);
+                      setRefreshKey((v) => v + 1);
+                      notify.success("Demande retirée");
+                    }}
+                  />
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          {/* 📮 Alertes */}
           <Card className="p-6 min-w-0">
             <div className="flex flex-wrap items-start justify-between gap-4 mb-5 min-w-0">
               <div>
@@ -198,9 +299,7 @@ export default function Parametres() {
                 <div key={n.id} className="p-3 flex items-start gap-3 bg-white">
                   <span
                     className="mt-0.5 inline-block w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{
-                      backgroundColor: n.read ? "var(--color-muted)" : "var(--color-citron-d)",
-                    }}
+                    style={{ backgroundColor: n.read ? "var(--color-muted)" : "var(--color-feuille-f,#558B2F)" }}
                     aria-hidden="true"
                   />
                   <div className="min-w-0 flex-1">
@@ -216,7 +315,7 @@ export default function Parametres() {
               ))}
               {notifications.length === 0 && (
                 <div className="p-6 text-center text-sm text-[var(--color-muted)]">
-                  Aucun message pour le moment. Vos alertes s’afficheront ici avec douceur.
+                  Aucun message pour le moment. Vos alertes s'afficheront ici avec douceur.
                 </div>
               )}
             </div>
@@ -226,129 +325,14 @@ export default function Parametres() {
                 <Button variant="secondary" className="max-w-full">Voir toutes les alertes</Button>
               </Link>
               {notifications.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    clearAll();
-                    notify.info("Alertes retirées");
-                  }}
-                >
+                <Button variant="ghost" size="sm" onClick={() => { clearAll(); notify.info("Alertes retirées"); }}>
                   Effacer
                 </Button>
               )}
             </div>
           </Card>
 
-          <div className="grid lg:grid-cols-3 gap-4">
-            <Card className="p-6 min-w-0">
-              <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Connexion</p>
-              <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "var(--font-display)" }}>
-                {online ? "En ligne" : "Hors-ligne"}
-              </h3>
-              <p className="text-sm text-[var(--color-ink-soft)] break-words">
-                {online && pending === 0
-                  ? "Tout fonctionne normalement, vos demandes sont bien à jour."
-                  : online && pending > 0
-                  ? `${pending} demande${pending > 1 ? "s" : ""} attend${pending > 1 ? "ent" : ""} d'être envoyée${pending > 1 ? "s" : ""}.`
-                  : pending > 0
-                  ? `${pending} demande${pending > 1 ? "s" : ""} en attente, prête${pending > 1 ? "s" : ""} à partir dès que la connexion revient.`
-                  : "Les demandes en attente seront renvoyées dès que la connexion revient."}
-              </p>
-              <div className="mt-4 flex items-center gap-2">
-                <span className={`w-3 h-3 rounded-full shrink-0 ${online ? (pending > 0 ? "bg-[var(--color-saffron)]" : "bg-[var(--color-citron)]") : "bg-[var(--color-citron-d)]"}`} />
-                <span className="text-sm font-medium break-words">
-                  {online ? (pending > 0 ? `Statut : ${pending} à envoyer` : "Statut : actif") : "Statut : hors-ligne"}
-                </span>
-              </div>
-              {pending > 0 ? (
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <Badge tone="orange">{pending} en attente</Badge>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    icon={<RotateCw className="w-3.5 h-3.5" />}
-                    loading={syncing}
-                    onClick={handleResync}
-                    disabled={!online}
-                  >
-                    Actualiser
-                  </Button>
-                </div>
-              ) : null}
-            </Card>
-
-            <Card className="p-6 lg:col-span-2 min-w-0">
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-3 min-w-0">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Mes demandes</p>
-                  <h3 className="text-2xl font-bold break-words" style={{ fontFamily: "var(--font-display)" }}>Suivi de vos demandes</h3>
-                </div>
-                <Tickets className="w-6 h-6 text-[var(--color-orange)]" />
-              </div>
-              <p className="text-sm text-[var(--color-ink-soft)] mb-4 break-words">
-                Vos demandes restent à portée de main, même sans connexion.
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-4 min-w-0">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  icon={<RotateCw className="w-3.5 h-3.5" />}
-                  onClick={handleResync}
-                  loading={syncing}
-                  disabled={!online || pending === 0}
-                >
-                  Renvoyer tout
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  icon={<Tickets className="w-3.5 h-3.5" />}
-                  onClick={() => {
-                    clearTickets();
-                    setRefreshKey((v) => v + 1);
-                    notify.success("La liste a été nettoyée", { announce: "La liste a été nettoyée." });
-                  }}
-                  disabled={tickets.length === 0}
-                >
-                  Effacer
-                </Button>
-              </div>
-
-              {tickets.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-[var(--color-line)] p-5 text-center text-sm text-[var(--color-muted)] break-words">
-                  Aucune demande pour l’instant. Vos prochains messages apparaîtront ici.
-                </div>
-              ) : (
-                <ul className="space-y-2 max-h-80 overflow-y-auto pr-1 min-w-0">
-                  {tickets.map((ticket) => (
-                    <TicketRow
-                      key={ticket.ref}
-                      ticket={ticket}
-                      onResend={(t) => {
-                        if (!online) {
-                          notify.error("Connexion requise pour envoyer cette demande");
-                          return;
-                        }
-                        void handleResync();
-                      }}
-                      onWhatsApp={(t) => {
-                        const url = openTicketWhatsApp(t, env.whatsappGeneralRaw);
-                        window.open(url, "_blank", "noopener,noreferrer");
-                      }}
-                      onDelete={(t) => {
-                        deleteTicket(t.ref);
-                        setRefreshKey((v) => v + 1);
-                        notify.success("Demande retirée", { announce: "Demande retirée." });
-                      }}
-                    />
-                  ))}
-                </ul>
-              )}
-            </Card>
-          </div>
-
+          {/* 📍 Repères */}
           <Card className="p-6 min-w-0" id="about">
             <SectionTitle
               align="left"
@@ -356,40 +340,194 @@ export default function Parametres() {
               title={<>Vos <span style={{ color: "var(--color-orange)" }}>repères utiles</span></>}
             />
             <div className="grid md:grid-cols-2 gap-4 min-w-0">
-              <a href={env.mapsUrl} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-[var(--color-line)] p-4 hover:border-[var(--color-citron)] transition-colors min-w-0">
-                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Adresse</p>
+              <a href={env.mapsUrl} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-[var(--color-line)] p-4 hover:border-[var(--color-gold-thread,#C9A87C)] transition-colors min-w-0 bg-white">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">📍 Adresse</p>
                 <p className="font-semibold">{CONTACT.location}</p>
               </a>
-              <a href={`tel:${CONTACT.phone2Raw}`} className="rounded-2xl border border-[var(--color-line)] p-4 hover:border-[var(--color-citron)] transition-colors min-w-0">
-                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Téléphone 2</p>
+              <a href={`tel:${CONTACT.phone1Raw}`} className="rounded-2xl border border-[var(--color-line)] p-4 hover:border-[var(--color-gold-thread,#C9A87C)] transition-colors min-w-0 bg-white">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">📞 Téléphone</p>
+                <p className="font-semibold">{CONTACT.phone1}</p>
+              </a>
+              <a href={`tel:${CONTACT.phone2Raw}`} className="rounded-2xl border border-[var(--color-line)] p-4 hover:border-[var(--color-gold-thread,#C9A87C)] transition-colors min-w-0 bg-white">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">📞 Téléphone 2</p>
                 <p className="font-semibold">{CONTACT.phone2}</p>
+              </a>
+              <a href={`https://wa.me/${env.whatsappGeneralRaw}`} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-[var(--color-line)] p-4 hover:border-[var(--color-gold-thread,#C9A87C)] transition-colors min-w-0 bg-white">
+                <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">💬 WhatsApp</p>
+                <p className="font-semibold">{env.whatsappGeneral}</p>
               </a>
             </div>
           </Card>
-
         </div>
       </section>
     </>
   );
 }
 
-function TicketRow({
+/* ============ 🩺 Mon atelier en pleine forme ============ */
+type HealthChecks = {
+  ok: boolean;
+  checks?: {
+    env?: Record<string, boolean>;
+    sheets?: { ok: boolean; error?: string | null };
+    smtp?: { ok: boolean; error?: string | null };
+  };
+};
+
+type Voyant = {
+  key: string;
+  emoji: string;
+  nom: string;
+  ok: boolean | null;
+  conseil: string;
+};
+
+function SanteCard() {
+  const [voyants, setVoyants] = useState<Voyant[] | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [lastCheck, setLastCheck] = useState<Date | null>(null);
+
+  const check = async (silent = false) => {
+    setChecking(true);
+    try {
+      const res = await fetch("/api/system/health", { cache: "no-store" });
+      const data = (await res.json()) as HealthChecks;
+      const envOk = data.checks?.env ? Object.values(data.checks.env).every(Boolean) : false;
+      const sheetsOk = !!data.checks?.sheets?.ok;
+      const smtpOk = !!data.checks?.smtp?.ok;
+      setVoyants([
+        {
+          key: "mail",
+          emoji: "📮",
+          nom: "Les mails de la boutique",
+          ok: smtpOk,
+          conseil: "Le mot de passe mail doit être refait sur Vercel — guide VERCEL_ENV, réparation B.",
+        },
+        {
+          key: "sheets",
+          emoji: "📗",
+          nom: "Le tableau Google (demandes)",
+          ok: sheetsOk,
+          conseil: "La clé Google a glissé de son ourlet — guide VERCEL_ENV, réparation A.",
+        },
+        {
+          key: "reglages",
+          emoji: "🔐",
+          nom: "Les réglages du serveur",
+          ok: envOk,
+          conseil: "Une variable du serveur manque à l'appel — le guide VERCEL_ENV la retrouve.",
+        },
+      ]);
+      setLastCheck(new Date());
+      if (!silent) {
+        if (smtpOk && sheetsOk && envOk) notify.success("Tout file parfaitement 🕊️");
+        else notify.error("Un fil demande votre attention — voyants ci-dessous.");
+      }
+    } catch {
+      setVoyants(null);
+      if (!silent) notify.error("La vérification n'a pas abouti — connexion capricieuse ?");
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  useEffect(() => {
+    void check(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const allOk = voyants?.every((v) => v.ok === true) ?? false;
+
+  return (
+    <Card className="p-6 min-w-0 border-2" style={{ borderColor: allOk ? "rgba(124,186,69,0.35)" : "rgba(244,184,96,0.45)" } as React.CSSProperties}>
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-4 min-w-0">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-[var(--color-muted)] mb-2">Santé de la boutique</p>
+          <h3 className="text-2xl font-bold break-words" style={{ fontFamily: "var(--font-display)" }}>
+            Mon atelier en pleine forme
+          </h3>
+        </div>
+        <Activity className="w-6 h-6 text-[var(--color-orange)]" />
+      </div>
+
+      <p className="text-sm text-[var(--color-ink-soft)] mb-5">
+        Trois fils tiennent la boutique. La vérification se fait <strong>en direct</strong>, sans rien déranger.
+      </p>
+
+      {voyants === null ? (
+        <div className="rounded-2xl border border-dashed border-[var(--color-line)] p-4 text-sm text-[var(--color-muted)]">
+          {checking ? "Vérification des fils en cours…" : "Vérification impossible pour l'instant — la connexion se recoud."}
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {voyants.map((v) => (
+            <div
+              key={v.key}
+              className="flex items-start gap-3 rounded-2xl border p-3.5 bg-white"
+              style={{ borderColor: v.ok ? "rgba(124,186,69,0.35)" : "rgba(209,35,42,0.28)" }}
+            >
+              <span
+                className="mt-1 w-3 h-3 rounded-full shrink-0"
+                style={{ background: v.ok ? "var(--color-feuille-f,#558B2F)" : "#D1232A" }}
+                aria-hidden="true"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">
+                  {v.emoji} {v.nom}
+                  <span className="ml-2 text-xs font-bold" style={{ color: v.ok ? "var(--color-feuille-f,#558B2F)" : "#A31322" }}>
+                    {v.ok ? "parfait ✔" : "à recoudre"}
+                  </span>
+                </p>
+                {!v.ok && (
+                  <p className="text-xs text-[var(--color-muted)] mt-1">{v.conseil}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => void check()}
+          disabled={checking}
+          className="inline-flex items-center gap-2 min-h-[44px] rounded-2xl px-4 py-2.5 text-sm font-bold border-2 border-[var(--color-line)] bg-white transition-all hover:border-[var(--color-gold-thread,#C9A87C)] disabled:opacity-60"
+        >
+          <RotateCw className={`w-4 h-4 ${checking ? "animate-spin" : ""}`} aria-hidden="true" />
+          {checking ? "Vérification…" : "Revérifier"}
+        </button>
+        {lastCheck && (
+          <span className="text-xs text-[var(--color-muted)]">
+            Dernière vérification : {lastCheck.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+          </span>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+/* ============ 🎟️ Ligne miniature d'un ticket ============ */
+function MiniTicketRow({
   ticket,
-  onResend,
   onWhatsApp,
   onDelete,
 }: {
   ticket: StoredTicket;
-  onResend: (t: StoredTicket) => void;
   onWhatsApp: (t: StoredTicket) => void;
   onDelete: (t: StoredTicket) => void;
 }) {
   return (
-    <li className="rounded-2xl border border-[var(--color-line)] p-3 flex flex-wrap items-start gap-3 min-w-0">
+    <li className="rounded-2xl border border-[var(--color-line)] bg-white p-3 flex flex-wrap items-center gap-3 min-w-0">
+      <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${STATUS_DOT[ticket.status]}`} aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <span className="font-semibold text-sm text-[var(--color-ink)] break-words">{ticket.title || "Demande"}</span>
-          <Badge tone={getTicketStatusTone(ticket.status)}>{getTicketStatusLabel(ticket.status)}</Badge>
+          <span className="font-semibold text-sm text-[var(--color-ink)] break-words">
+            {TICKET_SOURCE_EMOJI[ticket.source]} {ticket.title || "Demande"}
+          </span>
+          <span className="text-[11px] font-bold" style={{ color: ticket.status === "synced" ? "var(--color-feuille-f,#558B2F)" : ticket.status === "error" ? "#A31322" : "#C75B12" }}>
+            {getTicketStatusLabel(ticket.status)}
+          </span>
         </div>
         <p className="text-xs text-[var(--color-muted)] mt-0.5 break-words">
           {getTicketLabel(ticket.source)} · Réf. {ticket.ref} · {formatDateFR(ticket.createdAt)}
@@ -398,17 +536,9 @@ function TicketRow({
       <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
         <button
           type="button"
-          onClick={() => onResend(ticket)}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold border border-[var(--color-line)] hover:border-[var(--color-citron)] bg-white text-[var(--color-ink)] whitespace-nowrap"
-          title="Envoyer à nouveau"
-        >
-          <RotateCw className="w-3.5 h-3.5" />
-          Renvoyer
-        </button>
-        <button
-          type="button"
           onClick={() => onWhatsApp(ticket)}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold bg-[linear-gradient(135deg,#8B4515,#5C2E0C)] text-white hover:brightness-110 whitespace-nowrap"
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-white hover:brightness-110 whitespace-nowrap"
+          style={{ background: "linear-gradient(135deg,#558B2F,#7CBA45)" }}
           title="Renvoyer sur WhatsApp"
         >
           <MessageCircle className="w-3.5 h-3.5" />
@@ -417,7 +547,7 @@ function TicketRow({
         <button
           type="button"
           onClick={() => onDelete(ticket)}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-line)] hover:border-[var(--color-citron)] bg-white text-[var(--color-ink-soft)] shrink-0"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-line)] hover:border-[#D1232A] hover:text-[#D1232A] bg-white text-[var(--color-ink-soft)] shrink-0 transition-colors"
           title="Retirer de la liste"
           aria-label="Supprimer"
         >
@@ -428,12 +558,7 @@ function TicketRow({
   );
 }
 
-/**
- * InstallAtelierCard — la petite carte qui pose l'atelier dans la poche 🪡
- * Visible côté WEB seulement (la version app Colombes a sa propre carte).
- * Trois visages : installée → merci ; invite prête → bouton natif ;
- * sinon → le mode d'emploi (iOS Partager / menu ⋮ Android-desktop).
- */
+/* ============ 🪡 Installation (web) ============ */
 function InstallAtelierCard() {
   const { canInstall, isInstalled } = useInstallPrompt();
 
@@ -448,14 +573,15 @@ function InstallAtelierCard() {
       </div>
       {isInstalled ? (
         <p className="text-sm text-[var(--color-ink-soft)]">
-          Colombes est déjà installée ici — cousue main 🕊️
+          Couture Colombe et Merceries est déjà installée ici — cousue main 🕊️
         </p>
       ) : (
         <div className="flex items-center gap-3 flex-wrap">
           <button
             type="button"
             onClick={() => void installAtelier("parametres_install_card")}
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white bg-[var(--color-citron)] shadow-[0_8px_20px_-8px_rgba(209,35,42,0.55)] transition-transform hover:scale-[1.03] active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-transform hover:scale-[1.03] active:scale-95"
+            style={{ background: "linear-gradient(135deg,#558B2F,#7CBA45)" }}
           >
             <Download className="w-4 h-4" strokeWidth={2.4} aria-hidden="true" />
             Installer l'atelier
