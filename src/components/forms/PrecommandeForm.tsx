@@ -12,7 +12,7 @@ import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
 import { downloadSubmissionPdfFromResponse } from "@/utils/formFlow";
 import { SERVICES } from "@/data/content";
 import { Button } from "@/components/ui/Button";
-import { Field, Input, Textarea, Select } from "@/components/ui/Field";
+import { Field, Input, Textarea } from "@/components/ui/Field";
 import { Stepper } from "@/components/ui/Stepper";
 import { DraftBanner } from "@/components/ui/DraftBanner";
 import { useFormDraft } from "@/hooks/useFormDraft";
@@ -254,42 +254,41 @@ export function PrecommandeForm({
       {/* ===== Étape 2 : modèle ===== */}
       {step === 1 && (
         <div className="space-y-5 animate-fade-in">
-          <Field label="Type de tenue" required error={errors.type_tenue?.message}>
-            <Select {...register("type_tenue")} invalid={!!errors.type_tenue}>
-              <option value="">— Choisir —</option>
-              {SERVICES.map((s) => (
-                <option key={s.title} value={s.title}>
-                  {s.emoji} {s.title}
-                </option>
-              ))}
-              <option value="autre">Autre (précisez ci-dessous)</option>
-            </Select>
+          {/* 👗 Type de tenue — grandes tuiles à toucher, zéro menu déroulant */}
+          <Field label="Quel modèle voulez-vous ?" required error={errors.type_tenue?.message}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3" role="group" aria-label="Type de tenue">
+              {SERVICES.map((s) => {
+                const selected = watch("type_tenue") === s.title;
+                return (
+                  <button
+                    key={s.title}
+                    type="button"
+                    onClick={() => setValue("type_tenue", s.title, { shouldValidate: true })}
+                    className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 px-2.5 py-4 text-center transition-all min-h-[92px] ${
+                      selected
+                        ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                        : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                    }`}
+                  >
+                    <span className="text-3xl leading-none">{s.emoji}</span>
+                    <span className="font-semibold text-xs leading-tight">{s.title}</span>
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => setValue("type_tenue", "autre", { shouldValidate: true })}
+                className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 border-dashed px-2.5 py-4 text-center transition-all min-h-[92px] ${
+                  watch("type_tenue") === "autre"
+                    ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                    : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                }`}
+              >
+                <span className="text-3xl leading-none">✨</span>
+                <span className="font-semibold text-xs leading-tight">Autre — je décris</span>
+              </button>
+            </div>
           </Field>
-
-          {/* Cards services cliquables */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-            {SERVICES.slice(0, 6).map((s) => {
-              const selected = watch("type_tenue") === s.title;
-              return (
-                <button
-                  key={s.title}
-                  type="button"
-                  onClick={() => setValue("type_tenue", s.title, { shouldValidate: true })}
-                  className={`text-left rounded-2xl border-2 p-3 transition-all ${
-                    selected
-                      ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
-                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-2xl">{s.emoji}</span>
-                    {selected && <CheckCircle2 className="w-4 h-4" style={{ color: "var(--color-orange)" }} />}
-                  </div>
-                  <p className="font-semibold text-xs leading-tight">{s.title}</p>
-                </button>
-              );
-            })}
-          </div>
 
           {type === "autre" && (
             <Field label="Précisez votre besoin" error={errors.tenue_autre?.message}>

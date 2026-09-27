@@ -11,17 +11,17 @@ import { saveTicket, updateTicket } from "@/utils/tickets";
 import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
 import { downloadSubmissionPdfFromResponse } from "@/utils/formFlow";
 import { Button } from "@/components/ui/Button";
-import { Field, Input, Textarea, Select, CheckboxGroup } from "@/components/ui/Field";
+import { Field, Input, Textarea, CheckboxGroup } from "@/components/ui/Field";
 import { Stepper } from "@/components/ui/Stepper";
 import { DraftBanner } from "@/components/ui/DraftBanner";
 import { useFormDraft } from "@/hooks/useFormDraft";
 import { FORMULES } from "@/data/content";
 
 const DISPO_OPTS = [
-  { value: "matin", label: "Matin" },
-  { value: "apresmidi", label: "Après-midi" },
-  { value: "soir", label: "Soir" },
-  { value: "weekend", label: "Week-end" },
+  { value: "matin", label: "☀️ Matin" },
+  { value: "apresmidi", label: "🌤️ Après-midi" },
+  { value: "soir", label: "🌙 Soir" },
+  { value: "weekend", label: "🎉 Week-end" },
 ];
 
 const FORMATION_LABELS: Record<string, string> = {
@@ -258,54 +258,76 @@ export function FormationForm({
       {/* ===== Étape 2 : formation ===== */}
       {step === 1 && (
         <div className="space-y-5 animate-fade-in">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Niveau actuel" required error={errors.niveau_actuel?.message}>
-              <Select {...register("niveau_actuel")} invalid={!!errors.niveau_actuel}>
-                <option value="">— Choisir —</option>
-                <option value="debutant">Débutant(e)</option>
-                <option value="intermediaire">Intermédiaire</option>
-              </Select>
-            </Field>
-            <Field label="Formation choisie" required error={errors.formation_choisie?.message}>
-              <Select {...register("formation_choisie")} invalid={!!errors.formation_choisie}>
-                <option value="">— Choisir —</option>
-                <option value="courte">Formation Courte</option>
-                <option value="specialisee">Formation Spécialisée</option>
-                <option value="indecis">Je ne sais pas encore</option>
-              </Select>
-            </Field>
-          </div>
+          {/* ✂️ Niveau — gros boutons à toucher, pas de liste déroulante */}
+          <Field label="Votre niveau ?" required error={errors.niveau_actuel?.message}>
+            <div className="grid grid-cols-2 gap-3" role="group" aria-label="Votre niveau">
+              {[
+                { v: "debutant" as const, emoji: "🌱", titre: "Je débute", info: "Jamais cousu (ou presque)" },
+                { v: "intermediaire" as const, emoji: "🧵", titre: "Je sais déjà un peu", info: "J'ai déjà cousu" },
+              ].map((n) => {
+                const selected = watch("niveau_actuel") === n.v;
+                return (
+                  <button
+                    key={n.v}
+                    type="button"
+                    onClick={() => setValue("niveau_actuel", n.v, { shouldValidate: true })}
+                    className={`flex flex-col items-center gap-1 rounded-2xl border-2 px-3 py-4 text-center transition-all min-h-[72px] ${
+                      selected
+                        ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                        : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                    }`}
+                  >
+                    <span className="text-3xl leading-none">{n.emoji}</span>
+                    <span className="font-bold text-sm leading-tight">{n.titre}</span>
+                    <span className="text-[11px] text-[var(--color-muted)] leading-tight">{n.info}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
 
-          {/* Récap visuel des 2 formules */}
-          <div className="grid sm:grid-cols-2 gap-3">
-            {FORMULES.map((f) => {
-              const id =
-                f.id === "courte" ? "courte" : f.id === "specialisee" ? "specialisee" : null;
-              if (!id) return null;
-              const selected = watch("formation_choisie") === id;
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setValue("formation_choisie", id as any, { shouldValidate: true })}
-                  className={`text-left rounded-2xl border-2 p-4 transition-all ${
-                    selected
-                      ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
-                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-2xl">{f.emoji}</span>
-                    {selected && <CheckCircle2 className="w-5 h-5" style={{ color: "var(--color-orange)" }} />}
-                  </div>
-                  <p className="font-bold text-sm" style={{ fontFamily: "var(--font-display)" }}>
-                    {f.title}
-                  </p>
-                  <p className="text-xs text-[var(--color-muted)]">{f.subtitle}</p>
-                </button>
-              );
-            })}
-          </div>
+          {/* 🪡 Formule — on touche la photo mentale, pas un menu */}
+          <Field label="Quelle formation ?" required error={errors.formation_choisie?.message}>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {FORMULES.map((f) => {
+                const id = f.id === "courte" ? "courte" : f.id === "specialisee" ? "specialisee" : null;
+                if (!id) return null;
+                const selected = watch("formation_choisie") === id;
+                return (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setValue("formation_choisie", id as any, { shouldValidate: true })}
+                    className={`text-left rounded-2xl border-2 p-4 transition-all min-h-[72px] ${
+                      selected
+                        ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                        : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-3xl">{f.emoji}</span>
+                      {selected && <CheckCircle2 className="w-5 h-5" style={{ color: "var(--color-orange)" }} />}
+                    </div>
+                    <p className="font-bold text-sm" style={{ fontFamily: "var(--font-display)" }}>
+                      {f.title}
+                    </p>
+                    <p className="text-xs text-[var(--color-muted)]">{f.subtitle}</p>
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => setValue("formation_choisie", "indecis" as any, { shouldValidate: true })}
+                className={`sm:col-span-2 rounded-2xl border-2 px-4 py-3.5 text-sm font-semibold transition-all min-h-[56px] ${
+                  watch("formation_choisie") === "indecis"
+                    ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                    : "border-dashed border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                }`}
+              >
+                🤔 Je ne sais pas encore — conseillez-moi à la visite
+              </button>
+            </div>
+          </Field>
 
           <Field label="Disponibilités" required error={errors.disponibilite?.message}>
             <CheckboxGroup
