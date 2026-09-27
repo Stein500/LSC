@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, type PanInfo } from "framer-motion";
-import { ChevronLeft, ChevronRight, Download, Pause, Play, Scissors } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Pause, Play, Scissors, Share2 } from "lucide-react";
 import { SmartImage } from "./SmartImage";
 import { cn } from "@/utils/cn";
 import { downloadAtelierImage } from "@/utils/downloadImage";
+import { shareAtelierImage } from "@/utils/shareAtelier";
 
 /**
  * Une photo dans la galerie.
@@ -30,6 +31,8 @@ type ScissorGalleryProps = {
   showCaptions?: boolean;
   /** Hauteur max en CSS (ex. "70vh", "600px") */
   maxHeight?: string;
+  /** Chemin utilisé pour le lien de partage (défaut : la page courante) */
+  sharePath?: string;
 };
 
 /**
@@ -44,6 +47,7 @@ type ScissorGalleryProps = {
  */
 export function ScissorGallery({
   images,
+  sharePath,
   autoPlayInterval = 5000,
   className,
   showArrows = true,
@@ -116,6 +120,21 @@ export function ScissorGallery({
       await downloadAtelierImage(images[index].src);
     },
     [images, index],
+  );
+
+  // 🕊️ Partage — l'image voyage, « le lien de notre site la suit ».
+  const handleShare = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const path =
+        sharePath ??
+        (typeof window !== "undefined" ? window.location.pathname : "/");
+      await shareAtelierImage({
+        caption: images[index].caption ?? images[index].alt,
+        path,
+      });
+    },
+    [images, index, sharePath],
   );
 
   if (images.length === 0) return null;
@@ -206,8 +225,16 @@ export function ScissorGallery({
           </div>
         )}
 
-        {/* Compteur + boutons (télécharger / play-pause) en haut à droite */}
+        {/* Compteur + boutons (partager / télécharger / play-pause) en haut à droite */}
         <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+          <button
+            onClick={handleShare}
+            className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"
+            aria-label="Partager cette image (le lien du site voyage avec)"
+            title="Partager l'image"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+          </button>
           <button
             onClick={handleDownload}
             className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"

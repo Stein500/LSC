@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Download, Scissors, X } from "lucide-react";
+import { Download, Scissors, Share2, X } from "lucide-react";
 import { SmartImage } from "./SmartImage";
 import { downloadAtelierImage } from "@/utils/downloadImage";
+import { shareAtelierImage } from "@/utils/shareAtelier";
 import type { InspirationSection } from "@/data/galleries";
 import type { GalleryImage } from "./ScissorGallery";
 
@@ -11,15 +12,16 @@ import type { GalleryImage } from "./ScissorGallery";
  * ModelGallery — le show-room des modèles de l'atelier 👗
  * --------------------------------------------------------
  * Une page = des sections de galeries, rien d'autre.
- * Le visiteur touche un modèle → une fiche s'ouvre avec DEUX boutons :
+ * Le visiteur touche un modèle → une fiche s'ouvre avec TROIS boutons :
  *
  *   1. « Télécharger le modèle » — la photo signée part chez lui ;
- *   2. « Commander ce modèle » — direction le formulaire de commande,
+ *   2. « Partager » — le modèle voyage (WhatsApp…) AVEC le lien du site ;
+ *   3. « Commander ce modèle » — direction le formulaire de commande,
  *      le modèle (et sa photo) déjà joints à la demande.
  */
 
 export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
-  const [open, setOpen] = useState<GalleryImage | null>(null);
+  const [open, setOpen] = useState<{ img: GalleryImage; sectionKey: string } | null>(null);
 
   // Échap ferme la fiche ; la page ne défile pas pendant l'ouverture.
   useEffect(() => {
@@ -52,15 +54,22 @@ export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {section.images.map((img) => (
-                <motion.button
+                <motion.div
                   key={img.src}
-                  type="button"
-                  onClick={() => setOpen(img)}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setOpen({ img, sectionKey: section.key })}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setOpen({ img, sectionKey: section.key });
+                    }
+                  }}
                   initial={{ opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="group text-left rounded-3xl overflow-hidden bg-white border border-[var(--color-line)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-feuille,#7CBA45)]/40"
+                  className="group cursor-pointer text-left rounded-3xl overflow-hidden bg-white border border-[var(--color-line)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-feuille,#7CBA45)]/40"
                   aria-label={`Voir le modèle : ${img.caption ?? img.alt}`}
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
@@ -75,15 +84,32 @@ export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
                     <span className="absolute bottom-3 left-4 right-4 text-white text-sm font-semibold drop-shadow-sm line-clamp-1">
                       {img.caption}
                     </span>
+                    {/* 🕊️ Partager sans même ouvrir la fiche */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void shareAtelierImage({
+                          caption: img.caption ?? img.alt,
+                          path: "/inspirations",
+                          hash: section.key,
+                        });
+                      }}
+                      aria-label={`Partager le modèle : ${img.caption ?? img.alt}`}
+                      title="Partager (le lien du site voyage avec)"
+                      className="absolute top-3 right-3 w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </button>
                   </div>
-                </motion.button>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
       ))}
 
-      {/* ===================== FICHE MODÈLE (2 boutons) ===================== */}
+      {/* ===================== FICHE MODÈLE (3 boutons) ===================== */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -94,7 +120,7 @@ export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
             className="fixed inset-0 z-[70] flex items-center justify-center p-4"
             role="dialog"
             aria-modal="true"
-            aria-label={`Modèle : ${open.caption ?? open.alt}`}
+            aria-label={`Modèle : ${open.img.caption ?? open.img.alt}`}
           >
             <div className="absolute inset-0 bg-[#0B0B12]/80 backdrop-blur-sm" onClick={close} />
 
@@ -116,8 +142,8 @@ export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
 
               <div className="rounded-t-3xl overflow-hidden bg-[var(--color-cream)]">
                 <SmartImage
-                  src={open.src}
-                  alt={open.alt}
+                  src={open.img.src}
+                  alt={open.img.alt}
                   width={1600}
                   height={1200}
                   loading="eager"
@@ -127,15 +153,16 @@ export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
 
               <div className="p-5 md:p-6">
                 <p className="text-lg md:text-xl font-bold mb-1" style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}>
-                  {open.caption}
+                  {open.img.caption}
                 </p>
                 <p className="text-sm text-[var(--color-muted)] leading-relaxed mb-5">
                   Ce modèle vous plaît ? Gardez la photo signée… ou confiez-nous l'aiguille.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <ModelDownloadButton img={open} />
-                  <ModelOrderButton img={open} onDone={close} />
+                  <ModelDownloadButton img={open.img} />
+                  <ModelShareButton img={open.img} sectionKey={open.sectionKey} />
+                  <ModelOrderButton img={open.img} onDone={close} />
                 </div>
               </div>
             </motion.div>
@@ -167,7 +194,32 @@ function ModelDownloadButton({ img }: { img: GalleryImage }) {
   );
 }
 
-/** Bouton 2 — direction la commande, le modèle déjà joint. */
+/** Bouton 2 — le modèle voyage (WhatsApp…), le lien du site le suit. */
+function ModelShareButton({ img, sectionKey }: { img: GalleryImage; sectionKey: string }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        await shareAtelierImage({
+          caption: img.caption ?? img.alt,
+          path: "/inspirations",
+          hash: sectionKey,
+        });
+        setBusy(false);
+      }}
+      className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3.5 font-semibold border-2 transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
+      style={{ borderColor: "var(--color-or,#C9A87C)", color: "var(--color-marron,#5C2E0C)", background: "var(--color-cream,#FDF6EF)" }}
+    >
+      <Share2 className="w-4 h-4" />
+      {busy ? "Partage…" : "Partager"}
+    </button>
+  );
+}
+
+/** Bouton 3 — direction la commande, le modèle déjà joint. */
 function ModelOrderButton({ img, onDone }: { img: GalleryImage; onDone: () => void }) {
   const navigate = useNavigate();
   const modele = img.caption ?? img.alt;
