@@ -1,11 +1,12 @@
 # 🚀 Déploiement — Couture Colombe et Merceries (depuis Termux)
 
-> **Règle maison (nouvelle)** : un SEUL livrable désormais — **`lsc-colombes-complet.zip`**.
-> Fini les versions « patch » et « léger » : le zip complet contient TOUT le projet, images comprises.
+> **Deux livrables, deux gestes :**
+> - 🧵 **`lsc-colombes-complet.zip`** (≈ 15 Mo) — TOUT le projet, images comprises. **Conseillé à chaque fois.**
+> - 🕊️ **`lsc-colombes-leger.zip`** (≈ 64 Ko) — uniquement les fichiers modifiés de la dernière réparation, à écraser dans le projet existant. Pratique quand la connexion compte ses méga-octets.
 
 ---
 
-## 📥 Procédure express (≈ 5 min, AUCUN Ctrl+C)
+## 📥 Procédure express — ZIP COMPLET (≈ 5 min, AUCUN Ctrl+C)
 
 ```bash
 # 1. Télécharge le zip complet directement depuis GitHub
@@ -32,6 +33,30 @@ vercel --prod --force 2>&1 | tee /sdcard/vercel-final.log
 
 > 🪆 Le zip ne contient ni `node_modules/` ni `dist/` (inutiles — Vercel les reconstruit sur ses serveurs).
 > 🗃️ Au prochain déploiement, remplace le caveau : `mv ~/lsc2 ~/lsc2_caveau2`.
+
+---
+
+## 🕊️ Variante — ZIP LÉGER (uniquement les fichiers modifiés)
+
+> À utiliser quand le projet `~/lsc2` existe déjà et qu'on a juste livré une réparation.
+
+```bash
+# 1. Télécharge le zip léger
+curl -L -o /sdcard/Download/lsc-colombes-leger.zip "https://raw.githubusercontent.com/Stein500/LSC/arena/019fce3a-lsc/lsc-colombes-leger.zip"
+
+# 2. Écrase les fichiers modifiés dans le projet EXISTANT (le reste reste en place)
+unzip -o /sdcard/Download/lsc-colombes-leger.zip -d ~/lsc2/
+
+# 3. (Recommandé) Lis le petit mot qui explique la réparation
+cat ~/lsc2/LISEZMOI-LEGER.txt
+
+# 4. Déploie
+cd ~/lsc2
+vercel --prod --force 2>&1 | tee /sdcard/vercel-final.log
+```
+
+> ⚠️ Le léger suppose que le COMPLET d'avant est déjà en place dans `~/lsc2`.
+> En cas de doute → COMPLET, toujours gagnant.
 
 ---
 
