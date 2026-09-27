@@ -174,6 +174,16 @@ export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
     alt: "Table de coupe : grand wax orange à feuilles déployé, mètre-ruban, ciseaux dorés, craie et épingles",
     caption: "La coupe — le geste juste, du premier coup",
   },
+  {
+    src: "/images/gallery/contact-atelier-05.webp",
+    alt: "Prise de mesures en confiance : le mètre-ruban entoure la taille de la cliente, carnet de notes manuscrites ouvert",
+    caption: "Les mesures — votre gabarit, notre obsession",
+  },
+  {
+    src: "/images/gallery/contact-atelier-06.webp",
+    alt: "L'atelier à la tombée du soir : lampe dorée sur la table de coupe, robe orange au mannequin, pagnes rangés",
+    caption: "Le soir — l'atelier se repose, les idées veillent",
+  },
 ];
 
 export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
