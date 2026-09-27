@@ -7,6 +7,21 @@
 
 ---
 
+## 🔁 À METTRE À JOUR sur le backend (septembre 2026) — 2 variables seulement
+
+> **Où ?** Dashboard Vercel → projet `lesservicescolombes` → **Settings → Environment Variables** → *Edit* chaque ligne (garde bien **Production + Preview** cochés).
+
+| Variable | Ancienne valeur | ✅ Nouvelle valeur | Effet |
+|---|---|---|---|
+| `VITE_ATELIER_SHORT_NAME` | `Colombes` | **`Couture Colombe`** | Nom court affiché (manifeste PWA, titres courts) |
+| `VITE_ATELIER_SOURCE_ID` | `atelier-colombes` | **`couture-colombe-merceries`** | Étiquette d'origine des demandes |
+
+> 🪡 **Note fil d'or** : après le changement de `VITE_ATELIER_SOURCE_ID`, les **nouvelles** lignes du tableau Google Sheets porteront la nouvelle étiquette — c'est voulu (les anciennes gardent la leur : la mémoire de la maison).
+> ♻️ Après les 2 edits : redeploye (`vercel --prod --force` ou bouton *Redeploy* du dashboard) pour que les nouvelles valeurs soient cousues dans le build.
+> 💡 Les autres variables ne bougent pas (nom, contacts, WhatsApp, email, coordonnées GPS — inchangés).
+
+---
+
 ## 🚀 Méthode express (recommandée) — 3 commandes
 
 Si les variables existent déjà sur Vercel, récupère-les **automatiquement** dans ton `.env` local :
