@@ -11,8 +11,24 @@ import { PrecommandeForm } from "@/components/forms/PrecommandeForm";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
 import { Aurora } from "@/components/ui/Aurora";
 import { StitchDivider } from "@/components/ui/StitchDivider";
-import { SERVICES } from "@/data/content";
 import { GALLERY_SERVICES } from "@/data/galleries";
+import { SmartImage } from "@/components/ui/SmartImage";
+
+/**
+ * Les prestations en IMAGES — plus de listes de catégories à lire :
+ * le client (même non-lecteur) voit, touche, commande. Chaque carte
+ * pré-remplit le formulaire avec le type de tenue correspondant.
+ */
+const PRESTATIONS_VISUELLES: { titre: string; preset: string; src: string; alt: string }[] = [
+  { titre: "Boubous & ensembles", preset: "Tenues africaines béninoises pour femmes", src: "/images/gallery/creation-afrique-01.webp", alt: "Boubou élégant cousu à l'atelier" },
+  { titre: "Robes modernes", preset: "Robes africaines modernes", src: "/images/gallery/creation-afrique-04.webp", alt: "Robe moderne entre tradition et contemporain" },
+  { titre: "Jupe & chemisier", preset: "Tenues de bureau féminines", src: "/images/gallery/creation-afrique-03.webp", alt: "Jupe et chemisier cousues sur mesure" },
+  { titre: "Cérémonies & mariage", preset: "Tenues de cérémonie femme", src: "/images/gallery/mariage-robe-01.webp", alt: "Tenue de cérémonie cousue d'or" },
+  { titre: "Pagne tissé & bazin", preset: "Pagne tissé & bazin chic", src: "/images/gallery/inspirations-page-02.webp", alt: "Wax, bazin et pagnes nobles" },
+  { titre: "Mère & fille assorties", preset: "Ensembles mère-fille", src: "/images/gallery/famille-trio-01.webp", alt: "Ensembles mère et fille assortis" },
+  { titre: "Layette & bébé", preset: "Layette & trousseaux bébé fille", src: "/images/gallery/layette-bebe-01.webp", alt: "Layette cousue main pour les tout-petits" },
+  { titre: "Retouches & finitions", preset: "Retouches & ajustements", src: "/images/gallery/contact-atelier-04.webp", alt: "Retouches et finitions au geste juste" },
+];
 
 const FAQ = [
   { q: "Combien de temps pour une tenue ?", a: "Entre 1 et 4 semaines selon la complexité et la charge de l'atelier. Nous confirmons un délai à la commande." },
@@ -108,29 +124,37 @@ export default function Services() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             eyebrow="Nos prestations"
-            title={<>Des modèles <span className="lsc-text-silk">africains et béninois</span> à votre disposition</>}
+            title={<>Nos créations, <span className="lsc-text-silk">en images</span></>}
+            subtitle="Touchez le modèle qui vous ressemble — le formulaire se prépare tout seul."
           />
 
-          <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {SERVICES.map((s) => (
-              <RevealItem key={s.title}>
+          <Stagger className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+            {PRESTATIONS_VISUELLES.map((v) => (
+              <RevealItem key={v.titre}>
                 <button
-                  onClick={() => handlePreset(s.title)}
-                  className="text-left w-full group"
+                  onClick={() => handlePreset(v.preset)}
+                  className="text-left w-full group rounded-3xl overflow-hidden bg-white border border-[var(--color-line)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-orange)]/40"
                   type="button"
+                  aria-label={`Commander : ${v.titre}`}
                 >
-                  <Card className="h-full">
-                    <div className="w-12 h-12 rounded-xl bg-[var(--color-citron)]/30 flex items-center justify-center text-2xl mb-3 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-[var(--color-citron)]/50">
-                      {s.emoji}
-                    </div>
-                    <h4 className="font-bold text-sm mb-1.5" style={{ fontFamily: "var(--font-display)" }}>
-                      {s.title}
-                    </h4>
-                    <p className="text-xs text-[var(--color-muted)] leading-relaxed">{s.desc}</p>
-                    <span className="mt-3 inline-block text-xs font-semibold lsc-arrow-nudge transition-transform duration-300 group-hover:translate-x-1" style={{ color: "var(--color-orange)" }}>
-                      Commander →
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <SmartImage
+                      src={v.src}
+                      alt={v.alt}
+                      width={1600}
+                      height={1200}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <span className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
+                  </div>
+                  <div className="p-3.5 md:p-4">
+                    <p className="font-bold text-sm md:text-base leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+                      {v.titre}
+                    </p>
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-white transition-transform duration-300 group-hover:translate-x-1" style={{ background: "var(--color-feuille-f,#558B2F)" }}>
+                      ✂️ Commander ce modèle
                     </span>
-                  </Card>
+                  </div>
                 </button>
               </RevealItem>
             ))}
