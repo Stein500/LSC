@@ -154,6 +154,26 @@ export const GALLERY_CONTACT_PAGES: GalleryImage[] = [
     alt: "Coin accueil de l'atelier : fauteuil en rotin, pagnes wax et bazins pliés orange, rose et vert feuille sur présentoir bois",
     caption: "Bienvenue — on vous attend",
   },
+  {
+    src: "/images/gallery/contact-atelier-01.webp",
+    alt: "Entrée douce de l'atelier : porte en bois entrouverte sur la machine à coudre, pagnes suspendus, plantes en terre cuite",
+    caption: "L'entrée — la porte est toujours entrouverte",
+  },
+  {
+    src: "/images/gallery/contact-atelier-02.webp",
+    alt: "Accueil et échange en atelier : la couturière écoute sa cliente en souriant, carnet ouvert sur la table",
+    caption: "L'écoute — votre projet commence par un sourire",
+  },
+  {
+    src: "/images/gallery/contact-atelier-03.webp",
+    alt: "Essayage en confiance : la robe orange et or tombe parfaitement, les mains de la couturière ajustent l'ourlet devant le miroir",
+    caption: "L'essayage — la précision en toute confiance",
+  },
+  {
+    src: "/images/gallery/contact-atelier-04.webp",
+    alt: "Table de coupe : grand wax orange à feuilles déployé, mètre-ruban, ciseaux dorés, craie et épingles",
+    caption: "La coupe — le geste juste, du premier coup",
+  },
 ];
 
 export const GALLERY_INSPIRATIONS_PAGES: GalleryImage[] = [
@@ -278,6 +298,19 @@ export const INSPIRATIONS_SECTIONS: InspirationSection[] = [
       { src: "/images/gallery/creation-afrique-03.webp", alt: "Ensemble jupe longue et chemisier à manches bouffantes en wax feuilles orange et marron", caption: "Jupe & chemisier — le duo" },
       { src: "/images/gallery/inspirations-03.webp", alt: "Silhouette de dos en grand boubou terracotta brodé d'or au coucher du soleil", caption: "Silhouette — heure dorée" },
       { src: "/images/gallery/tenue-semaine-01.webp", alt: "Femme élégante en robe wax orange safran à motifs marron et vert feuille en boutique", caption: "La tenue de la semaine" },
+    ],
+  },
+  {
+    key: "monde",
+    titre: "Le monde s'inspire",
+    note: "🌍 La fraternité des tissus",
+    images: [
+      { src: "/images/gallery/monde-01.webp", alt: "Couturière béninoise souriante en robe orange et or, mètre-ruban au cou, entourée de pagnes colorés", caption: "La maîtresse des lieux" },
+      { src: "/images/gallery/monde-02.webp", alt: "Rencontre Bénin × Burkina : deux femmes souriantes en robes de cérémonie wax orange et faso dan fani rose", caption: "Bénin × Burkina — les sœurs du tissu" },
+      { src: "/images/gallery/monde-03.webp", alt: "Mains expertes cousant un wax orange et or : aiguille, fil et dé à coudre en gros plan", caption: "La beauté du geste" },
+      { src: "/images/gallery/monde-04.webp", alt: "Silhouette multiculturelle en robe drapée safran, terracotta et or, turban assorti, fond crème", caption: "Cérémonie des trois rives" },
+      { src: "/images/gallery/monde-05.webp", alt: "Atelier calme et lumineux : machines alignées près de la fenêtre, pagnes rangés aux couleurs de la maison", caption: "La salle de lumière" },
+      { src: "/images/gallery/monde-06.webp", alt: "Silhouette signature en longue robe fluide rose poudré et orange safran, pose de couverture de magazine", caption: "La couverture du magazine" },
     ],
   },
   {
