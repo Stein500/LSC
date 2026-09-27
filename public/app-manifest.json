@@ -1,10 +1,11 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-26T20:17:08Z",
-  "build_id": "arena-898adbb-polish-nuit-cacao",
+  "content_version": "2026-09-27T20:30:00Z",
+  "build_id": "arena-9438bf1-douceur-et-partage",
   "changelog": [
-    "Le show-room est ouvert 👗 : 30 modèles en sections, un doigt → télécharger ou commander",
-    "La commande embarque la photo du modèle choisi — ou la vôtre 📷",
-    "Signature vérifiée sur toutes les images, accueil compris 🕊️"
+    "En-tête aux vrais numéros IFU & RCCM — plus de bouton trois barres ✂️",
+    "Les prestations et les formations se regardent — images d'abord, gros boutons 🧵",
+    "Partager partout, avec le lien du site dans le message 🕊️",
+    "Footer framboise, héros lisibles, splash qui prend son temps ✨"
   ]
 }
