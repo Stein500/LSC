@@ -13,8 +13,10 @@ import { sendSubmissionMail } from "./lib/mailer.js";
 import { buildSubmissionPdfBase64, pdfFilename } from "./lib/pdf.js";
 
 // Évite que Vercel bundle ce truc bizarrement (CommonJS vs ESM)
+// 4 Mo : les commandes peuvent embarquer la PHOTO du modèle (JPEG base64,
+// ~100-350 Ko) destinée au ticket PDF — 1 Mo les aurait coupées en route.
 export const config = {
-  api: { bodyParser: { sizeLimit: "1mb" } },
+  api: { bodyParser: { sizeLimit: "4mb" } },
 };
 
 // =============================================================
@@ -87,11 +89,14 @@ export default async function handler(req, res) {
 
   // ============================================================
   // 1. Toujours écrire dans Google Sheets (best-effort)
+  //    ⚠️ Jamais la photo brute (base64) dans une cellule : on garde
+  //       son nom, l'image elle-même vit dans le PDF et le mail.
   // ============================================================
   let sheetResult = null;
   let sheetError = null;
   try {
-    sheetResult = await logEvent({ ...payload, status: payload.status || "ok" });
+    const { photo_jpeg, ...sheetPayload } = payload;
+    sheetResult = await logEvent({ ...sheetPayload, status: payload.status || "ok" });
   } catch (e) {
     sheetError = e?.message || String(e);
     console.error("[track] sheets error", sheetError, payload);

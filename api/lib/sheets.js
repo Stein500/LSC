@@ -85,6 +85,8 @@ const FIELD_ALIASES = {
   disponibilites: ["disponibilite", "disponibilites", "availability"],
   motivation: ["motivation"],
   motifdepaiementsouhaite: ["motif_paiement", "payment_plan", "payment_mode"],
+  modelechoisi: ["modele", "modele_choisi", "model"],
+  photojointe: ["photo_nom", "photo", "photo_name"],
   typedetenue: ["type_tenue", "tenue", "garment_type"],
   typeautreprecise: ["tenue_autre", "type_autre", "precise_type"],
   couleurpreferee: ["couleur_preferee", "couleur", "color"],
@@ -197,7 +199,7 @@ export const SHEETS = {
   },
   Precommandes: {
     name: "Précommandes",
-    headers: [...TS, "Référence", "Nom", "Téléphone", "Email", "Type de tenue", "Type (autre / précisé)", "Couleur préférée", "Taille", "Date souhaitée", "Budget estimé", "Description du projet", "Mesures fournies", "Statut"],
+    headers: [...TS, "Référence", "Nom", "Téléphone", "Email", "Modèle choisi", "Photo jointe", "Type de tenue", "Type (autre / précisé)", "Couleur préférée", "Taille", "Date souhaitée", "Budget estimé", "Description du projet", "Mesures fournies", "Statut"],
   },
   // 🛠️ Journal technique UNIQUEMENT (erreurs js, scroll, engagement — choix atelier)
   Events: {

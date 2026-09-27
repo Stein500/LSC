@@ -10,6 +10,7 @@ import { generateTicketId } from "@/utils/format";
 import { saveTicket, updateTicket } from "@/utils/tickets";
 import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
 import { downloadSubmissionPdfFromResponse } from "@/utils/formFlow";
+import { urlToJpegDataUrl, fileToJpegDataUrl } from "@/utils/imageEmbed";
 import { SERVICES } from "@/data/content";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
@@ -43,6 +44,8 @@ export function PrecommandeForm({
   const [photoName, setPhotoName] = useState<string | null>(
     presetPhoto ? (presetPhoto.split("/").pop() ?? "modele.webp") : null,
   );
+  // 📎 La photo prête à EMBARQUER dans le ticket PDF (JPEG dataURL ~100-350 Ko)
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
   const photoObjectUrlRef = useRef<string | null>(null);
   const startedRef = useRef(false);
   const draftApi = useFormDraft<PrecommandeSchema>("precommande");
@@ -90,7 +93,30 @@ export function PrecommandeForm({
 
   const type = watch("type_tenue");
 
+  // ----- Type pré-rempli depuis une carte prestation (clic APRÈS le mount) -----
+  // Le formulaire garde sa logique : on commence toujours par SE PRÉSENTER
+  // (étape 1) — la tuile correspondante sera simplement déjà cochée à
+  // l'étape 2. Zéro saut d'étape : la cliente voit chaque étape.
+  useEffect(() => {
+    if (!presetType) return;
+    setValue("type_tenue", presetType, { shouldValidate: true });
+  }, [presetType, setValue]);
+
   // ----- Photo jointe à la commande (modèle galerie ou photo de la cliente) -----
+  // La photo du modèle galerie est convertie d'office en JPEG embarquable :
+  // elle sera cousue dans le ticket PDF, pas seulement nommée.
+  useEffect(() => {
+    let alive = true;
+    if (presetPhoto) {
+      urlToJpegDataUrl(presetPhoto).then((d) => {
+        if (alive && d) setPhotoDataUrl(d);
+      });
+    }
+    return () => {
+      alive = false;
+    };
+  }, [presetPhoto]);
+
   useEffect(
     () => () => {
       if (photoObjectUrlRef.current) URL.revokeObjectURL(photoObjectUrlRef.current);
@@ -98,7 +124,7 @@ export function PrecommandeForm({
     [],
   );
 
-  const onPickPhoto = (e: ChangeEvent<HTMLInputElement>) => {
+  const onPickPhoto = async (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
     if (photoObjectUrlRef.current) URL.revokeObjectURL(photoObjectUrlRef.current);
@@ -106,6 +132,7 @@ export function PrecommandeForm({
     photoObjectUrlRef.current = url;
     setPhotoPreview(url);
     setPhotoName(f.name);
+    setPhotoDataUrl(await fileToJpegDataUrl(f));
   };
 
   const removePhoto = () => {
@@ -115,6 +142,7 @@ export function PrecommandeForm({
     }
     setPhotoPreview(null);
     setPhotoName(null);
+    setPhotoDataUrl(null);
   };
 
   const onFocusFirst = () => {
@@ -146,17 +174,16 @@ export function PrecommandeForm({
 
   const onSubmit = async (data: PrecommandeSchema) => {
     const ref = generateTicketId();
-    // Le modèle galerie et la photo jointe voyagent dans la description.
-    const notes: string[] = [];
-    if (presetModele) notes.push(`Modèle d'inspiration (galerie) : ${presetModele}`);
-    if (photoName) notes.push(`Photo jointe par la cliente : ${photoName}`);
-    if (notes.length) {
-      data = {
-        ...data,
-        description: [data.description, ...notes].filter(Boolean).join("\n").slice(0, 1500),
-      };
-    }
-    const payload = { ...data, ref };
+    // 👗 Le modèle et sa photo voyagent comme de VRAIES données :
+    // nom du modèle en clair + photo JPEG embarquée (elle sera cousue
+    // dans le ticket PDF — pas un simple nom de fichier perdu).
+    const payload = {
+      ...data,
+      ref,
+      modele: presetModele ?? "",
+      photo_nom: photoName ?? "",
+      photo_jpeg: photoDataUrl ?? "",
+    };
     saveTicket({
       ref,
       source: "precommande",
@@ -342,7 +369,7 @@ export function PrecommandeForm({
                   />
                   <div className="text-xs text-[var(--color-muted)] max-w-[190px]">
                     <p className="font-semibold text-[var(--color-ink)] break-all">{photoName}</p>
-                    <p>jointe à votre demande</p>
+                    <p>{photoDataUrl ? "✓ embarquée dans votre ticket PDF" : "jointe à votre demande"}</p>
                   </div>
                 </div>
               )}

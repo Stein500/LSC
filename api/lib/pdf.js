@@ -196,7 +196,7 @@ function labelType(v) {
   return (
     {
       formation: "Candidature formation",
-      precommande: "Pré-commande",
+      precommande: "Commande",
       contact: "Message de contact",
     }[v] || v || "Demande"
   );
@@ -255,6 +255,7 @@ function fieldsFor(type, data) {
       ["Nom complet", sanitize(data.nom)],
       ["Téléphone", sanitize(data.telephone)],
       ["Email", sanitize(data.email)],
+      ["Modèle choisi", sanitize(data.modele)],
       ["Type de tenue", sanitize(data.type_tenue)],
       ["Précision (autre)", sanitize(data.tenue_autre)],
       ["Couleur préférée", sanitize(data.couleur_preferee)],
@@ -287,7 +288,7 @@ function fieldsFor(type, data) {
 async function getBrandFonts(pdf) {
   const helvetica = await pdf.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const fallback = { display: helveticaBold, quote: helvetica, script: helvetica, text: helvetica, bold: helveticaBold };
+  const fallback = { display: helveticaBold, quote: helvetica, script: helvetica, text: helvetica, bold: helveticaBold, customScript: false };
   if (!fontkit) return fallback;
   try {
     pdf.registerFontkit(fontkit);
@@ -298,7 +299,7 @@ async function getBrandFonts(pdf) {
     const display = await pdf.embedFont(FONTS.playfairBold);
     const quote = await pdf.embedFont(FONTS.playfairItalic);
     const script = await pdf.embedFont(FONTS.caveatBold);
-    return { display, quote, script, text: helvetica, bold: helveticaBold };
+    return { display, quote, script, text: helvetica, bold: helveticaBold, customScript: true };
   } catch {
     return fallback;
   }
@@ -392,6 +393,30 @@ function drawScissorsAt(page, cx, cy, color = C.goldD, s = 7, arm = 11) {
   page.drawLine({ start: { x: cx + s / 2, y: cy - s / 2 - 1 }, end: { x: cx - arm * 0.55, y: cy + arm }, thickness: 1.1, color });
 }
 
+/**
+ * 📎 Embarque la photo du modèle (JPEG/PNG base64 envoyée par le formulaire).
+ * Retourne l'image prête pour drawImage, ou null — le PDF ne casse JAMAIS
+ * à cause d'une photo capricieuse : on se contente alors du texte.
+ */
+async function embedModeleImage(pdf, data) {
+  const raw = data && typeof data.photo_jpeg === "string" ? data.photo_jpeg : "";
+  if (!raw || raw.length < 200) return null;
+  try {
+    let base64 = raw;
+    let kind = "jpeg";
+    const m = /^data:image\/(jpeg|jpg|png);base64,(.+)$/i.exec(raw);
+    if (m) {
+      kind = m[1].toLowerCase() === "png" ? "png" : "jpeg";
+      base64 = m[2];
+    }
+    if (base64.length > 3_200_000) return null; // garde-fou mémoire
+    const bytes = Buffer.from(base64, "base64");
+    return kind === "png" ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+  } catch {
+    return null;
+  }
+}
+
 /** Bande tissée 3 fils — signature pagne de la maison (haut et bas de page). */
 function drawWovenBand(page, width, yTop) {
   rect(page, 0, yTop, width, 1.7, C.rouge);
@@ -407,18 +432,33 @@ function drawMamanColombeSignature(page, { x, y, width, fonts, recipientName, ri
   const nameX = x;
   const nameSize = 30;
   const nameText = `— Maman Colombe`;
-  page.drawText(nameText, {
-    x: nameX,
-    y: lineY,
-    size: nameSize,
-    font: fonts.script,
-    color: C.marronD,
-  });
+  let nameWidth;
+  if (fonts.customScript) {
+    // 🪡 Recousu main : sans moteur de shaping, Caveat « jette » le « e »
+    // final à ~20 pt de son « b » (avance de glyphe terminale) — la signature
+    // lisait « Maman Colomb ». On écrit le « e » à sa juste place, au cordeau.
+    const stem = `— Maman Colomb`;
+    page.drawText(stem, { x: nameX, y: lineY, size: nameSize, font: fonts.script, color: C.marronD });
+    const stemW = fonts.script.widthOfTextAtSize(stem, nameSize);
+    const eX = nameX + stemW - 4.5;
+    page.drawText("e", { x: eX, y: lineY, size: nameSize, font: fonts.script, color: C.marronD });
+    nameWidth = stemW - 4.5 + fonts.script.widthOfTextAtSize("e ", nameSize) * 0.62;
+  } else {
+    page.drawText(nameText, {
+      x: nameX,
+      y: lineY,
+      size: nameSize,
+      font: fonts.script,
+      color: C.marronD,
+    });
+    nameWidth = fonts.script.widthOfTextAtSize(nameText, nameSize) * 1.04;
+  }
 
   const needleSize = 40;
-  const nameWidth = fonts.script.widthOfTextAtSize(nameText, nameSize);
+  // L'aiguille suit le fil de l'encre — mesurée au plus juste juste au-dessus,
+  // on garde une marge souple pour les fioritures de la manuscrite.
   drawNeedleAndThread(page, {
-    x: nameX + nameWidth + 20,
+    x: nameX + nameWidth + 30,
     y: lineY + 8,
     size: needleSize,
     color: C.marron,
@@ -528,10 +568,20 @@ export async function buildSubmissionPdf(type, data) {
 
   // Nom de la maison + tagline espacée
   const nameX = logoX + LOGO + 16;
+  // Le coupon ticket (dessiné plus bas) occupe la partie droite : on réserve
+  // sa place AVANT d'écrire le nom, sinon le dernier caractère passe sous le
+  // coupon et disparaît — un nom de maison ne se tronque JAMAIS.
+  const cpW = 168;
+  const cpX = width - M + 6 - cpW;
+  const nameAvail = cpX - 14 - nameX;
+  let nameSize = 19;
+  while (nameSize > 11 && fonts.display.widthOfTextAtSize(ATELIER_NAME, nameSize) > nameAvail) {
+    nameSize -= 0.5;
+  }
   page.drawText(ATELIER_NAME, {
     x: nameX,
     y: headerTop - 40,
-    size: 19,
+    size: nameSize,
     font: fonts.display,
     color: C.ink,
   });
@@ -554,10 +604,10 @@ export async function buildSubmissionPdf(type, data) {
   rect(page, nameX + 1 + Math.min(tagW, 200) + 4, headerTop - 67.4, 2.8, 2.8, C.rouge);
 
   // ========== 🎟 COUPON TICKET (à droite de l'en-tête) ==========
+  // (cpW / cpX calculés plus haut — la place du coupon était déjà réservée
+  //  pour écrire le nom de la maison sans le tronquer)
   const ref = sanitize(data.ref || "—");
-  const cpW = 168;
   const cpH = 70;
-  const cpX = width - M + 6 - cpW;
   const cpY = headerTop - 16 - cpH;
   // Corps blanc bordé rouge en pointillés
   page.drawRectangle({
@@ -716,11 +766,92 @@ export async function buildSubmissionPdf(type, data) {
   const yAfterLeft = drawColumn(fields.slice(0, half), colLeftX, gridTop);
   const yAfterRight = drawColumn(fields.slice(half), colRightX, gridTop);
   const yAfterGrid = Math.min(yAfterLeft, yAfterRight);
+  let contentBottom = yAfterGrid;
+
+  // ========== 👗 LE MODÈLE CHOISI — la photo cousue dans le ticket ==========
+  // Demande de la cheffe : « le fichier doit être embarqué » — la cliente
+  // retrouve SON modèle imprimé sur SON récapitulatif.
+  const modeleImg = type === "precommande" ? await embedModeleImage(pdf, data) : null;
+  if (modeleImg) {
+    const PANEL_H = 142;
+    const panelTop = contentBottom - 4;
+    const panelY = panelTop - PANEL_H;
+    const PX = M - 8;
+    const PW = width - 2 * M + 16;
+    rect(page, PX, panelY, PW, PANEL_H, C.rosePaper);
+    rect(page, PX, panelY, 3, PANEL_H, C.rouge);
+
+    // Cadre photo — napperon blanc ourlé fil d'or (image contenue, jamais déformée)
+    const boxW = 126;
+    const boxH = PANEL_H - 28;
+    const boxX = PX + 12;
+    const boxY = panelY + 14;
+    const iw = modeleImg.width || 4;
+    const ih = modeleImg.height || 3;
+    const fit = Math.min(boxW / iw, boxH / ih);
+    const dw = iw * fit;
+    const dh = ih * fit;
+    page.drawRectangle({
+      x: boxX - 3,
+      y: boxY - 3,
+      width: boxW + 6,
+      height: boxH + 6,
+      color: C.paper,
+      borderColor: C.gold,
+      borderWidth: 1,
+    });
+    page.drawImage(modeleImg, {
+      x: boxX + (boxW - dw) / 2,
+      y: boxY + (boxH - dh) / 2,
+      width: dw,
+      height: dh,
+    });
+
+    // Légendes à droite du cadre
+    const textX = boxX + boxW + 16;
+    page.drawText("Le modèle choisi", {
+      x: textX,
+      y: panelTop - 24,
+      size: 11.5,
+      font: fonts.display,
+      color: C.marronD,
+    });
+    page.drawLine({
+      start: { x: textX, y: panelTop - 30 },
+      end: { x: textX + 118, y: panelTop - 30 },
+      thickness: 0.8,
+      color: C.gold,
+    });
+    const modeleName = sanitize(data.modele);
+    const nameLines = (
+      modeleName !== "—"
+        ? safeLines(modeleName, 46)
+        : safeLines(`Photo jointe : ${sanitize(data.photo_nom)}`, 46)
+    ).slice(0, 2);
+    nameLines.forEach((ln, i) => {
+      page.drawText(ln, {
+        x: textX,
+        y: panelTop - 46 - i * 12.5,
+        size: 9.6,
+        font: fonts.bold,
+        color: C.ink,
+      });
+    });
+    page.drawText("La photo voyage avec ce ticket — montrez-la à l'atelier.", {
+      x: textX,
+      y: panelTop - 46 - nameLines.length * 12.5 - 4,
+      size: 8.4,
+      font: fonts.quote,
+      color: C.roseDeep,
+    });
+
+    contentBottom = panelY;
+  }
 
   // ========== 🪡 PROCHAINES ÉTAPES ==========
   const steps = nextStepsFor(type);
   const itemStep = 15.5;
-  const stepsTop = yAfterGrid - 14;
+  const stepsTop = contentBottom - 14;
   const stepsBottom = stepsTop - steps.length * itemStep - 22;
   const stepsH = stepsTop - stepsBottom;
   rect(page, M - 8, stepsBottom, width - 2 * M + 16, stepsH, C.rosePaper);
@@ -866,5 +997,7 @@ export async function buildSubmissionPdfBase64(type, data) {
  */
 export function pdfFilename(ref, type) {
   const safe = String(ref || "CLB").replace(/[^A-Z0-9_-]/gi, "");
-  return `Couture-Colombe-et-Merceries_${safe}_${type || "demande"}.pdf`;
+  // Nom affiché côté cliente : « commande », le mot de la maison.
+  const label = type === "precommande" ? "commande" : type || "demande";
+  return `Couture-Colombe-et-Merceries_${safe}_${label}.pdf`;
 }

@@ -301,9 +301,9 @@ function buildSubmissionCore(type, data) {
       ["Motif de paiement souhaité", escHtml(data.motif_paiement) || "—"],
     ];
   } else if (type === "precommande") {
-    subject = `[Pré-commande — ${data.nom || "Cliente"}] Réf. ${ref}`;
-    label = "Nouvelle pré-commande";
-    intro = "Une nouvelle pré-commande de tenue vient d'être reçue en ligne.";
+    subject = `[Commande — ${data.nom || "Cliente"}] Réf. ${ref}`;
+    label = "Nouvelle commande";
+    intro = "Une nouvelle commande de tenue vient d'être reçue en ligne.";
     fields = [
       ["Date de soumission", escHtml(dateSoumission)],
       ["Heure de soumission", escHtml(heureSoumission)],
@@ -311,6 +311,8 @@ function buildSubmissionCore(type, data) {
       ["Nom complet", escHtml(data.nom) || "—"],
       ["Téléphone", telLink(data.telephone)],
       ["Email", mailLink(data.email)],
+      ["Modèle choisi", escHtml(data.modele) || "—"],
+      ["Photo du modèle", data.photo_jpeg ? "Embarquée dans le PDF joint ✓" : escHtml(data.photo_nom) || "—"],
       ["Type de tenue", escHtml(data.type_tenue) || "—"],
       ["Type (autre / précisé)", escHtml(data.tenue_autre) || "—"],
       ["Couleur préférée", escHtml(data.couleur_preferee) || "—"],
@@ -575,7 +577,7 @@ function buildClientMail(type, data) {
     type === "formation"
       ? "Votre candidature est entre de bonnes mains"
       : type === "precommande"
-        ? "Votre pré-commande est entre de bonnes mains"
+        ? "Votre commande est entre de bonnes mains"
         : type === "contact"
           ? "Votre message est bien arrivé"
           : "Votre demande est bien arrivée";

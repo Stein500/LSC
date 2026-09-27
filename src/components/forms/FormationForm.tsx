@@ -92,12 +92,19 @@ export function FormationForm({
   }, []);
 
   // ----- Formule choisie depuis la carte visuelle de la page -----
-  // Arrivée par un clic « Je choisis cette formation » :
-  // on pré-coche la formule… et on emmène direct à l'étape du choix.
+  // Clic « Je choisis cette formation » : on PRÉ-COCHE la formule, un point.
+  // On NE SAUTE JAMAIS l'étape identité — la candidate se présente d'abord
+  // (nom, prénom…), puis retrouve sa formule déjà cochée à l'étape 2.
+  // Sauter l'étape cachait le nom : plus jamais ce bricolage.
   useEffect(() => {
     if (!presetFormule) return;
     setValue("formation_choisie", presetFormule, { shouldValidate: true });
-    setStep((s) => (s === 0 ? 1 : s));
+    toast.info(
+      presetFormule === "courte"
+        ? "Formation Courte présélectionnée ✂️"
+        : "Formation Spécialisée présélectionnée ✂️",
+      { description: "Elle vous attend, déjà cochée, à l'étape 2 — présentez-vous d'abord." },
+    );
   }, [presetFormule, setValue]);
 
   // ----- Auto-save -----
