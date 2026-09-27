@@ -1,11 +1,11 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-27T20:30:00Z",
-  "build_id": "arena-9438bf1-douceur-et-partage",
+  "content_version": "2026-09-27T21:40:00Z",
+  "build_id": "arena-boutons-directs-sans-flou",
   "changelog": [
+    "Show-room : fini le flou — Télécharger, Commander et Partager vivent sur chaque modèle 🤍",
     "En-tête aux vrais numéros IFU & RCCM — plus de bouton trois barres ✂️",
-    "Les prestations et les formations se regardent — images d'abord, gros boutons 🧵",
-    "Partager partout, avec le lien du site dans le message 🕊️",
+    "Prestations et formations se regardent — images d'abord, gros boutons 🧵",
     "Footer framboise, héros lisibles, splash qui prend son temps ✨"
   ]
 }
