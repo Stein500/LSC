@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, MessageCircle, Phone } from "lucid
 import { contactSchema, type ContactSchema } from "@/utils/validation";
 import { trackFormStart, trackFormStep, trackFormSubmit, trackFormError } from "@/utils/api";
 import { generateTicketId } from "@/utils/format";
-import { saveTicket, updateTicket } from "@/utils/tickets";
+import { saveTicket, updateTicket, applySubmissionResult, markTicketKept } from "@/utils/tickets";
 import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
 import { downloadSubmissionPdfFromResponse } from "@/utils/formFlow";
 import { Button } from "@/components/ui/Button";
@@ -111,14 +111,11 @@ export function ContactForm() {
 
     try {
       const response = await trackFormSubmit("contact", payload, ref);
-      if (response) {
-        downloadSubmissionPdfFromResponse(response, ref);
-        updateTicket(ref, { status: "synced", syncedAt: new Date().toISOString(), lastError: undefined });
-        onSuccessSmartToast({ kind: "contact", ref, payload, formData: data, synced: true });
-      } else {
-        updateTicket(ref, { status: "pending", lastError: "Synchronisation à reprendre" });
-        onSuccessSmartToast({ kind: "contact", ref, payload, formData: data, synced: false });
-      }
+      // 🧭 Logique de statut UNIQUE : « Bien reçu » dès que l'atelier
+      // tient la demande (mail OU tableau) — plus de faux rouge.
+      const outcome = response ? applySubmissionResult(ref, response) : markTicketKept(ref);
+      if (response) downloadSubmissionPdfFromResponse(response, ref);
+      onSuccessSmartToast({ kind: "contact", ref, payload, formData: data, synced: outcome === "synced" });
       draftApi.clearDraft();
       navigate(`/merci?type=contact&ref=${ref}&nom=${encodeURIComponent(data.nom)}`);
     } catch (e) {

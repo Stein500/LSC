@@ -1,13 +1,20 @@
 /**
- * Resynchronisation des tickets en attente vers le back-end.
+ * Resynchronisation des tickets vers le back-end.
  *
  * Le formulaire enregistre d'abord le ticket en local (localStorage) puis
  * tente un POST. Si le POST échoue (offline, timeout, 5xx...), le ticket
- * reste en `pending` ou `error`. Ce module rejoue ces tickets quand la
- * connexion revient.
+ * reste gardé en sûreté (`pending` / `error`). Ce module rejoue ces
+ * tickets quand la connexion revient — avec la MÊME logique de statut
+ * honnête partout (applySubmissionResult) : « Bien reçu » dès que l'un
+ * des deux fils (mail, tableau) a porté la demande jusqu'à l'atelier.
  */
 import { env } from "./env";
-import { getPendingTickets, updateTicket, type StoredTicket } from "./tickets";
+import {
+  applySubmissionResult,
+  getPendingTickets,
+  updateTicket,
+  type StoredTicket,
+} from "./tickets";
 
 export type SyncResult = {
   total: number;
@@ -19,19 +26,59 @@ export type SyncResult = {
 function buildSubmissionBody(ticket: StoredTicket) {
   return {
     ref: ticket.ref,
-    source: ticket.source,
     title: ticket.title,
     ...ticket.data,
     resync: true,
   };
 }
 
-function pickEndpoint(ticket: StoredTicket) {
-  if (!env.apiUrl) return null;
-  // Le back `/api/track` route par `event` : on garde la même convention
-  // que les submits originaux pour que la ligne reparte dans le même onglet.
-  const event = `${ticket.source}_submit`;
-  return { url: env.apiUrl, event };
+/**
+ * Renvoie UN ticket vers l'atelier.
+ * Retourne "synced" si la demande est bien arrivée (mail ou tableau),
+ * "pending" si elle reste gardée en sûreté, "error" si l'envoi a glissé.
+ */
+export async function syncTicket(
+  ticket: StoredTicket,
+): Promise<"synced" | "pending" | "error"> {
+  if (!env.apiUrl) return "error";
+  try {
+    const response = await fetch(env.apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-token": env.apiToken,
+      },
+      body: JSON.stringify({
+        event: `${ticket.source}_submit`,
+        sheet:
+          ticket.source === "formation"
+            ? "Formations"
+            : ticket.source === "precommande"
+              ? "Precommandes"
+              : "Contacts",
+        ...buildSubmissionBody(ticket),
+      }),
+      keepalive: true,
+    });
+    if (!response.ok) {
+      updateTicket(ticket.ref, {
+        status: "error",
+        lastError: `Le serveur souffle (HTTP ${response.status}) — on retente doucement.`,
+      });
+      return "error";
+    }
+    const json = (await response.json().catch(() => null)) as
+      | { errors?: { sheet?: string | null; mail?: string | null } }
+      | null;
+    return applySubmissionResult(ticket.ref, json);
+  } catch (error) {
+    updateTicket(ticket.ref, {
+      status: "error",
+      lastError:
+        "L'envoi a glissé entre les mailles — on retente doucement plus tard.",
+    });
+    return "error";
+  }
 }
 
 export async function syncPendingTickets(): Promise<SyncResult> {
@@ -44,32 +91,18 @@ export async function syncPendingTickets(): Promise<SyncResult> {
   if (pending.length === 0) return result;
 
   for (const ticket of pending) {
-    const ep = pickEndpoint(ticket);
-    if (!ep) {
-      // pas d'API configurée : on ne tente rien
-      continue;
-    }
-    try {
-      const response = await fetch(ep.url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-token": env.apiToken,
-        },
-        body: JSON.stringify({ event: ep.event, sheet: ticket.source === "formation" ? "Formations" : ticket.source === "precommande" ? "Precommandes" : "Contacts", ...buildSubmissionBody(ticket) }),
-        keepalive: true,
-      });
-      if (!response.ok) {
-        const text = await response.text().catch(() => "");
-        throw new Error(text || `HTTP ${response.status}`);
-      }
-      updateTicket(ticket.ref, { status: "synced", syncedAt: new Date().toISOString(), lastError: undefined });
+    const outcome = await syncTicket(ticket);
+    if (outcome === "synced") {
       result.synced += 1;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      updateTicket(ticket.ref, { status: "error", lastError: message });
+    } else {
       result.failed += 1;
-      result.errors.push({ ref: ticket.ref, message });
+      result.errors.push({
+        ref: ticket.ref,
+        message:
+          outcome === "error"
+            ? "Envoi glissé entre les mailles"
+            : "Gardé en sûreté — l'atelier n'a pas encore reçu",
+      });
     }
   }
   return result;
