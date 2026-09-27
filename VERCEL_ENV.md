@@ -7,18 +7,27 @@
 
 ---
 
-## 🔁 À METTRE À JOUR sur le backend (septembre 2026) — 2 variables seulement
+## 🚨 À CORRIGER sur le backend (27 septembre 2026) — 3 variables À SUPPRIMER
 
-> **Où ?** Dashboard Vercel → projet `lesservicescolombes` → **Settings → Environment Variables** → *Edit* chaque ligne (garde bien **Production + Preview** cochés).
+> **Où ?** Dashboard Vercel → projet `lesservicescolombes` → **Settings → Environment Variables** → sur chaque ligne : **⋯ → Delete** (pas Edit — **Delete**, la ligne entière s'en va).
 
-| Variable | Ancienne valeur | ✅ Nouvelle valeur | Effet |
+| Variable | Valeur fautive vue en prod | ❌ Symptôme que ça provoquait | ✅ Action |
 |---|---|---|---|
-| `VITE_ATELIER_SHORT_NAME` | `Colombes` | **`Couture Colombe`** | Nom court affiché (manifeste PWA, titres courts) |
-| `VITE_ATELIER_SOURCE_ID` | `atelier-colombes` | **`couture-colombe-merceries`** | Étiquette d'origine des demandes |
+| `VITE_ATELIER_NAME` | `Les Services Colombe` (fautes de frappe) | Titre d'onglet faut : « — Les Services Colombe » | **SUPPRIMER** |
+| `ATELIER_NAME` | `Couture Colomb` (manque le **e**) | Bas des PDF : « Couture Colomb » au lieu de **Couture Colombe** | **SUPPRIMER** |
+| `VITE_ATELIER_SHORT_NAME` | `Colombes` ou autre | Nom court incertain | **SUPPRIMER** |
 
-> 🪡 **Note fil d'or** : après le changement de `VITE_ATELIER_SOURCE_ID`, les **nouvelles** lignes du tableau Google Sheets porteront la nouvelle étiquette — c'est voulu (les anciennes gardent la leur : la mémoire de la maison).
-> ♻️ Après les 2 edits : redeploye (`vercel --prod --force` ou bouton *Redeploy* du dashboard) pour que les nouvelles valeurs soient cousues dans le build.
-> 💡 Les autres variables ne bougent pas (nom, contacts, WhatsApp, email, coordonnées GPS — inchangés).
+> 🔒 **Pourquoi supprimer et pas corriger ?** Le nom de la maison est désormais **cousu dans le code** (`BRAND_NAME` dans `src/utils/env.ts`, constante dans `api/lib/pdf.js` et `api/lib/mailer.js`) : « Couture Colombe et Merceries » partout, tout le temps, quoi qu'il arrive. Ces 3 variables sont **ignorées** — les supprimer évite toute future faute de frappe. Une maison n'a qu'un seul nom.
+> ♻️ Après suppression : **redeploy** (`vercel --prod --force` ou bouton *Redeploy* du dashboard) pour coudre le bon nom dans le build.
+
+## 🔁 Toujours valable — 1 variable à vérifier
+
+| Variable | Ancienne valeur | ✅ Bonne valeur | Effet |
+|---|---|---|---|
+| `VITE_ATELIER_SOURCE_ID` | `atelier-colombes` | **`couture-colombe-merceries`** | Étiquette d'origine des demandes (Google Sheets) |
+
+> 🪡 **Note fil d'or** : après le changement de `VITE_ATELIER_SOURCE_ID`, les **nouvelles** lignes du tableau Google Sheets portent la nouvelle étiquette — c'est voulu (les anciennes gardent la leur : la mémoire de la maison).
+> 💡 Les autres variables ne bougent pas (contacts, WhatsApp, email, coordonnées GPS — inchangés).
 
 ---
 
@@ -53,10 +62,11 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 
 **Identité**
 
+> 🔒 Le nom de la maison n'est **plus** une variable — il est cousu dans le code.
+> Ne crée JAMAIS `VITE_ATELIER_NAME`, `VITE_ATELIER_SHORT_NAME` ni `ATELIER_NAME` (supprime-les si elles existent : voir l'encadré rouge en haut).
+
 | NAME | VALUE |
 |------|-------|
-| `VITE_ATELIER_NAME` | `Couture Colombe et Merceries` |
-| `VITE_ATELIER_SHORT_NAME` | `Couture Colombe` |
 | `VITE_ATELIER_TAGLINE` | `Atelier de Couture d'Exception` |
 | `VITE_ATELIER_DESCRIPTION` | `Couture sur mesure, mercerie, layette & formations à Porto-Novo` |
 | `VITE_ATELIER_FOUNDED` | `1990` |

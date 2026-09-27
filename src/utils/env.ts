@@ -22,10 +22,25 @@ function v(key: keyof ImportMetaEnv, fallback: string): string {
   return trimmed.length > 0 ? trimmed : fallback;
 }
 
+// =============================================================
+// 🔒 LA MARQUE EST COUSUE DANS LE CODE — volontairement NON
+// surchargeable par variable d'environnement.
+//
+// Pourquoi ? Incident prod sept. 2026 : des fautes de frappe dans
+// les variables Vercel (`VITE_ATELIER_NAME = "Les Services Colombe"`,
+// `ATELIER_NAME = "Couture Colomb"`…) se sont retrouvées dans les
+// titres d'onglet, le SEO et les PDF des clientes. Une maison n'a
+// qu'un seul nom — il ne doit plus JAMAIS dépendre d'une saisie.
+// (Les variables VITE_ATELIER_NAME / VITE_ATELIER_SHORT_NAME sont
+// ignorées : on peut les supprimer du dashboard.)
+// =============================================================
+export const BRAND_NAME = "Couture Colombe et Merceries";
+export const BRAND_SHORT_NAME = "Couture Colombe";
+
 export const env = {
-  // Identité
-  atelierName: v("VITE_ATELIER_NAME", "Couture Colombe et Merceries"),
-  atelierShortName: v("VITE_ATELIER_SHORT_NAME", "Couture Colombe"),
+  // Identité (constantes — voir l'encadré ci-dessus)
+  atelierName: BRAND_NAME,
+  atelierShortName: BRAND_SHORT_NAME,
   atelierTagline: v("VITE_ATELIER_TAGLINE", "Atelier de Couture d'Exception"),
   atelierDescription: v(
     "VITE_ATELIER_DESCRIPTION",

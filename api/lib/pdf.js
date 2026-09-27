@@ -60,7 +60,10 @@ async function getLogoPng(pdf) {
   }
 }
 
-const ATELIER_NAME = process.env.ATELIER_NAME || "Couture Colombe et Merceries";
+// 🔒 Marque cousue dans le code — une variable d'env mal saisie ne doit
+// plus JAMAIS défigurer le nom de la maison sur les tickets des clientes
+// (incident prod sept. 2026 : « Couture Colomb » au bas des PDF).
+const ATELIER_NAME = "Couture Colombe et Merceries";
 const ATELIER_TAGLINE =
   process.env.ATELIER_TAGLINE || "Atelier · Mercerie · Centre de Formation";
 const ATELIER_PHONE = process.env.ATELIER_PHONE || "+229 01 67 40 94 08";
