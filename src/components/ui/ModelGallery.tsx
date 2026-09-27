@@ -57,7 +57,8 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
 
   const doShare = async () => {
     setBusy("share");
-    await shareAtelierImage({ caption, path: "/inspirations", hash: sectionKey });
+    // 🕊️ La PHOTO du modèle voyage elle-même — le lien du site la suit.
+    await shareAtelierImage({ caption, path: "/inspirations", hash: sectionKey, imageSrc: img.src });
     setBusy(null);
   };
 

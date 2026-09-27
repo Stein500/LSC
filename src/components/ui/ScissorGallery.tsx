@@ -132,6 +132,7 @@ export function ScissorGallery({
       await shareAtelierImage({
         caption: images[index].caption ?? images[index].alt,
         path,
+        imageSrc: images[index].src,
       });
     },
     [images, index, sharePath],
