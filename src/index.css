@@ -49,7 +49,7 @@
   --app-surface-soft: rgba(255, 255, 255, 0.7);
   --app-header-bg: rgba(255, 255, 255, 0.84);
   --app-border: var(--color-line);
-  --app-footer-bg: #0B0B12;
+  --app-footer-bg: #6C2940; /* framboise profonde — féminine, veloutée */
   --app-footer-fg: #FFFFFF;
   --app-footer-muted: rgba(255, 255, 255, 0.72);
   --app-footer-border: rgba(255, 255, 255, 0.10);
@@ -83,7 +83,7 @@ html[data-theme="dark"] {
   --app-surface-soft: rgba(29, 19, 24, 0.72);
   --app-header-bg: rgba(29, 19, 24, 0.84);
   --app-border: #3E2931;
-  --app-footer-bg: #0D080B;
+  --app-footer-bg: #3A1F2B; /* prune profonde (thème sombre) */
   --app-footer-fg: #F7F8FA;
   --app-footer-muted: rgba(247, 248, 250, 0.72);
   --app-footer-border: rgba(255, 255, 255, 0.08);
@@ -113,7 +113,7 @@ html[data-theme="amoled"] {
   --app-surface-soft: rgba(12, 8, 10, 0.7);
   --app-header-bg: rgba(0, 0, 0, 0.88);
   --app-border: #2A2124;
-  --app-footer-bg: #070405;
+  --app-footer-bg: #241118; /* cacao-prune (mode nuit) */
   --app-footer-fg: #F5F3F4;
   --app-footer-muted: rgba(245, 245, 245, 0.72);
   --app-footer-border: rgba(255, 255, 255, 0.08);

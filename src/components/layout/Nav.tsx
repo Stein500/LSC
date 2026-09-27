@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, Scissors, Settings2 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { Link, NavLink } from "react-router-dom";
+import { Scissors, Settings2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { trackCtaClick } from "@/utils/api";
 import { SmartImage } from "@/components/ui/SmartImage";
@@ -18,16 +17,15 @@ const links = [
 
 /**
  * Texte du bandeau header — demandé explicitement par le client :
- *   - Titre      : "Couture Colombe et Merceries"
- *   - Sous-titre : "atelier, mercerie, centre de formation"
+ *   - Titre      : "Couture Colombe et Merceries" (toujours entier)
+ *   - Sous-titre : les AUTORISATIONS officielles, pour la crédibilité
+ *     immédiate (les numéros complets vivent en mentions légales & footer)
  */
 const BAND_TITLE = "Couture Colombe et Merceries";
-const BAND_SUBTITLE = "atelier · mercerie · formation";
+const BAND_SUBTITLE = "✓ IFU 0202394907200 · RCCM RB/PNO/26 A 129215";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -35,10 +33,6 @@ export function Nav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [location.pathname]);
 
   return (
     <nav
@@ -105,11 +99,11 @@ export function Nav() {
               </p>
               <p
                 className={cn(
-                  "truncate font-medium transition-all duration-300",
+                  "whitespace-normal break-words font-medium transition-all duration-300",
                   scrolled ? "text-[10px] sm:text-[11px]" : "text-[11px] sm:text-xs md:text-sm",
                 )}
                 style={{
-                  color: "var(--color-orange-d)",
+                  color: "var(--color-feuille-f, #558B2F)",
                   letterSpacing: "0.02em",
                 }}
               >
@@ -173,57 +167,12 @@ export function Nav() {
             >
               <Settings2 className="w-5 h-5" />
             </Link>
-            <button
-              onClick={() => setOpen((v) => !v)}
-              className="shrink-0 p-2.5 min-h-[44px] min-w-[44px] rounded-lg text-[var(--color-ink)] hover:bg-black/5 inline-flex items-center justify-center relative"
-              aria-label="Menu"
-            >
-              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            {/* 🪡 Plus de bouton « 3 barres » : la navigation vit déjà
+                dans la barre du bas (Accueil…Menu) — le bandeau respire. */}
           </div>
         </div>
 
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0, y: -12, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 320, damping: 26 }}
-              className="md:hidden mt-3 lsc-glass-strong rounded-2xl shadow-lg p-3 border border-[var(--color-line)] origin-top"
-            >
-              {links.map((l, i) => (
-                <motion.div
-                  key={l.to}
-                  initial={{ opacity: 0, x: -14 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.04 + i * 0.05, type: "spring", stiffness: 300, damping: 24 }}
-                >
-                  <NavLink
-                    to={l.to}
-                    end={l.to === "/"}
-                    className={({ isActive }) =>
-                      cn(
-                        "block px-4 py-3 rounded-xl mb-1 font-medium transition-colors",
-                        isActive
-                          ? "bg-[var(--color-citron)]/30 text-[var(--color-ink)]"
-                          : "text-[var(--color-ink-soft)] hover:bg-black/5",
-                      )
-                    }
-                  >
-                    {l.label}
-                  </NavLink>
-                </motion.div>
-              ))}
-              <Link
-                to="/services"
-                className="mt-2 block text-center px-5 py-3 rounded-xl font-semibold bg-[linear-gradient(180deg,#E85454_0%,var(--color-citron)_40%,var(--color-citron-d)_130%)] text-white"
-              >
-                Commander
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Menu déroulant mobile retiré — remplacé définitivement par la barre du bas. */}
       </div>
     </nav>
   );

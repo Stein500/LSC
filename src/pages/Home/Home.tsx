@@ -149,7 +149,8 @@ export default function Home() {
                     <Link
                       to="/inspirations"
                       onClick={() => trackCtaClick("hero_modeles")}
-                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white bg-[linear-gradient(135deg,#7CBA45,#558B2F)] shadow-[0_12px_28px_-10px_rgba(85,139,47,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(85,139,47,0.72)] active:scale-[0.97]"
+                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97] shadow-[0_12px_28px_-14px_rgba(92,46,12,0.4)]"
+                      style={{ background: "#FDF6EF", color: "var(--color-feuille-f,#558B2F)", border: "1.5px solid var(--color-or,#C9A87C)" }}
                     >
                       🌿 Explorer les modèles
                     </Link>
@@ -160,9 +161,13 @@ export default function Home() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackWhatsapp("hero")}
-                      className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white bg-[linear-gradient(135deg,#8B4515,#5C2E0C)] shadow-[0_12px_28px_-10px_rgba(92,46,12,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(92,46,12,0.7)] active:scale-[0.97]"
+                      className="inline-flex items-center gap-2 px-5 py-4 text-base font-semibold transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97]"
+                      style={{ color: "var(--color-marron,#5C2E0C)" }}
                     >
-                      <MessageCircle className="w-4 h-4" /> WhatsApp
+                      <span className="w-9 h-9 rounded-full grid place-items-center bg-white/85 border border-[var(--color-or,#C9A87C)] shadow-sm">
+                        <MessageCircle className="w-4 h-4" />
+                      </span>
+                      WhatsApp
                     </a>
                   </Magnetic>
                 </motion.div>
@@ -231,7 +236,8 @@ export default function Home() {
               <Link
                 to="/services"
                 onClick={() => trackCtaClick("home_mercerie")}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-base font-bold bg-white text-[#3E6B1F] shadow-[0_14px_30px_-10px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_38px_-10px_rgba(0,0,0,0.45)] active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-[0_14px_30px_-10px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_38px_-10px_rgba(0,0,0,0.45)] active:scale-[0.97]"
+                style={{ background: "#FDF6EF", color: "var(--color-marron, #5C2E0C)", border: "1.5px solid var(--color-or, #C9A87C)" }}
               >
                 Voir la mercerie <ArrowRight className="w-4 h-4" />
               </Link>

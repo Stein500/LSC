@@ -55,14 +55,14 @@ export function PageHero({
           animate={reduce ? undefined : { scale: 1.02 }}
           transition={{ duration: 8, ease: [0.16, 1, 0.3, 1] }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-cream)]/92 via-[var(--color-cream)]/88 to-[var(--color-cream)]/98" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-cream)]/72 via-[var(--color-cream)]/55 to-[var(--color-cream)]/85" />
         {/* ☀️ Halo de lecture : zone claire garantie derrière titre & sous-titre,
             quel que soit le navigateur ou la complexité de la photo. */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 78% 60% at 50% 55%, rgba(251,231,235,0.94) 0%, rgba(251,231,235,0.72) 42%, rgba(251,231,235,0) 78%)",
+              "radial-gradient(ellipse 78% 60% at 50% 55%, rgba(251,231,235,0.82) 0%, rgba(251,231,235,0.55) 42%, rgba(251,231,235,0) 78%)",
           }}
           aria-hidden="true"
         />

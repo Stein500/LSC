@@ -107,16 +107,16 @@ export function ResponsiveHeroBackground({
   const overlayGradient = useMemo<string>(() => {
     switch (overlayTone) {
       case "light":
-        // voile rose poudré (#FBE7EB) — fondu couture avec le fond dominant
-        return "linear-gradient(180deg, rgba(251,231,235,0.92) 0%, rgba(251,231,235,0.74) 48%, rgba(251,231,235,0.96) 100%)";
+        // voile rose poudré LÉGER — l'image du fond se voit, le texte reste net
+        return "linear-gradient(180deg, rgba(251,231,235,0.62) 0%, rgba(251,231,235,0.38) 44%, rgba(251,231,235,0.80) 100%)";
       case "dark":
-        // nuit cacao (#150D11 / #1D1318) — chaud, jamais bleuté
-        return "linear-gradient(180deg, rgba(21,13,17,0.84) 0%, rgba(29,19,24,0.68) 52%, rgba(21,13,17,0.92) 100%)";
+        // nuit cacao allégée — l'image respire aussi dans le noir
+        return "linear-gradient(180deg, rgba(21,13,17,0.70) 0%, rgba(29,19,24,0.52) 52%, rgba(21,13,17,0.80) 100%)";
       case "amoled":
-        return "linear-gradient(180deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.78) 52%, rgba(0,0,0,0.94) 100%)";
+        return "linear-gradient(180deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.62) 52%, rgba(0,0,0,0.88) 100%)";
       case "auto":
       default:
-        return "linear-gradient(180deg, rgba(21,13,17,0.78) 0%, rgba(29,19,24,0.62) 48%, rgba(21,13,17,0.88) 100%)";
+        return "linear-gradient(180deg, rgba(21,13,17,0.64) 0%, rgba(29,19,24,0.46) 48%, rgba(21,13,17,0.76) 100%)";
     }
   }, [overlayTone]);
 

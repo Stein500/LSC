@@ -27,10 +27,10 @@ import { LEGAL } from "@/data/legal";
  */
 
 const SEEN_KEY = "lsc_splash_v10_seen";
-const ACT1_MS = 5000; // la naissance — le temps de bien la lire
-const ACT2_MS = 4200; // la mercerie
-const ACT2_SEEN_MS = 3400; // retour dans la session : salut court
-const LIFT_MS = 750; // le rideau se lève
+const ACT1_MS = 6800; // la naissance — le temps de bien la lire
+const ACT2_MS = 5600; // la mercerie
+const ACT2_SEEN_MS = 4500; // retour dans la session : salut court
+const LIFT_MS = 900; // le rideau se lève, tout en douceur
 
 const EASE_DOUX = [0.22, 1, 0.36, 1] as const;
 
