@@ -50,7 +50,9 @@ const STEPS = [
  *   - résumés par étape
  *   - accessibilité
  */
-export function FormationForm() {
+export function FormationForm({
+  presetFormule,
+}: { presetFormule?: "courte" | "specialisee" } = {}) {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<FormationSchema | null>(null);
@@ -88,6 +90,15 @@ export function FormationForm() {
     const d = draftApi.loadDraft();
     if (d) setDraft(d);
   }, []);
+
+  // ----- Formule choisie depuis la carte visuelle de la page -----
+  // Arrivée par un clic « Je choisis cette formation » :
+  // on pré-coche la formule… et on emmène direct à l'étape du choix.
+  useEffect(() => {
+    if (!presetFormule) return;
+    setValue("formation_choisie", presetFormule, { shouldValidate: true });
+    setStep((s) => (s === 0 ? 1 : s));
+  }, [presetFormule, setValue]);
 
   // ----- Auto-save -----
   useEffect(() => {

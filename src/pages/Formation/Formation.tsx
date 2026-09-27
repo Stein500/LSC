@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { SEO, SchemaBuilders } from "@/components/seo/SEO";
@@ -12,11 +12,27 @@ import { FormationForm } from "@/components/forms/FormationForm";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
 import { Aurora } from "@/components/ui/Aurora";
 import { FORMULES, FAQ_FORMATION, TESTIMONIALS } from "@/data/content";
+import { SmartImage } from "@/components/ui/SmartImage";
+
+/** Vrai visuel par formule — « toucher l'image, pas lire le texte ». */
+const FORMULE_VISUELS: Record<string, { src: string; alt: string }> = {
+  courte: { src: "/images/gallery/formation-couture-01.webp", alt: "Apprenantes en atelier — Formation Courte" },
+  specialisee: { src: "/images/gallery/formation-couture-02.webp", alt: "Encadrement personnalisé — Formation Spécialisée" },
+};
 import { GALLERY_FORMATION } from "@/data/galleries";
 
 export default function Formation() {
   const [openFormule, setOpenFormule] = useState<string | null>("specialisee");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [presetFormule, setPresetFormule] = useState<"courte" | "specialisee" | undefined>(undefined);
+  const formAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  const handleChooseFormule = (id: "courte" | "specialisee") => {
+    setPresetFormule(id);
+    window.setTimeout(() => {
+      formAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
 
   return (
     <>
@@ -89,19 +105,33 @@ export default function Formation() {
             title={<>Deux parcours <span style={{ color: "var(--color-orange)" }}>adaptés</span></>}
           />
           <div className="grid md:grid-cols-2 gap-5">
-            {FORMULES.map((f, i) => (
+            {FORMULES.map((f, i) => {
+              const visuel = FORMULE_VISUELS[f.id];
+              return (
               <Reveal key={f.id} delay={i * 0.1}>
-                <Card hover={false} className="h-full p-8 relative">
-                  <Badge tone={f.badge.tone === "citron" ? "citron" : "neutral"} className="absolute top-5 right-5">
-                    {f.badge.label}
-                  </Badge>
-                  <div className="text-4xl mb-4">{f.emoji}</div>
-                  <h3 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                    {f.title}
-                  </h3>
-                  <p className="text-sm text-[var(--color-muted)] mb-5">{f.subtitle}</p>
+                <Card hover={false} className="h-full p-0 overflow-hidden relative">
+                  {/* ✂️ D'abord l'image : la cliente voit, puis elle lit */}
+                  {visuel && (
+                    <div className="relative aspect-[16/9] overflow-hidden">
+                      <SmartImage
+                        src={visuel.src}
+                        alt={visuel.alt}
+                        width={1600}
+                        height={1200}
+                        className="w-full h-full object-cover"
+                      />
+                      <Badge tone={f.badge.tone === "citron" ? "citron" : "neutral"} className="absolute top-3 right-3 shadow-md">
+                        {f.badge.label}
+                      </Badge>
+                      <span className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
+                      <span className="absolute bottom-3 left-4 text-white font-bold text-lg md:text-xl drop-shadow" style={{ fontFamily: "var(--font-display)" }}>
+                        {f.emoji} {f.title} — {f.subtitle}
+                      </span>
+                    </div>
+                  )}
+                  <div className="p-6 md:p-7">
 
-                  <ul className="space-y-2 text-sm mb-6">
+                  <ul className="space-y-2.5 text-[15px] mb-6">
                     {f.bullets.map((b) => (
                       <li key={b} className="flex gap-2 text-[var(--color-ink-soft)]">
                         <span className="w-5 h-5 rounded-full bg-[var(--color-citron)] flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">✓</span>
@@ -109,6 +139,15 @@ export default function Formation() {
                       </li>
                     ))}
                   </ul>
+
+                  {/* 🧵 Gros geste principal : je choisis → le formulaire se prépare */}
+                  <button
+                    onClick={() => handleChooseFormule(f.id as "courte" | "specialisee")}
+                    className="w-full rounded-2xl px-5 py-3.5 mb-3 font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0"
+                    style={{ background: "linear-gradient(135deg, #558B2F 0%, #7CBA45 45%, #E87414 100%)" }}
+                  >
+                    ✂️ Je choisis cette formation
+                  </button>
 
                   <button
                     onClick={() => setOpenFormule(openFormule === f.id ? null : f.id)}
@@ -148,9 +187,11 @@ export default function Formation() {
                       </motion.div>
                     )}
                   </AnimatePresence>
+                  </div>
                 </Card>
               </Reveal>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -158,7 +199,7 @@ export default function Formation() {
       {/* Formulaire */}
       <section className="relative py-16 md:py-24 bg-[var(--color-cream)] overflow-hidden">
         <Aurora className="absolute inset-0" variant="sky" intensity="soft" />
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div ref={formAnchorRef} className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-10 items-start">
             <div className="lg:col-span-2">
               <SectionTitle
@@ -175,7 +216,14 @@ export default function Formation() {
             </div>
             <div className="lg:col-span-3">
               <Card hover={false} className="p-6 md:p-8">
-                <FormationForm />
+                <div className="mb-4">
+                  {presetFormule && (
+                    <p className="text-sm text-[var(--color-muted)]">
+                      Formule choisie : <strong>{presetFormule === "courte" ? "Formation Courte" : "Formation Spécialisée"}</strong>
+                    </p>
+                  )}
+                </div>
+                <FormationForm presetFormule={presetFormule} />
               </Card>
             </div>
           </div>
