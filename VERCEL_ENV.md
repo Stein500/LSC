@@ -7,9 +7,53 @@
 
 ---
 
+## 🩹 URGENCE — mails ou Sheets en panne ? Le test en direct (10 secondes)
+
+> Ouvre simplement cette adresse dans ton navigateur :
+> **https://lesservicescolombes.vercel.app/api/system/health**
+> Elle doit afficher `"ok":true`, `sheets.ok:true`, `smtp.ok:true` et toutes les `env` à `true`.
+> Le premier faux pas est écrit noir sur blanc — c'est ce test qui a trouvé la panne du 27 sept. 2026.
+
+### Verdict du 27 sept. 2026 (accident de ménage des variables)
+
+| Signal du health-check | Signification | Réparation |
+|---|---|---|
+| `GOOGLE_PRIVATE_KEY: false` + sheets « No key or keyFile set » | La clé privée Google a été **supprimée** avec les autres → Google Sheets n'écrit plus | **Réparation A** ci-dessous |
+| smtp « Invalid login: 535-5.7.8 Username and Password not accepted » | Gmail refuse `SMTP_USER`/`SMTP_PASS` → les mails ne partent plus | **Réparation B** ci-dessous |
+
+### Réparation A — `GOOGLE_PRIVATE_KEY` (Sheets)
+
+1. La valeur exacte se retrouve dans le **caveau local** (Termux) :
+   ```bash
+   grep GOOGLE_PRIVATE_KEY ~/lsc2_caveau/.env
+   ```
+   → copie **toute** la valeur, guillemets compris (elle contient des `\n` — c'est normal).
+   *(Pas de caveau ? Reprends le fichier JSON du compte de service dans Google Cloud Console → champ `"private_key"` → copie la chaîne entière, de `-----BEGIN PRIVATE KEY-----` à `-----END PRIVATE KEY-----`.)*
+2. Vercel → **Settings → Environment Variables** → **Add New** : NAME `GOOGLE_PRIVATE_KEY`, VALUE collée entière (une ligne avec `\n` **ou** multi-lignes — le code accepte les deux), coche **Production + Preview + Development** → **Save**.
+
+### Réparation B — `SMTP_PASS` (mails Gmail)
+
+Le mot de passe d'application Gmail est devenu invalide (Google le révoque si le mot de passe du compte change ; ou il a été recopié avec des espaces/une faute).
+
+1. Connectée avec **lesservicescolombes@gmail.com**, ouvre : **https://myaccount.google.com/apppasswords**
+   *(nécessite la validation en 2 étapes du compte — active-la si demandée)*
+2. Crée un mot de passe d'application : nom « mail atelier » → génère → **16 lettres**.
+3. Vercel → `SMTP_PASS` → **Edit** → colle les 16 lettres **sans aucun espace** (ex. `abcdabcdabcdabcd`) → coche les 3 environnements → **Save**.
+4. Vérifie au passage que `SMTP_USER` = `lesservicescolombes@gmail.com` (exactement, sans faute).
+
+### Après les réparations
+
+```bash
+cd ~/lsc2 && vercel --prod --force    # recoud les variables dans le déploiement
+```
+Puis rouvre **/api/system/health** → `"ok":true` partout = mails repartis, Sheets reconnecté. ✂️
+
+---
+
 ## 🚨 À CORRIGER sur le backend (27 septembre 2026) — 3 variables À SUPPRIMER
 
 > **Où ?** Dashboard Vercel → projet `lesservicescolombes` → **Settings → Environment Variables** → sur chaque ligne : **⋯ → Delete** (pas Edit — **Delete**, la ligne entière s'en va).
+> ⛔ **Uniquement ces 3 lignes-là !** Ne touche à **aucune** autre variable (`GOOGLE_*`, `SMTP_*`, `MAIL_*`, `TRACK_*` — elles font vivre le site ; une suppression par mégarde a coupé mails & Sheets le 27 sept.).
 
 | Variable | Valeur fautive vue en prod | ❌ Symptôme que ça provoquait | ✅ Action |
 |---|---|---|---|

@@ -151,8 +151,13 @@ export default async function handler(req, res) {
 
   // ============================================================
   // 3. Réponse
+  //    « Livré » si AU MOINS un canal a abouti : une panne Sheets
+  //    (clé absente…) ne doit JAMAIS priver la cliente de son
+  //    ticket PDF ou empêcher le mail de partir — et vice versa.
+  //    Le détail de chaque canal reste dans la réponse.
   // ============================================================
-  const ok = !sheetError; // l'event est "delivered" si Sheets a marché
+  const anyChannel = !!sheetResult?.ok || !!mailResult || !!pdfResult;
+  const ok = anyChannel;
   return res.status(ok ? 200 : 500).json({
     ok,
     event,
