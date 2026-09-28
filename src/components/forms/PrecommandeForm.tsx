@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { precommandeSchema, type PrecommandeSchema } from "@/utils/validation";
-import { trackFormStart, trackFormStep, trackFormSubmit, trackFormError } from "@/utils/api";
+import { trackFormStart, trackFormSubmit, trackFormError } from "@/utils/api";
 import { generateTicketId } from "@/utils/format";
 import { saveTicket, updateTicket, applySubmissionResult, markTicketKept } from "@/utils/tickets";
 import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
@@ -14,37 +15,38 @@ import { urlToJpegDataUrl, fileToJpegDataUrl } from "@/utils/imageEmbed";
 import { SERVICES } from "@/data/content";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
-import { Stepper } from "@/components/ui/Stepper";
 import { DraftBanner } from "@/components/ui/DraftBanner";
 import { useFormDraft } from "@/hooks/useFormDraft";
 
-const STEPS = [
-  { key: "who", label: "Qui êtes-vous" },
-  { key: "what", label: "Le modèle" },
-  { key: "details", label: "Détails & mesures" },
-  { key: "send", label: "Envoi" },
-];
-
 /**
- * Formulaire de commande — version multi-step :
- *   1. Identité (nom, téléphone, email)
- *   2. Type de tenue + couleur / taille / date
- *   3. Description projet + mesures + budget
- *   4. Récap + envoi
+ * PrecommandeForm — « L'Écrin de Commande » 🎟️ (28/09/2026)
+ * ------------------------------------------------------------
+ * Demande de la cheffe : un formulaire UNIQUE (plus d'étapes !),
+ * simple comme un bonjour, waooh comme les héros des pages.
+ *
+ *   · Trois coupons numérotés, perforés fil d'or comme les héros :
+ *       ① Dites-nous qui vous êtes   (2 champs obligatoires : nom + tél)
+ *       ② La tenue de vos rêves      (tout est optionnel)
+ *       ③ Montrez-nous, dites-nous   (photo + quelques mots)
+ *   · SUPPRIMÉ, car inutile pour passer commande : Budget, Mesures
+ *     (l'essayage à l'atelier s'en charge), récap d'étape (le ticket
+ *     PDF et la page merci le racontent déjà), et le stepper.
+ *   · La photo jointe est compressée maison (~100-300 Ko, orientation
+ *     EXIF respectée) avant de voyager — envoi propre et léger.
  */
+
 export function PrecommandeForm({
   presetType,
   presetModele,
   presetPhoto,
 }: { presetType?: string; presetModele?: string; presetPhoto?: string } = {}) {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<PrecommandeSchema | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(presetPhoto ?? null);
   const [photoName, setPhotoName] = useState<string | null>(
     presetPhoto ? (presetPhoto.split("/").pop() ?? "modele.webp") : null,
   );
-  // 📎 La photo prête à EMBARQUER dans le ticket PDF (JPEG dataURL ~100-350 Ko)
+  // 📎 La photo prête à EMBARQUER dans le ticket PDF (JPEG dataURL ~100-300 Ko)
   const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
   const photoObjectUrlRef = useRef<string | null>(null);
   const startedRef = useRef(false);
@@ -56,9 +58,7 @@ export function PrecommandeForm({
     formState: { errors, isSubmitting },
     watch,
     setValue,
-    trigger,
     reset,
-    getValues,
   } = useForm<PrecommandeSchema>({
     resolver: zodResolver(precommandeSchema),
     mode: "onBlur",
@@ -71,9 +71,7 @@ export function PrecommandeForm({
       couleur_preferee: "",
       taille: "",
       date_souhaitee: "",
-      budget: "",
       description: "",
-      mesures: "",
     },
   });
 
@@ -93,18 +91,15 @@ export function PrecommandeForm({
 
   const type = watch("type_tenue");
 
-  // ----- Type pré-rempli depuis une carte prestation (clic APRÈS le mount) -----
-  // Le formulaire garde sa logique : on commence toujours par SE PRÉSENTER
-  // (étape 1) — la tuile correspondante sera simplement déjà cochée à
-  // l'étape 2. Zéro saut d'étape : la cliente voit chaque étape.
+  // ----- Type pré-rempli depuis une carte prestation -----
   useEffect(() => {
     if (!presetType) return;
     setValue("type_tenue", presetType, { shouldValidate: true });
   }, [presetType, setValue]);
 
-  // ----- Photo jointe à la commande (modèle galerie ou photo de la cliente) -----
-  // La photo du modèle galerie est convertie d'office en JPEG embarquable :
-  // elle sera cousue dans le ticket PDF, pas seulement nommée.
+  // ----- Photo jointe (modèle galerie ou photo de la cliente) -----
+  // Convertie d'office en JPEG embarquable : elle sera cousue dans le
+  // ticket PDF, pas seulement nommée.
   useEffect(() => {
     let alive = true;
     if (presetPhoto) {
@@ -152,34 +147,11 @@ export function PrecommandeForm({
     }
   };
 
-  const next = async () => {
-    // Seule l'étape 1 verrouille encore (nom + téléphone : il nous les
-    // faut pour rappeler). Le reste — type de tenue compris — est libre,
-    // comme demandé : plus d'astérisque sur les modèles de tenues.
-    const fieldsMap: Record<number, (keyof PrecommandeSchema)[]> = {
-      0: ["nom", "telephone"],
-      1: [],
-      2: [],
-    };
-    const fields = fieldsMap[step] || [];
-    if (fields.length) {
-      const ok = await trigger(fields as any);
-      if (!ok) return;
-    }
-    trackFormStep("precommande", STEPS[step].key, "next");
-    setStep((s) => Math.min(s + 1, STEPS.length - 1));
-  };
-
-  const back = () => {
-    trackFormStep("precommande", STEPS[step].key, "back");
-    setStep((s) => Math.max(0, s - 1));
-  };
-
   const onSubmit = async (data: PrecommandeSchema) => {
     const ref = generateTicketId();
     // 👗 Le modèle et sa photo voyagent comme de VRAIES données :
-    // nom du modèle en clair + photo JPEG embarquée (elle sera cousue
-    // dans le ticket PDF — pas un simple nom de fichier perdu).
+    // nom du modèle en clair + photo JPEG embarquée (cousue dans le
+    // ticket PDF — pas un simple nom de fichier perdu).
     const payload = {
       ...data,
       ref,
@@ -215,10 +187,20 @@ export function PrecommandeForm({
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} onFocus={onFocusFirst} className="space-y-6">
-      <Stepper steps={STEPS} current={step} />
+  /** Champ oublié ? On glisse jusqu'à lui, avec douceur. */
+  const onInvalid = () => {
+    toast.error("Il manque un petit fil 🧵", {
+      description: "Votre nom et votre téléphone suffisent pour partir — regardez les champs entourés de rouge.",
+    });
+    requestAnimationFrame(() => {
+      document
+        .querySelector('[aria-invalid="true"]')
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  };
 
+  return (
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} onFocus={onFocusFirst} className="space-y-6">
       <DraftBanner
         draft={draft}
         onApply={(d) => {
@@ -232,274 +214,291 @@ export function PrecommandeForm({
         }}
       />
 
-      {/* ===== Étape 1 : identité ===== */}
-      {step === 0 && (
-        <div className="space-y-5 animate-fade-in">
-          <div className="rounded-2xl bg-[var(--color-citron)]/15 border border-[var(--color-citron)]/40 p-3.5 text-sm text-[var(--color-ink-soft)] flex items-start gap-3">
-            <Sparkles className="w-5 h-5 mt-0.5 shrink-0" style={{ color: "var(--color-orange)" }} />
-            <p>
-              Indiquez-nous vos coordonnées — on revient vers vous sous 48h ouvrées
-              pour confirmer et planifier l'essayage.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Nom complet" required error={errors.nom?.message}>
-              <Input {...register("nom")} invalid={!!errors.nom} placeholder="Votre nom" autoComplete="name" />
-            </Field>
-            <Field label="Téléphone" required error={errors.telephone?.message}>
-              <Input
-                type="tel"
-                {...register("telephone")}
-                invalid={!!errors.telephone}
-                placeholder="+229 01 ..."
-                autoComplete="tel"
-                inputMode="tel"
-              />
-            </Field>
-          </div>
-
-          <Field label="Email" hint="Optionnel — pour recevoir votre ticket PDF" error={errors.email?.message}>
+      {/* ① ════════ VOUS ════════ */}
+      <CouponSection
+        numero="01"
+        icon="🧵"
+        title="Dites-nous qui vous êtes"
+        sub="Deux champs suffisent pour partir : votre nom et un numéro où vous rappeler sous 48 h ouvrées."
+      >
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Nom complet" required error={errors.nom?.message}>
+            <Input {...register("nom")} invalid={!!errors.nom} placeholder="Votre nom" autoComplete="name" />
+          </Field>
+          <Field label="Téléphone" required error={errors.telephone?.message}>
             <Input
-              type="email"
-              {...register("email")}
-              invalid={!!errors.email}
-              placeholder="vous@exemple.com"
-              autoComplete="email"
-              inputMode="email"
+              type="tel"
+              {...register("telephone")}
+              invalid={!!errors.telephone}
+              placeholder="+229 01 ..."
+              autoComplete="tel"
+              inputMode="tel"
             />
           </Field>
-
-          <div className="flex justify-end pt-2">
-            <Button type="button" onClick={next} icon={<ArrowRight className="w-4 h-4" />} size="lg">
-              Continuer
-            </Button>
-          </div>
         </div>
-      )}
 
-      {/* ===== Étape 2 : modèle ===== */}
-      {step === 1 && (
-        <div className="space-y-5 animate-fade-in">
-          {/* 🧵 Venant d'un modèle de la galerie ? Il est déjà joint —
-              rien à refaire, rien à redire : fini les répétitions. */}
-          {presetModele && (
-            <p
-              className="text-sm rounded-2xl border px-3.5 py-2.5 flex items-start gap-2"
-              style={{
-                background: "var(--color-feuille-doux,#EFF7E3)",
-                borderColor: "color-mix(in srgb, var(--color-feuille,#7CBA45) 40%, transparent)",
-                color: "var(--color-feuille-f,#558B2F)",
-              }}
-            >
-              <span aria-hidden="true">🧵</span>
-              <span>
-                Modèle choisi dans la galerie : <strong>{presetModele}</strong> — il rejoint
-                votre commande tel quel, rien à refaire.
-              </span>
-            </p>
-          )}
+        <Field label="Email" hint="Optionnel — pour recevoir votre ticket PDF par la poste des colombes" error={errors.email?.message}>
+          <Input
+            type="email"
+            {...register("email")}
+            invalid={!!errors.email}
+            placeholder="vous@exemple.com"
+            autoComplete="email"
+            inputMode="email"
+          />
+        </Field>
+      </CouponSection>
 
-          {/* 👗 Type de tenue — grandes tuiles, OPTIONNELLES (plus d'astérisque) */}
-          <Field
-            label="Quel type de tenue ?"
-            hint="Optionnel — touchez une tuile si vous le savez déjà ; sinon, on choisira ensemble à l'atelier."
-            error={errors.type_tenue?.message}
+      {/* ② ════════ LA TENUE ════════ */}
+      <CouponSection
+        numero="02"
+        icon="✂️"
+        title="La tenue de vos rêves"
+        sub="Tout est optionnel dans ce coupon — touchez, ou laissez : on choisira ensemble à l'atelier."
+      >
+        {/* 🧵 Venant d'un modèle de la galerie ? Il est déjà joint —
+            rien à refaire, rien à redire. */}
+        {presetModele && (
+          <p
+            className="mb-5 text-sm rounded-2xl border px-3.5 py-2.5 flex items-start gap-2"
+            style={{
+              background: "var(--color-feuille-doux,#EFF7E3)",
+              borderColor: "color-mix(in srgb, var(--color-feuille,#7CBA45) 40%, transparent)",
+              color: "var(--color-feuille-f,#558B2F)",
+            }}
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3" role="group" aria-label="Type de tenue">
-              {SERVICES.map((s) => {
-                const selected = watch("type_tenue") === s.title;
-                return (
-                  <button
-                    key={s.title}
-                    type="button"
-                    onClick={() => setValue("type_tenue", s.title, { shouldValidate: true })}
-                    className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 px-2.5 py-4 text-center transition-all min-h-[92px] ${
-                      selected
-                        ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
-                        : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
-                    }`}
-                  >
-                    <span className="text-3xl leading-none">{s.emoji}</span>
-                    <span className="font-semibold text-xs leading-tight">{s.title}</span>
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                onClick={() => setValue("type_tenue", "autre", { shouldValidate: true })}
-                className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 border-dashed px-2.5 py-4 text-center transition-all min-h-[92px] ${
-                  watch("type_tenue") === "autre"
-                    ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
-                    : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
-                }`}
-              >
-                <span className="text-3xl leading-none">✨</span>
-                <span className="font-semibold text-xs leading-tight">Autre — je décris</span>
-              </button>
-            </div>
-          </Field>
+            <span aria-hidden="true">🧵</span>
+            <span>
+              Modèle choisi dans la galerie : <strong>{presetModele}</strong> — il rejoint
+              votre commande tel quel, rien à refaire.
+            </span>
+          </p>
+        )}
 
-          {type === "autre" && (
-            <Field label="Précisez votre besoin" error={errors.tenue_autre?.message}>
-              <Input
-                {...register("tenue_autre")}
-                placeholder="Décrivez le type de tenue souhaité"
-                autoFocus
-              />
-            </Field>
-          )}
-
-          <div className="grid sm:grid-cols-3 gap-4">
-            <Field label="Couleur préférée" hint="Optionnel" error={errors.couleur_preferee?.message}>
-              <Input {...register("couleur_preferee")} placeholder="Bordeaux, beige..." />
-            </Field>
-            <Field label="Taille" hint="Optionnel" error={errors.taille?.message}>
-              <Input {...register("taille")} placeholder="S / M / 38..." />
-            </Field>
-            <Field label="Date souhaitée" hint="Optionnel" error={errors.date_souhaitee?.message}>
-              <Input type="date" {...register("date_souhaitee")} />
-            </Field>
-          </div>
-
-          <Field
-            label="Photo de votre tenue"
-            hint={
-              presetModele
-                ? "La photo du modèle choisi est jointe — remplacez-la si vous préférez la vôtre."
-                : "Optionnel — montrez-nous le modèle exact (photo, capture, image sauvegardée)."
-            }
-          >
-            <div className="flex items-center gap-4 flex-wrap">
-              {photoPreview && (
-                <div className="flex items-center gap-3">
-                  <img
-                    src={photoPreview}
-                    alt={`Photo jointe — ${photoName ?? "modèle"}`}
-                    className="w-20 h-20 object-cover rounded-2xl border border-[var(--color-line)] shadow-sm"
-                  />
-                  <div className="text-xs text-[var(--color-muted)] max-w-[190px]">
-                    <p className="font-semibold text-[var(--color-ink)] break-all">{photoName}</p>
-                    <p>{photoDataUrl ? "✓ embarquée dans votre ticket PDF" : "jointe à votre demande"}</p>
-                  </div>
-                </div>
-              )}
-              <div className="flex gap-2 flex-wrap">
-                <label
-                  className="inline-flex items-center gap-2 rounded-2xl border-2 border-dashed px-4 py-2.5 text-sm font-semibold cursor-pointer transition-colors hover:bg-[var(--color-feuille-doux,#EFF7E3)]"
-                  style={{ borderColor: "var(--color-feuille,#7CBA45)", color: "var(--color-feuille-f,#558B2F)" }}
+        {/* 👗 Type de tenue — grandes tuiles, OPTIONNELLES */}
+        <Field
+          label="Quel type de tenue ?"
+          hint="Optionnel — touchez une tuile si vous le savez déjà."
+          error={errors.type_tenue?.message}
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3" role="group" aria-label="Type de tenue">
+            {SERVICES.map((s) => {
+              const selected = type === s.title;
+              return (
+                <button
+                  key={s.title}
+                  type="button"
+                  onClick={() => setValue("type_tenue", selected ? "" : s.title, { shouldValidate: true })}
+                  aria-pressed={selected}
+                  className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 px-2.5 py-4 text-center transition-all min-h-[92px] ${
+                    selected
+                      ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                  }`}
                 >
-                  📷 {photoPreview ? "Changer la photo" : "Ajouter une photo"}
-                  <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
-                </label>
-                {photoPreview && (
+                  <span className="text-3xl leading-none">{s.emoji}</span>
+                  <span className="font-semibold text-xs leading-tight">{s.title}</span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => setValue("type_tenue", type === "autre" ? "" : "autre", { shouldValidate: true })}
+              aria-pressed={type === "autre"}
+              className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 border-dashed px-2.5 py-4 text-center transition-all min-h-[92px] ${
+                type === "autre"
+                  ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                  : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+              }`}
+            >
+              <span className="text-3xl leading-none">✨</span>
+              <span className="font-semibold text-xs leading-tight">Autre — je décris</span>
+            </button>
+          </div>
+        </Field>
+
+        {type === "autre" && (
+          <Field label="Précisez votre besoin" error={errors.tenue_autre?.message}>
+            <Input
+              {...register("tenue_autre")}
+              placeholder="Décrivez le type de tenue souhaité"
+              autoFocus
+            />
+          </Field>
+        )}
+
+        <div className="grid sm:grid-cols-3 gap-4">
+          <Field label="Couleur préférée" hint="Optionnel" error={errors.couleur_preferee?.message}>
+            <Input {...register("couleur_preferee")} placeholder="Bordeaux, beige..." />
+          </Field>
+          <Field label="Taille" hint="Optionnel" error={errors.taille?.message}>
+            <Input {...register("taille")} placeholder="S / M / 38..." />
+          </Field>
+          <Field label="Date souhaitée" hint="Optionnel" error={errors.date_souhaitee?.message}>
+            <Input type="date" {...register("date_souhaitee")} />
+          </Field>
+        </div>
+      </CouponSection>
+
+      {/* ③ ════════ MONTREZ-NOUS ════════ */}
+      <CouponSection
+        numero="03"
+        icon="📸"
+        title="Montrez-nous, dites-nous tout"
+        sub="Une photo ou quelques mots suffisent à nous lancer — tout est optionnel."
+      >
+        <Field
+          label="Photo de votre tenue"
+          hint={
+            presetModele
+              ? "La photo du modèle choisi est jointe — remplacez-la si vous préférez la vôtre."
+              : "Optionnel — montrez-nous le modèle exact (photo, capture, image sauvegardée)."
+          }
+        >
+          {photoPreview ? (
+            <div
+              className="flex items-center gap-3 rounded-3xl border-2 border-dashed p-3"
+              style={{ borderColor: "var(--color-or,#C9A87C)" }}
+            >
+              <img
+                src={photoPreview}
+                alt={`Photo jointe — ${photoName ?? "modèle"}`}
+                className="w-20 h-20 object-cover rounded-2xl border border-[var(--color-line)] shadow-sm shrink-0"
+              />
+              <div className="text-xs text-[var(--color-muted)] min-w-0 flex-1">
+                <p className="font-semibold text-sm text-[var(--color-ink)] break-all">{photoName}</p>
+                <p className="mt-0.5">{photoDataUrl ? "✓ recadrée maison et cousue dans votre ticket PDF" : "jointe à votre demande"}</p>
+                <div className="flex gap-3 mt-2">
+                  <label className="font-semibold cursor-pointer underline underline-offset-2 decoration-dotted" style={{ color: "var(--color-feuille-f,#558B2F)" }}>
+                    Changer
+                    <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
+                  </label>
                   <button
                     type="button"
                     onClick={removePhoto}
-                    className="px-3.5 py-2.5 rounded-2xl text-sm border border-[var(--color-line)] text-[var(--color-muted)] hover:bg-black/[0.03] transition-colors"
+                    className="font-semibold text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors"
                   >
                     Retirer
                   </button>
-                )}
+                </div>
               </div>
             </div>
-          </Field>
+          ) : (
+            <label
+              className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed px-4 py-7 text-center cursor-pointer transition-all hover:-translate-y-0.5"
+              style={{
+                borderColor: "var(--color-feuille,#7CBA45)",
+                background: "color-mix(in srgb, var(--color-feuille-doux,#EFF7E3) 45%, transparent)",
+              }}
+            >
+              <span className="text-3xl" aria-hidden="true">📷</span>
+              <span className="text-sm font-bold" style={{ color: "var(--color-feuille-f,#558B2F)" }}>
+                Ajouter une photo
+              </span>
+              <span className="text-xs text-[var(--color-muted)]">
+                Elle sera allégée maison avant le voyage — envoi propre et léger.
+              </span>
+              <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
+            </label>
+          )}
+        </Field>
 
-          <div className="flex justify-between pt-2">
-            <Button type="button" onClick={back} variant="ghost" icon={<ArrowLeft className="w-4 h-4" />}>
-              Retour
-            </Button>
-            <Button type="button" onClick={next} icon={<ArrowRight className="w-4 h-4" />} size="lg">
-              Continuer
-            </Button>
-          </div>
-        </div>
-      )}
+        <Field
+          label="Dites-nous tout"
+          hint="Style, occasion, couleurs, mesures, budget, délai… Plus c'est précis, mieux c'est — et tout se complètera à l'essayage."
+          error={errors.description?.message}
+        >
+          <Textarea
+            rows={5}
+            {...register("description")}
+            placeholder="Décrivez votre tenue idéale..."
+          />
+        </Field>
+      </CouponSection>
 
-      {/* ===== Étape 3 : description + mesures ===== */}
-      {step === 2 && (
-        <div className="space-y-5 animate-fade-in">
-          <Field
-            label="Description du projet"
-            hint="Style, occasion, particularités... Plus c'est précis, mieux c'est."
-            error={errors.description?.message}
-          >
-            <Textarea
-              rows={5}
-              {...register("description")}
-              placeholder="Décrivez votre tenue idéale..."
-            />
-          </Field>
-
-          <Field
-            label="Mesures"
-            hint="Optionnel — vous pourrez les compléter lors de l'essayage"
-            error={errors.mesures?.message}
-          >
-            <Textarea
-              rows={4}
-              {...register("mesures")}
-              placeholder="Tour de poitrine, taille, hanches, longueur... (en cm)"
-            />
-          </Field>
-
-          <Field label="Budget estimé" hint="Optionnel — pour calibrer nos propositions" error={errors.budget?.message}>
-            <Input {...register("budget")} placeholder="Ex : 25 000 FCFA" />
-          </Field>
-
-          <div className="flex justify-between pt-2">
-            <Button type="button" onClick={back} variant="ghost" icon={<ArrowLeft className="w-4 h-4" />}>
-              Retour
-            </Button>
-            <Button type="button" onClick={next} icon={<ArrowRight className="w-4 h-4" />} size="lg">
-              Voir le récap
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* ===== Étape 4 : récap + envoi ===== */}
-      {step === 3 && (
-        <div className="space-y-5 animate-fade-in">
-          <div className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-cream)] p-5 space-y-3 text-sm">
-            <p className="font-bold text-base mb-2" style={{ fontFamily: "var(--font-display)" }}>
-              Récapitulatif de votre commande
-            </p>
-            <Row label="Identité" value={`${getValues("nom")} · ${getValues("telephone")}`} />
-            <Row label="Email" value={getValues("email") || "—"} />
-            {presetModele && <Row label="Modèle" value={presetModele} />}
-            {photoName && <Row label="Photo jointe" value={photoName} />}
-            <Row label="Type" value={type === "autre" ? `Autre (${getValues("tenue_autre") || "—"})` : type || "—"} />
-            <Row label="Couleur" value={getValues("couleur_preferee") || "—"} />
-            <Row label="Taille" value={getValues("taille") || "—"} />
-            <Row label="Date souhaitée" value={getValues("date_souhaitee") || "—"} />
-            <Row label="Budget" value={getValues("budget") || "—"} />
-            {getValues("description") && <Row label="Description" value={getValues("description") || ""} />}
-          </div>
-
-          <p className="text-xs text-[var(--color-muted)] leading-relaxed">
-            Réponse sous 48h ouvrées. Paiement à convenir après confirmation du modèle et de la taille.
-          </p>
-
-          <div className="flex flex-col-reverse sm:flex-row justify-between gap-2 pt-2">
-            <Button type="button" onClick={back} variant="ghost" icon={<ArrowLeft className="w-4 h-4" />}>
-              Modifier
-            </Button>
-            <Button type="submit" loading={isSubmitting} size="lg" icon={<CheckCircle2 className="w-4 h-4" />} shimmer>
-              Envoyer ma commande
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* 🎟️ ════════ L'ENVOI — grand coupon perforé ════════ */}
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-30px" }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="relative bg-white rounded-[1.75rem] border-2 border-dashed p-5 md:p-7 text-center shadow-sm"
+        style={{ borderColor: "var(--color-or,#C9A87C)" }}
+      >
+        <p className="text-xs md:text-sm text-[var(--color-muted)] leading-relaxed max-w-md mx-auto mb-5">
+          Réponse sous <strong className="text-[var(--color-ink)]">48 h ouvrées</strong>.
+          Votre ticket PDF arrive aussitôt — gardez-le, c'est votre fil d'Ariane avec l'atelier. 🎫
+        </p>
+        <Button
+          type="submit"
+          loading={isSubmitting}
+          size="lg"
+          icon={<CheckCircle2 className="w-4 h-4" />}
+          shimmer
+          className="w-full sm:w-auto sm:min-w-[280px]"
+        >
+          {isSubmitting ? "Couture en cours…" : "Envoyer ma commande"}
+        </Button>
+      </motion.div>
     </form>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+/**
+ * Un coupon de l'écrin — perforation fil d'or en tête (comme les coupons
+ * des héros), pastille numérotée dorée, entrée en douceur. 🎟️
+ */
+function CouponSection({
+  numero,
+  icon,
+  title,
+  sub,
+  children,
+}: {
+  numero: string;
+  icon: string;
+  title: string;
+  sub?: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-start gap-0.5 sm:gap-3">
-      <span className="font-semibold text-[var(--color-muted)] sm:w-40 shrink-0">{label}</span>
-      <span className="text-[var(--color-ink)] flex-1 break-words">{value || "—"}</span>
-    </div>
+    <motion.section
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className="relative bg-white rounded-[1.75rem] border border-[var(--color-line)] shadow-sm overflow-hidden"
+    >
+      {/* Perforation fil d'or + petit ciseau */}
+      <div className="relative h-4 bg-[var(--color-cream)]" aria-hidden="true">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] opacity-70 select-none">✂</span>
+        <span
+          className="absolute left-9 right-4 top-1/2 -translate-y-1/2 border-t-2 border-dashed"
+          style={{ borderColor: "var(--color-or,#C9A87C)" }}
+        />
+      </div>
+
+      <div className="px-5 md:px-7 pb-6 md:pb-7 pt-4 space-y-5">
+        <header className="flex items-start gap-3.5">
+          <span
+            className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-extrabold text-white shadow-md"
+            style={{ background: "linear-gradient(135deg, #D3B68C 0%, #C9A87C 45%, #A9854F 100%)" }}
+            aria-hidden="true"
+          >
+            {numero}
+          </span>
+          <div className="pt-0.5">
+            <h3
+              className="text-lg md:text-xl leading-tight"
+              style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
+            >
+              {icon} {title}
+            </h3>
+            {sub && <p className="mt-1 text-xs md:text-[13px] text-[var(--color-muted)] leading-relaxed">{sub}</p>}
+          </div>
+        </header>
+        {children}
+      </div>
+    </motion.section>
   );
 }

@@ -69,6 +69,12 @@ function getTransport() {
     host: SMTP_HOST,
     port: SMTP_PORT,
     secure: SMTP_SECURE,
+    // 🧵 Connexion tenue chaude : les 2 mails d'une même demande (atelier
+    // + cliente) partagent UNE session SMTP — fini la double poignée de
+    // main TLS ; avec une photo jointe, chaque seconde compte.
+    pool: true,
+    maxConnections: 1,
+    maxMessages: 20,
     auth: { user: SMTP_USER, pass: SMTP_PASS },
   });
   return _transport;
@@ -797,13 +803,19 @@ async function buildPdfAttachment(type, data) {
 // et inversement. Chaque canal rapporte son propre verdict.
 // =============================================================
 
-export async function sendSubmissionMail(type, data) {
+export async function sendSubmissionMail(type, data, options = {}) {
   if (MAIL_TO.length === 0) {
     throw new Error("MAIL_TO manquant (variables d'env serveur)");
   }
 
   const transport = getTransport();
-  const pdfAttachment = await buildPdfAttachment(type, data);
+  // 🧵 Le PDF peut être FOURNI par l'appelant (construit une seule fois
+  // côté /api/track — avant, on le reconstruisait ici une 2e fois !).
+  // `null` explicite = « pas de pièce jointe », sans reconstruction.
+  const pdfAttachment =
+    "pdfAttachment" in options
+      ? options.pdfAttachment
+      : await buildPdfAttachment(type, data);
 
   // Le PDF est annoncé NATIVEËMENT par les modèles (plus d'injection regex).
   const enriched = { ...data, __pdfAttached: !!pdfAttachment };

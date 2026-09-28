@@ -29,6 +29,9 @@ export const config = {
   api: { bodyParser: { sizeLimit: "256kb" } },
 };
 
+// 🧵 60 secondes (plafond Hobby) : les envois SMTP ont besoin d'air.
+export const maxDuration = 60;
+
 // =============================================================
 // Helpers communs
 // =============================================================

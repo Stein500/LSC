@@ -10,7 +10,7 @@
 
 import { logEvent } from "./lib/sheets.js";
 import { sendSubmissionMail } from "./lib/mailer.js";
-import { buildSubmissionPdfBase64, pdfFilename } from "./lib/pdf.js";
+import { buildSubmissionPdf, pdfFilename } from "./lib/pdf.js";
 
 // Évite que Vercel bundle ce truc bizarrement (CommonJS vs ESM)
 // 4 Mo : les commandes peuvent embarquer la PHOTO du modèle (JPEG base64,
@@ -18,6 +18,11 @@ import { buildSubmissionPdfBase64, pdfFilename } from "./lib/pdf.js";
 export const config = {
   api: { bodyParser: { sizeLimit: "4mb" } },
 };
+
+// 🧵 60 secondes (plafond Hobby) : avec une photo jointe, PDF + 2 mails
+// ont besoin d'air — sans cette marge, la fonction mourrait en route
+// (« ça marche sans image, plus avec » — 28/09/2026).
+export const maxDuration = 60;
 
 // =============================================================
 // Helpers
@@ -103,7 +108,11 @@ export default async function handler(req, res) {
   }
 
   // ============================================================
-  // 2. Envoyer le mail si c'est une soumission
+  // 2. Soumission → PDF UNIQUE + mails.
+  //    Avant : le PDF était construit DEUX FOIS par demande (une
+  //    fois pour le mail, une fois pour la réponse) — double travail
+  //    qui, avec une photo jointe, tuait la fonction en plein vol.
+  //    Maintenant : cousu UNE fois, partagé partout. 🧵
   // ============================================================
   const mailType = getTypeFromEvent(event);
   let mailResult = null;
@@ -112,8 +121,35 @@ export default async function handler(req, res) {
   let pdfError = null;
 
   if (mailType) {
+    // 2a. Le ticket PDF, une seule fois — il servira au mail ET à la réponse.
+    let pdfAttachmentForMail = null;
     try {
-      mailResult = await sendSubmissionMail(mailType, payload);
+      const buffer = await buildSubmissionPdf(mailType, payload);
+      const filename = pdfFilename(
+        payload.ref || payload.reference || payload.id || "CLB",
+        mailType,
+      );
+      pdfAttachmentForMail = {
+        filename,
+        content: buffer,
+        contentType: "application/pdf",
+      };
+      pdfResult = {
+        ok: true,
+        base64: buffer.toString("base64"),
+        filename,
+        mimeType: "application/pdf",
+      };
+    } catch (e) {
+      pdfError = e?.message || String(e);
+      console.error("[track] pdf error", pdfError, payload);
+    }
+
+    // 2b. Les mails (atelier + cliente) partent avec ce même PDF joint.
+    try {
+      mailResult = await sendSubmissionMail(mailType, payload, {
+        pdfAttachment: pdfAttachmentForMail,
+      });
     } catch (e) {
       mailError = e?.message || String(e);
       console.error("[track] mail error", mailError, payload);
@@ -129,24 +165,6 @@ export default async function handler(req, res) {
         });
       } catch {}
     }
-
-    // ============================================================
-    // 2b. Générer le ticket PDF correspondant à la soumission
-    // ============================================================
-    try {
-      const base64 = await buildSubmissionPdfBase64(mailType, payload);
-      pdfResult = {
-        ok: true,
-        base64,
-        filename: pdfFilename(payload.ref || payload.reference || payload.id || "CLB", mailType),
-        mimeType: "application/pdf",
-      };
-    } catch (e) {
-      pdfError = e?.message || String(e);
-      console.error("[track] pdf error", pdfError, payload);
-    }
-
-    // Plus de push serveur : tout est en in-app (localStorage).
   }
 
   // ============================================================
