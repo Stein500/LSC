@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Download, Scissors, Share2 } from "lucide-react";
 import { SmartImage } from "./SmartImage";
 import { downloadAtelierImage } from "@/utils/downloadImage";
-import { shareAtelierImage } from "@/utils/shareAtelier";
+import { prepareAtelierShareFile, shareAtelierImage } from "@/utils/shareAtelier";
 import type { InspirationSection } from "@/data/galleries";
 import type { GalleryImage } from "./ScissorGallery";
 
@@ -90,9 +90,11 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
         <button
           type="button"
           onClick={doShare}
+          onPointerDown={() => void prepareAtelierShareFile(img.src)}
+          onPointerEnter={() => void prepareAtelierShareFile(img.src)}
           disabled={busy !== null}
-          aria-label={`Partager le modèle : ${caption} (le lien du site voyage avec)`}
-          title="Partager — le lien du site voyage avec"
+          aria-label={`Partager le modèle : ${caption} (le panneau s'ouvre avec la photo)`}
+          title="Partager — le panneau s’ouvre avec la photo et le lien"
           className="absolute top-3 right-3 w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-white/90 text-[var(--color-marron,#5C2E0C)] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 disabled:opacity-60"
         >
           <Share2 className="w-4.5 h-4.5" aria-hidden="true" />

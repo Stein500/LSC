@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Download, Pause, Play, Scissors, Share2 } fr
 import { SmartImage } from "./SmartImage";
 import { cn } from "@/utils/cn";
 import { downloadAtelierImage } from "@/utils/downloadImage";
-import { shareAtelierImage } from "@/utils/shareAtelier";
+import { prepareAtelierShareFile, shareAtelierImage } from "@/utils/shareAtelier";
 
 /**
  * Une photo dans la galerie.
@@ -230,8 +230,10 @@ export function ScissorGallery({
         <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
           <button
             onClick={handleShare}
+            onPointerDown={() => void prepareAtelierShareFile(images[index].src)}
+            onPointerEnter={() => void prepareAtelierShareFile(images[index].src)}
             className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"
-            aria-label="Partager cette image (le lien du site voyage avec)"
+            aria-label="Partager cette image (le panneau s'ouvre avec la photo)"
             title="Partager l'image"
           >
             <Share2 className="w-3.5 h-3.5" />
