@@ -3,39 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, CheckCircle2, MessageCircle, Phone } from "lucide-react";
 import { contactSchema, type ContactSchema } from "@/utils/validation";
-import { trackFormStart, trackFormStep, trackFormSubmit, trackFormError } from "@/utils/api";
+import { trackFormStart, trackFormSubmit, trackFormError } from "@/utils/api";
 import { generateTicketId } from "@/utils/format";
 import { saveTicket, updateTicket, applySubmissionResult, markTicketKept } from "@/utils/tickets";
 import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
 import { downloadSubmissionPdfFromResponse } from "@/utils/formFlow";
-import { Button } from "@/components/ui/Button";
-import { Field, Input, Textarea, Select } from "@/components/ui/Field";
-import { Stepper } from "@/components/ui/Stepper";
+import { Field, Input, Textarea } from "@/components/ui/Field";
 import { DraftBanner } from "@/components/ui/DraftBanner";
 import { useFormDraft } from "@/hooks/useFormDraft";
-import { CONTACT } from "@/data/content";
-import { buildWhatsAppUrl } from "@/utils/whatsapp";
+import { CouponSection, SubmitCoupon, scrollToFirstInvalid } from "./CouponSection";
 
-const STEPS = [
-  { key: "who", label: "Vos coordonnées" },
-  { key: "msg", label: "Votre message" },
-  { key: "send", label: "Envoi" },
-];
+const SUJETS = [
+  { value: "question", emoji: "❓", label: "Question générale" },
+  { value: "devis", emoji: "💰", label: "Demande de devis" },
+  { value: "reclamation", emoji: "🧷", label: "Réclamation" },
+  { value: "autre", emoji: "✨", label: "Autre" },
+] as const;
 
 /**
- * Formulaire de contact — version améliorée :
- *   - Multi-step (2 étapes) + écran de confirmation
- *   - Brouillon auto-sauvegardé en localStorage (24h)
- *   - Validation live (zod) au blur
- *   - Compteur de caractères sur le message
- *   - Raccourcis canaux directs (WhatsApp / appel)
- *   - Bouton retour, indicateurs d'étape, accessibilité
+ * ContactForm — « L'Écrin du Message » 🎟️ (29/09/2026)
+ * ------------------------------------------------------------
+ * Même étoffe que le formulaire de commande : UNE page, deux coupons
+ * perforés fil d'or, le sujet en tuiles à toucher, et le grand coupon
+ * d'envoi. La réponse arrive sous 48 h ouvrées.
  */
 export function ContactForm() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<ContactSchema | null>(null);
   const startedRef = useRef(false);
   const draftApi = useFormDraft<ContactSchema>("contact");
@@ -44,11 +38,9 @@ export function ContactForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    trigger,
     watch,
     setValue,
     reset,
-    getValues,
   } = useForm<ContactSchema>({
     resolver: zodResolver(contactSchema),
     mode: "onBlur",
@@ -67,7 +59,7 @@ export function ContactForm() {
     if (d) setDraft(d);
   }, []);
 
-  // ----- Auto-save (debounced) -----
+  // ----- Auto-save -----
   useEffect(() => {
     const sub = watch((values) => {
       draftApi.saveDraft(values as ContactSchema);
@@ -80,20 +72,6 @@ export function ContactForm() {
       startedRef.current = true;
       trackFormStart("contact");
     }
-  };
-
-  const next = async () => {
-    const fields: (keyof ContactSchema)[] =
-      step === 0 ? ["nom", "email", "sujet"] : ["message"];
-    const ok = await trigger(fields as any);
-    if (!ok) return;
-    trackFormStep("contact", STEPS[step].key, "next");
-    setStep((s) => Math.min(s + 1, STEPS.length - 1));
-  };
-
-  const back = () => {
-    trackFormStep("contact", STEPS[step].key, "back");
-    setStep((s) => Math.max(0, s - 1));
   };
 
   const onSubmit = async (data: ContactSchema) => {
@@ -111,8 +89,6 @@ export function ContactForm() {
 
     try {
       const response = await trackFormSubmit("contact", payload, ref);
-      // 🧭 Logique de statut UNIQUE : « Bien reçu » dès que l'atelier
-      // tient la demande (mail OU tableau) — plus de faux rouge.
       const outcome = response ? applySubmissionResult(ref, response) : markTicketKept(ref);
       if (response) downloadSubmissionPdfFromResponse(response, ref);
       onSuccessSmartToast({ kind: "contact", ref, payload, formData: data, synced: outcome === "synced" });
@@ -127,18 +103,18 @@ export function ContactForm() {
     }
   };
 
-  const message = watch("message") || "";
-  const subjectLabel: Record<string, string> = {
-    question: "Question générale",
-    devis: "Demande de devis",
-    reclamation: "Réclamation",
-    autre: "Autre",
+  const onInvalid = () => {
+    toast.error("Il manque un petit fil 🧵", {
+      description: "Regardez les champs entourés de rouge — la page vous y mène en glissant.",
+    });
+    scrollToFirstInvalid();
   };
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} onFocus={onFocusFirst} className="space-y-6">
-      <Stepper steps={STEPS} current={step} />
+  const sujet = watch("sujet");
+  const message = watch("message") || "";
 
+  return (
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} onFocus={onFocusFirst} className="space-y-6">
       <DraftBanner
         draft={draft}
         onApply={(d) => {
@@ -152,97 +128,100 @@ export function ContactForm() {
         }}
       />
 
-      {/* ===== Étape 1 : identité ===== */}
-      {step === 0 && (
-        <div className="space-y-5 animate-fade-in">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Nom complet" required error={errors.nom?.message}>
-              <Input
-                {...register("nom")}
-                invalid={!!errors.nom}
-                placeholder="Votre nom"
-                autoComplete="name"
-                aria-required="true"
-              />
-            </Field>
-            <Field label="Téléphone" hint="Optionnel" error={errors.telephone?.message}>
-              <Input
-                type="tel"
-                {...register("telephone")}
-                placeholder="+229 01 ..."
-                autoComplete="tel"
-                inputMode="tel"
-              />
-            </Field>
-          </div>
-
-          <Field label="Email" required error={errors.email?.message}>
+      {/* ① ════════ VOUS ════════ */}
+      <CouponSection
+        numero="01"
+        icon="🧵"
+        title="Dites-nous qui vous êtes"
+        sub="Pour que la colombe vous réponde sous 48 h ouvrées : un nom et une adresse suffisent."
+      >
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Nom complet" required error={errors.nom?.message}>
+            <Input {...register("nom")} invalid={!!errors.nom} placeholder="Votre nom" autoComplete="name" />
+          </Field>
+          <Field label="Téléphone" hint="Optionnel — si vous préférez qu'on vous rappelle" error={errors.telephone?.message}>
             <Input
-              type="email"
-              {...register("email")}
-              invalid={!!errors.email}
-              placeholder="vous@exemple.com"
-              autoComplete="email"
-              inputMode="email"
-              aria-required="true"
+              type="tel"
+              {...register("telephone")}
+              invalid={!!errors.telephone}
+              placeholder="+229 01 ..."
+              autoComplete="tel"
+              inputMode="tel"
             />
           </Field>
-
-          <Field label="Sujet" required error={errors.sujet?.message}>
-            <Select {...register("sujet")} invalid={!!errors.sujet} aria-required="true">
-              <option value="">— Choisir —</option>
-              <option value="question">Question générale</option>
-              <option value="devis">Demande de devis</option>
-              <option value="reclamation">Réclamation</option>
-              <option value="autre">Autre</option>
-            </Select>
-          </Field>
-
-          <div className="flex justify-end pt-2">
-            <Button type="button" onClick={next} icon={<ArrowRight className="w-4 h-4" />} size="lg">
-              Continuer
-            </Button>
-          </div>
         </div>
-      )}
 
-      {/* ===== Étape 2 : message ===== */}
-      {step === 1 && (
-        <div className="space-y-5 animate-fade-in">
-          <Field
-            label="Votre message"
-            required
-            hint={`${message.length} / 2000 caractères — soyez précis(e), on vous répond sous 48h`}
-            error={errors.message?.message}
-          >
-            <Textarea
-              rows={6}
-              {...register("message")}
-              invalid={!!errors.message}
-              placeholder="Décrivez votre besoin, votre projet ou votre question..."
-              aria-required="true"
-            />
-          </Field>
+        <Field label="Email" required error={errors.email?.message} hint="Pour recevoir la réponse et votre ticket PDF">
+          <Input
+            type="email"
+            {...register("email")}
+            invalid={!!errors.email}
+            placeholder="vous@exemple.com"
+            autoComplete="email"
+            inputMode="email"
+          />
+        </Field>
 
-          <div className="rounded-2xl bg-[var(--color-cream)] border border-[var(--color-line)] p-4 text-xs text-[var(--color-muted)] leading-relaxed">
-            <p className="font-semibold text-[var(--color-ink)] mb-1">Résumé :</p>
-            <p>
-              <strong>{getValues("nom") || "—"}</strong> · {getValues("email") || "—"}
-              {getValues("telephone") ? ` · ${getValues("telephone")}` : ""}
-            </p>
-            <p>Sujet : {subjectLabel[getValues("sujet") as string] || "—"}</p>
+        {/* 🏷️ Le sujet — petites tuiles à toucher, plus de menu déroulant */}
+        <Field label="Votre sujet" required error={errors.sujet?.message}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="group" aria-label="Votre sujet">
+            {SUJETS.map((s) => {
+              const selected = sujet === s.value;
+              return (
+                <button
+                  key={s.value}
+                  type="button"
+                  onClick={() => setValue("sujet", s.value, { shouldValidate: true })}
+                  aria-pressed={selected}
+                  className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 px-2.5 py-3.5 text-center transition-all min-h-[76px] ${
+                    selected
+                      ? "border-[var(--color-orange)] bg-[var(--color-orange)]/5 shadow-md"
+                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-citron)]"
+                  }`}
+                >
+                  <span className="text-2xl leading-none">{s.emoji}</span>
+                  <span className="font-semibold text-[11px] leading-tight">{s.label}</span>
+                </button>
+              );
+            })}
           </div>
+        </Field>
+      </CouponSection>
 
-          <div className="flex justify-between pt-2">
-            <Button type="button" onClick={back} variant="ghost" icon={<ArrowLeft className="w-4 h-4" />}>
-              Retour
-            </Button>
-            <Button type="submit" loading={isSubmitting} size="lg" icon={<CheckCircle2 className="w-4 h-4" />}>
-              Envoyer le message
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* ② ════════ VOTRE MESSAGE ════════ */}
+      <CouponSection
+        numero="02"
+        icon="💌"
+        title="Votre message"
+        sub="Racontez-nous simplement — c'est lu avec attention, promis."
+      >
+        <Field
+          label="Votre message"
+          required
+          hint={`${message.length} / 2000 caractères — soyez précis(e), on vous répond sous 48 h`}
+          error={errors.message?.message}
+        >
+          <Textarea
+            rows={6}
+            {...register("message")}
+            invalid={!!errors.message}
+            placeholder="Décrivez votre besoin, votre projet ou votre question..."
+          />
+        </Field>
+      </CouponSection>
+
+      {/* 🎟️ ════════ L'ENVOI ════════ */}
+      <SubmitCoupon
+        loading={isSubmitting}
+        idleLabel="Envoyer le message"
+        busyLabel="La colombe s'envole…"
+        note={
+          <>
+            Réponse sous <strong className="text-[var(--color-ink)]">48 h ouvrées</strong>.
+            Votre ticket PDF arrive aussitôt — gardez-le précieusement. 🎫
+          </>
+        }
+      />
     </form>
   );
 }

@@ -1,54 +1,42 @@
-import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { CheckCircle2 } from "lucide-react";
 import { precommandeSchema, type PrecommandeSchema } from "@/utils/validation";
 import { trackFormStart, trackFormSubmit, trackFormError } from "@/utils/api";
 import { generateTicketId } from "@/utils/format";
 import { saveTicket, updateTicket, applySubmissionResult, markTicketKept } from "@/utils/tickets";
 import { onSuccessSmartToast, onErrorSmartToast } from "@/hooks/useSmartToasts";
 import { downloadSubmissionPdfFromResponse } from "@/utils/formFlow";
-import { urlToJpegDataUrl, fileToJpegDataUrl } from "@/utils/imageEmbed";
 import { SERVICES } from "@/data/content";
-import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
 import { DraftBanner } from "@/components/ui/DraftBanner";
 import { useFormDraft } from "@/hooks/useFormDraft";
+import { CouponSection, SubmitCoupon, scrollToFirstInvalid } from "./CouponSection";
+import { buildWhatsAppUrl } from "@/utils/whatsapp";
 
 /**
- * PrecommandeForm — « L'Écrin de Commande » 🎟️ (28/09/2026)
+ * PrecommandeForm — « L'Écrin de Commande » 🎟️ (29/09/2026)
  * ------------------------------------------------------------
- * Demande de la cheffe : un formulaire UNIQUE (plus d'étapes !),
- * simple comme un bonjour, waooh comme les héros des pages.
+ * Un formulaire UNIQUE, simple comme un bonjour, waooh comme les héros :
  *
- *   · Trois coupons numérotés, perforés fil d'or comme les héros :
- *       ① Dites-nous qui vous êtes   (2 champs obligatoires : nom + tél)
- *       ② La tenue de vos rêves      (tout est optionnel)
- *       ③ Montrez-nous, dites-nous   (photo + quelques mots)
- *   · SUPPRIMÉ, car inutile pour passer commande : Budget, Mesures
- *     (l'essayage à l'atelier s'en charge), récap d'étape (le ticket
- *     PDF et la page merci le racontent déjà), et le stepper.
- *   · La photo jointe est compressée maison (~100-300 Ko, orientation
- *     EXIF respectée) avant de voyager — envoi propre et léger.
+ *   ①  Dites-nous qui vous êtes  — 2 champs obligatoires (nom + tél)
+ *   ②  La tenue de vos rêves     — tout est optionnel
+ *   ③  Dites-nous tout           — quelques mots suffisent
+ *
+ * 📸 LA PHOTO NE VOYAGE PLUS PAR LE FORMULAIRE (décision de la cheffe) :
+ *    joindre une image faisait tout casser et compliquait la vie des
+ *    clientes. On les invite plutôt à l'envoyer sur WhatsApp après
+ *    l'envoi — le bouton est prêt ici et sur la page Merci.
  */
 
 export function PrecommandeForm({
   presetType,
   presetModele,
-  presetPhoto,
 }: { presetType?: string; presetModele?: string; presetPhoto?: string } = {}) {
   const navigate = useNavigate();
   const [draft, setDraft] = useState<PrecommandeSchema | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(presetPhoto ?? null);
-  const [photoName, setPhotoName] = useState<string | null>(
-    presetPhoto ? (presetPhoto.split("/").pop() ?? "modele.webp") : null,
-  );
-  // 📎 La photo prête à EMBARQUER dans le ticket PDF (JPEG dataURL ~100-300 Ko)
-  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
-  const photoObjectUrlRef = useRef<string | null>(null);
   const startedRef = useRef(false);
   const draftApi = useFormDraft<PrecommandeSchema>("precommande");
 
@@ -97,49 +85,6 @@ export function PrecommandeForm({
     setValue("type_tenue", presetType, { shouldValidate: true });
   }, [presetType, setValue]);
 
-  // ----- Photo jointe (modèle galerie ou photo de la cliente) -----
-  // Convertie d'office en JPEG embarquable : elle sera cousue dans le
-  // ticket PDF, pas seulement nommée.
-  useEffect(() => {
-    let alive = true;
-    if (presetPhoto) {
-      urlToJpegDataUrl(presetPhoto).then((d) => {
-        if (alive && d) setPhotoDataUrl(d);
-      });
-    }
-    return () => {
-      alive = false;
-    };
-  }, [presetPhoto]);
-
-  useEffect(
-    () => () => {
-      if (photoObjectUrlRef.current) URL.revokeObjectURL(photoObjectUrlRef.current);
-    },
-    [],
-  );
-
-  const onPickPhoto = async (e: ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    if (photoObjectUrlRef.current) URL.revokeObjectURL(photoObjectUrlRef.current);
-    const url = URL.createObjectURL(f);
-    photoObjectUrlRef.current = url;
-    setPhotoPreview(url);
-    setPhotoName(f.name);
-    setPhotoDataUrl(await fileToJpegDataUrl(f));
-  };
-
-  const removePhoto = () => {
-    if (photoObjectUrlRef.current) {
-      URL.revokeObjectURL(photoObjectUrlRef.current);
-      photoObjectUrlRef.current = null;
-    }
-    setPhotoPreview(null);
-    setPhotoName(null);
-    setPhotoDataUrl(null);
-  };
-
   const onFocusFirst = () => {
     if (!startedRef.current) {
       startedRef.current = true;
@@ -149,15 +94,12 @@ export function PrecommandeForm({
 
   const onSubmit = async (data: PrecommandeSchema) => {
     const ref = generateTicketId();
-    // 👗 Le modèle et sa photo voyagent comme de VRAIES données :
-    // nom du modèle en clair + photo JPEG embarquée (cousue dans le
-    // ticket PDF — pas un simple nom de fichier perdu).
+    // 👗 Le modèle de la galerie voyage en clair (son nom) — la photo,
+    // elle, prendra la route WhatsApp, droite et sans encombre.
     const payload = {
       ...data,
       ref,
       modele: presetModele ?? "",
-      photo_nom: photoName ?? "",
-      photo_jpeg: photoDataUrl ?? "",
     };
     saveTicket({
       ref,
@@ -187,16 +129,12 @@ export function PrecommandeForm({
     }
   };
 
-  /** Champ oublié ? On glisse jusqu'à lui, avec douceur. */
+  /** Champ oublié ? On prévient doucement, puis on glisse jusqu'à lui. */
   const onInvalid = () => {
     toast.error("Il manque un petit fil 🧵", {
       description: "Votre nom et votre téléphone suffisent pour partir — regardez les champs entourés de rouge.",
     });
-    requestAnimationFrame(() => {
-      document
-        .querySelector('[aria-invalid="true"]')
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
+    scrollToFirstInvalid();
   };
 
   return (
@@ -260,7 +198,7 @@ export function PrecommandeForm({
             rien à refaire, rien à redire. */}
         {presetModele && (
           <p
-            className="mb-5 text-sm rounded-2xl border px-3.5 py-2.5 flex items-start gap-2"
+            className="text-sm rounded-2xl border px-3.5 py-2.5 flex items-start gap-2"
             style={{
               background: "var(--color-feuille-doux,#EFF7E3)",
               borderColor: "color-mix(in srgb, var(--color-feuille,#7CBA45) 40%, transparent)",
@@ -340,72 +278,16 @@ export function PrecommandeForm({
         </div>
       </CouponSection>
 
-      {/* ③ ════════ MONTREZ-NOUS ════════ */}
+      {/* ③ ════════ DITES-NOUS TOUT ════════ */}
       <CouponSection
         numero="03"
-        icon="📸"
-        title="Montrez-nous, dites-nous tout"
-        sub="Une photo ou quelques mots suffisent à nous lancer — tout est optionnel."
+        icon="💬"
+        title="Dites-nous tout"
+        sub="Quelques mots suffisent à nous lancer — tout est optionnel, tout se complètera à l'essayage."
       >
         <Field
-          label="Photo de votre tenue"
-          hint={
-            presetModele
-              ? "La photo du modèle choisi est jointe — remplacez-la si vous préférez la vôtre."
-              : "Optionnel — montrez-nous le modèle exact (photo, capture, image sauvegardée)."
-          }
-        >
-          {photoPreview ? (
-            <div
-              className="flex items-center gap-3 rounded-3xl border-2 border-dashed p-3"
-              style={{ borderColor: "var(--color-or,#C9A87C)" }}
-            >
-              <img
-                src={photoPreview}
-                alt={`Photo jointe — ${photoName ?? "modèle"}`}
-                className="w-20 h-20 object-cover rounded-2xl border border-[var(--color-line)] shadow-sm shrink-0"
-              />
-              <div className="text-xs text-[var(--color-muted)] min-w-0 flex-1">
-                <p className="font-semibold text-sm text-[var(--color-ink)] break-all">{photoName}</p>
-                <p className="mt-0.5">{photoDataUrl ? "✓ recadrée maison et cousue dans votre ticket PDF" : "jointe à votre demande"}</p>
-                <div className="flex gap-3 mt-2">
-                  <label className="font-semibold cursor-pointer underline underline-offset-2 decoration-dotted" style={{ color: "var(--color-feuille-f,#558B2F)" }}>
-                    Changer
-                    <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
-                  </label>
-                  <button
-                    type="button"
-                    onClick={removePhoto}
-                    className="font-semibold text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors"
-                  >
-                    Retirer
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <label
-              className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed px-4 py-7 text-center cursor-pointer transition-all hover:-translate-y-0.5"
-              style={{
-                borderColor: "var(--color-feuille,#7CBA45)",
-                background: "color-mix(in srgb, var(--color-feuille-doux,#EFF7E3) 45%, transparent)",
-              }}
-            >
-              <span className="text-3xl" aria-hidden="true">📷</span>
-              <span className="text-sm font-bold" style={{ color: "var(--color-feuille-f,#558B2F)" }}>
-                Ajouter une photo
-              </span>
-              <span className="text-xs text-[var(--color-muted)]">
-                Elle sera allégée maison avant le voyage — envoi propre et léger.
-              </span>
-              <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
-            </label>
-          )}
-        </Field>
-
-        <Field
-          label="Dites-nous tout"
-          hint="Style, occasion, couleurs, mesures, budget, délai… Plus c'est précis, mieux c'est — et tout se complètera à l'essayage."
+          label="Votre projet"
+          hint="Style, occasion, couleurs, mesures, budget, délai… Plus c'est précis, mieux c'est."
           error={errors.description?.message}
         >
           <Textarea
@@ -414,91 +296,48 @@ export function PrecommandeForm({
             placeholder="Décrivez votre tenue idéale..."
           />
         </Field>
+
+        {/* 📸 La photo prend la route WhatsApp — celle qu'elles connaissent déjà 🤍 */}
+        <div
+          className="rounded-3xl border-2 border-dashed p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3.5"
+          style={{
+            borderColor: "var(--color-feuille,#7CBA45)",
+            background: "color-mix(in srgb, var(--color-feuille-doux,#EFF7E3) 45%, transparent)",
+          }}
+        >
+          <span className="text-3xl shrink-0" aria-hidden="true">📸</span>
+          <div className="flex-1 text-sm leading-relaxed" style={{ color: "var(--color-feuille-f,#558B2F)" }}>
+            <p className="font-bold">Une photo du modèle ? Envoyez-la sur WhatsApp !</p>
+            <p className="mt-0.5 text-xs opacity-90">
+              Après l'envoi de votre commande, un bouton WhatsApp tout prêt vous attend
+              sur la page Merci — la photo arrivera droit dans nos mains, sans faire
+              capoter votre commande.
+            </p>
+          </div>
+          <a
+            href={buildWhatsAppUrl(undefined, "Bonjour, je viens de passer commande en ligne — voici la photo de mon modèle 📸")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold text-white shadow-md transition-transform hover:scale-105 active:scale-95"
+            style={{ background: "linear-gradient(135deg, #558B2F 0%, #7CBA45 100%)" }}
+          >
+            💬 WhatsApp
+          </a>
+        </div>
       </CouponSection>
 
-      {/* 🎟️ ════════ L'ENVOI — grand coupon perforé ════════ */}
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-30px" }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="relative bg-white rounded-[1.75rem] border-2 border-dashed p-5 md:p-7 text-center shadow-sm"
-        style={{ borderColor: "var(--color-or,#C9A87C)" }}
-      >
-        <p className="text-xs md:text-sm text-[var(--color-muted)] leading-relaxed max-w-md mx-auto mb-5">
-          Réponse sous <strong className="text-[var(--color-ink)]">48 h ouvrées</strong>.
-          Votre ticket PDF arrive aussitôt — gardez-le, c'est votre fil d'Ariane avec l'atelier. 🎫
-        </p>
-        <Button
-          type="submit"
-          loading={isSubmitting}
-          size="lg"
-          icon={<CheckCircle2 className="w-4 h-4" />}
-          shimmer
-          className="w-full sm:w-auto sm:min-w-[280px]"
-        >
-          {isSubmitting ? "Couture en cours…" : "Envoyer ma commande"}
-        </Button>
-      </motion.div>
+      {/* 🎟️ ════════ L'ENVOI ════════ */}
+      <SubmitCoupon
+        loading={isSubmitting}
+        idleLabel="Envoyer ma commande"
+        busyLabel="Couture en cours…"
+        note={
+          <>
+            Réponse sous <strong className="text-[var(--color-ink)]">48 h ouvrées</strong>.
+            Votre ticket PDF arrive aussitôt — gardez-le, c'est votre fil d'Ariane avec l'atelier. 🎫
+          </>
+        }
+      />
     </form>
-  );
-}
-
-/**
- * Un coupon de l'écrin — perforation fil d'or en tête (comme les coupons
- * des héros), pastille numérotée dorée, entrée en douceur. 🎟️
- */
-function CouponSection({
-  numero,
-  icon,
-  title,
-  sub,
-  children,
-}: {
-  numero: string;
-  icon: string;
-  title: string;
-  sub?: string;
-  children: ReactNode;
-}) {
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="relative bg-white rounded-[1.75rem] border border-[var(--color-line)] shadow-sm overflow-hidden"
-    >
-      {/* Perforation fil d'or + petit ciseau */}
-      <div className="relative h-4 bg-[var(--color-cream)]" aria-hidden="true">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] opacity-70 select-none">✂</span>
-        <span
-          className="absolute left-9 right-4 top-1/2 -translate-y-1/2 border-t-2 border-dashed"
-          style={{ borderColor: "var(--color-or,#C9A87C)" }}
-        />
-      </div>
-
-      <div className="px-5 md:px-7 pb-6 md:pb-7 pt-4 space-y-5">
-        <header className="flex items-start gap-3.5">
-          <span
-            className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-extrabold text-white shadow-md"
-            style={{ background: "linear-gradient(135deg, #D3B68C 0%, #C9A87C 45%, #A9854F 100%)" }}
-            aria-hidden="true"
-          >
-            {numero}
-          </span>
-          <div className="pt-0.5">
-            <h3
-              className="text-lg md:text-xl leading-tight"
-              style={{ fontFamily: "var(--font-display)", color: "var(--color-ink)" }}
-            >
-              {icon} {title}
-            </h3>
-            {sub && <p className="mt-1 text-xs md:text-[13px] text-[var(--color-muted)] leading-relaxed">{sub}</p>}
-          </div>
-        </header>
-        {children}
-      </div>
-    </motion.section>
   );
 }

@@ -69,15 +69,34 @@ function getTransport() {
     host: SMTP_HOST,
     port: SMTP_PORT,
     secure: SMTP_SECURE,
-    // 🧵 Connexion tenue chaude : les 2 mails d'une même demande (atelier
-    // + cliente) partagent UNE session SMTP — fini la double poignée de
-    // main TLS ; avec une photo jointe, chaque seconde compte.
-    pool: true,
-    maxConnections: 1,
-    maxMessages: 20,
+    // 🧵 Connexion SIMPLE par envoi (noble retrait de la « pool » :
+    // tenue chaude entre deux réveils de fonction serverless, elle
+    // pouvait pendre sur une prise que Vercel avait déjà refermée).
     auth: { user: SMTP_USER, pass: SMTP_PASS },
   });
   return _transport;
+}
+
+/**
+ * Une laisse de 25 s par envoi : si le postier pend (prise morte,
+ * réseau capricieux…), l'erreur se rend VITE et isolée — jamais
+ * toute la demande assassinée dans un délai qui n'en finit pas.
+ */
+function sendWithGuards(transport, mail) {
+  return Promise.race([
+    transport.sendMail(mail),
+    new Promise((_, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new Error(
+              "Le postier n'a pas répondu en 25 s — la connexion est à recoudre.",
+            ),
+          ),
+        25000,
+      ),
+    ),
+  ]);
 }
 
 // =============================================================
@@ -827,7 +846,7 @@ export async function sendSubmissionMail(type, data, options = {}) {
     const adminMail = buildAdminMail(type, enriched);
     const adminAttachments = [...(adminMail.attachments || [])];
     if (pdfAttachment) adminAttachments.push(pdfAttachment);
-    const adminInfo = await transport.sendMail({
+    const adminInfo = await sendWithGuards(transport, {
       from: MAIL_FROM,
       to: MAIL_TO.join(", "),
       subject: adminMail.subject,
@@ -848,7 +867,7 @@ export async function sendSubmissionMail(type, data, options = {}) {
       const clientMail = buildClientMail(type, enriched);
       const customerAttachments = [...(clientMail.attachments || [])];
       if (pdfAttachment) customerAttachments.push(pdfAttachment);
-      const customerInfo = await transport.sendMail({
+      const customerInfo = await sendWithGuards(transport, {
         from: MAIL_FROM,
         to: customerEmail,
         replyTo: MAIL_TO[0],
