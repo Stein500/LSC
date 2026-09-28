@@ -5,10 +5,9 @@ import { SEO, SchemaBuilders } from "@/components/seo/SEO";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { useTheme } from "@/theme/ThemeContext";
 import { Reveal, Stagger, RevealItem } from "@/components/ui/Reveal";
 import { PageHeaderBand } from "@/components/ui/PageHeaderBand";
-import { ResponsiveHeroBackground } from "@/components/ui/ResponsiveHeroBackground";
+import { HeroCoupon, NeedleStitch } from "@/components/ui/PageHero";
 import { Aurora } from "@/components/ui/Aurora";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { CONTACT } from "@/data/content";
@@ -31,10 +30,7 @@ const MERCERIE_ITEMS = [
 ];
 
 export default function Home() {
-  const { resolvedTheme } = useTheme();
   const reduce = useReducedMotion();
-  const heroOverlayTone =
-    resolvedTheme === "light" ? "light" : resolvedTheme === "amoled" ? "amoled" : "dark";
 
   const heroParent = {
     hidden: {},
@@ -64,52 +60,61 @@ export default function Home() {
         ]}
       />
 
-      {/* ===================== HERO — LA MAISON, ROSE & FEUILLE ===================== */}
+      {/* ===================== HERO — LA VITRINE DE LA MAISON ===================== */}
       <section
-        className="relative overflow-hidden"
+        className="relative overflow-hidden lsc-grain"
         style={{ background: "linear-gradient(180deg, #FBE7EB 0%, #FDF3F5 52%, #FFFFFF 100%)" }}
       >
         <Aurora className="absolute inset-0 z-0" variant="warm" intensity="soft" />
-        <ResponsiveHeroBackground
-          src="/images/header-colombes.webp"
-          alt="Couture Colombe et Merceries — atelier de couture et mercerie à Porto-Novo"
-          fallbackRatio={16 / 9}
-          overlayTone={heroOverlayTone}
-          steam
-          grain
-          halo
-          minRatio={0.8}
-          maxRatio={1.78}
-          minHeight="min(72vh, 580px)"
-          maxHeight="min(90vh, 780px)"
-        >
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full">
-            {/* Orbes flottants — rouge colombe & feuille, la maison en deux couleurs */}
-            {!reduce && (
-              <>
-                <div
-                  className="absolute top-14 right-[8%] hidden lg:block w-24 h-24 rounded-full pointer-events-none lsc-drift"
-                  style={{
-                    background: "radial-gradient(circle at 30% 30%, rgba(209,35,42,0.5), rgba(209,35,42,0.08) 70%)",
-                    filter: "blur(2px)",
-                    animationDuration: "11s",
-                  }}
-                  aria-hidden="true"
-                />
-                <div
-                  className="absolute top-1/3 right-[3%] hidden lg:block w-40 h-40 rounded-full border border-dashed pointer-events-none lsc-spin-slow"
-                  style={{ borderColor: "rgba(124,186,69,0.65)" }}
-                  aria-hidden="true"
-                />
-              </>
-            )}
 
-            <motion.div variants={heroParent} initial="hidden" animate="show">
-              <div className="max-w-3xl mx-auto text-center">
-                <motion.div variants={heroChild} className="flex flex-wrap items-center justify-center gap-2 mb-8">
+        {/* Poches de lumière feuille & safran */}
+        <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full blur-3xl opacity-80 bg-[var(--color-feuille-doux)]" aria-hidden="true" />
+        <div className="absolute top-28 right-[6%] w-56 h-56 rounded-full blur-3xl opacity-50 bg-[#F6E3C4]" aria-hidden="true" />
+
+        {/* Lettre-filigrane géante (teinte FIXE : la toile est fixe,
+            lisible en thème clair comme en thème sombre) */}
+        <div
+          className="absolute -bottom-10 -left-4 select-none pointer-events-none font-bold z-0"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(10rem, 24vw, 20rem)",
+            lineHeight: 0.85,
+            color: "#241118",
+            opacity: 0.05,
+          }}
+          aria-hidden="true"
+        >
+          C
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 lg:pt-36 pb-16 lg:pb-24 w-full">
+          {/* Orbes flottants — rouge colombe & feuille, la maison en deux couleurs */}
+          {!reduce && (
+            <>
+              <div
+                className="absolute top-14 right-[8%] hidden lg:block w-24 h-24 rounded-full pointer-events-none lsc-drift"
+                style={{
+                  background: "radial-gradient(circle at 30% 30%, rgba(209,35,42,0.5), rgba(209,35,42,0.08) 70%)",
+                  filter: "blur(2px)",
+                  animationDuration: "11s",
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="absolute top-1/3 right-[3%] hidden lg:block w-40 h-40 rounded-full border border-dashed pointer-events-none lsc-spin-slow"
+                style={{ borderColor: "rgba(124,186,69,0.65)" }}
+                aria-hidden="true"
+              />
+            </>
+          )}
+
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            <motion.div variants={heroParent} initial="hidden" animate="show" className="lg:col-span-7">
+              <div className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left">
+                <motion.div variants={heroChild} className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-7">
                   <div
-                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.16em] uppercase text-[var(--color-ink)] lsc-badge-breathe"
-                    style={{ background: "var(--color-feuille-doux)", border: "1px solid rgba(85,139,47,0.35)" }}
+                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-[0.16em] uppercase lsc-badge-breathe"
+                    style={{ background: "var(--color-feuille-doux)", border: "1px solid rgba(85,139,47,0.35)", color: "#241118" }}
                   >
                     <span className="relative flex w-1.5 h-1.5">
                       <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: "var(--color-feuille-f)" }} />
@@ -121,23 +126,37 @@ export default function Home() {
 
                 <motion.h1
                   variants={heroChild}
-                  className="font-bold leading-[1.06] mb-6 text-[clamp(2.4rem,7.5vw,4.6rem)]"
+                  className="font-bold leading-[1.04] mb-4 text-[clamp(2.7rem,7vw,5rem)]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  <span className="block text-[var(--color-ink)]">Couture Colombe</span>
-                  <span className="block lsc-text-silk italic">et Merceries</span>
+                  <span className="block" style={{ color: "#241118" }}>Couture Colombe</span>
+                  <span
+                    className="block italic"
+                    style={{
+                      backgroundImage: "linear-gradient(100deg, #A41623 0%, #C4652A 42%, #8B4513 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "transparent",
+                    }}
+                  >
+                    et Merceries
+                  </span>
                 </motion.h1>
+
+                <motion.div variants={heroChild} className="w-fit mx-auto lg:mx-0 mb-5">
+                  <NeedleStitch />
+                </motion.div>
 
                 <motion.p
                   variants={heroChild}
-                  className="text-lg md:text-xl italic font-semibold max-w-xl mx-auto text-[var(--color-ink-soft)]"
-                  style={{ fontFamily: "var(--font-display)" }}
+                  className="text-lg md:text-xl italic font-semibold max-w-xl mx-auto lg:mx-0"
+                  style={{ fontFamily: "var(--font-display)", color: "rgba(92,46,12,0.9)" }}
                 >
                   La maison qui coud, vend et transmet — robes sur mesure, wax & bazin,
                   layette, mercerie. L'élégance béninoise cousue main depuis {env.atelierFounded}.
                 </motion.p>
 
-                <motion.div variants={heroChild} className="mt-9 flex flex-wrap justify-center gap-3">
+                <motion.div variants={heroChild} className="mt-9 flex flex-wrap justify-center lg:justify-start gap-3">
                   <Magnetic strength={0.18}>
                     <Link to="/services" onClick={() => trackCtaClick("hero_commander")} className="inline-block">
                       <Button size="lg" icon={<ArrowRight className="w-4 h-4" />} shimmer>
@@ -164,7 +183,10 @@ export default function Home() {
                       className="inline-flex items-center gap-2 px-5 py-4 text-base font-semibold transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97]"
                       style={{ color: "var(--color-marron,#5C2E0C)" }}
                     >
-                      <span className="w-9 h-9 rounded-full grid place-items-center bg-white/85 border border-[var(--color-or,#C9A87C)] shadow-sm">
+                      <span
+                        className="w-9 h-9 rounded-full grid place-items-center border shadow-sm"
+                        style={{ background: "#FDF6EF", borderColor: "var(--color-gold-thread)" }}
+                      >
                         <MessageCircle className="w-4 h-4" />
                       </span>
                       WhatsApp
@@ -174,19 +196,31 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Indicateur scroll */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-[var(--color-ink)]/80">
-              <span className="text-[10px] uppercase tracking-[0.3em]">Découvrir</span>
-              <div className="w-6 h-10 rounded-full border-2 flex justify-center pt-2 border-current">
-                <motion.div
-                  className="w-1 h-2 rounded-full bg-current"
-                  animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }}
-                  transition={{ duration: 1.6, repeat: Infinity }}
-                />
-              </div>
+            {/* ——— Colonne vitrine : LE COUPON de la maison ——— */}
+            <div className="lg:col-span-5">
+              <HeroCoupon
+                image="/images/header-colombes.webp"
+                alt="Couture Colombe et Merceries — atelier de couture et mercerie à Porto-Novo"
+                aspectClassName="aspect-square"
+              />
             </div>
           </div>
-        </ResponsiveHeroBackground>
+
+          {/* Indicateur scroll */}
+          <div
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
+            style={{ color: "rgba(92,46,12,0.8)" }}
+          >
+            <span className="text-[10px] uppercase tracking-[0.3em]">Découvrir</span>
+            <div className="w-6 h-10 rounded-full border-2 flex justify-center pt-2 border-current">
+              <motion.div
+                className="w-1 h-2 rounded-full bg-current"
+                animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity }}
+              />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ===================== L'ATELIER EN IMAGES (signées, téléchargeables) ===================== */}
