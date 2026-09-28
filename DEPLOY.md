@@ -1,8 +1,16 @@
 # 🚀 Déploiement — Couture Colombe et Merceries (depuis Termux)
 
-> **Deux livrables, deux gestes :**
-> - 🧵 **`lsc-colombes-complet.zip`** (≈ 15 Mo) — TOUT le projet, images comprises. **Conseillé à chaque fois.**
-> - 🕊️ **`lsc-colombes-leger.zip`** (≈ 64 Ko) — uniquement les fichiers modifiés de la dernière réparation, à écraser dans le projet existant. Pratique quand la connexion compte ses méga-octets.
+> **Trois livrables, trois gestes :**
+> - 🧵 **`lsc-colombes-complet.zip`** (≈ 15 Mo) — TOUT le projet, vraies images comprises. **Le choix sûr.**
+> - 🪶 **`lsc-colombes-complet-placeholder.zip`** (≈ 1,9 Mo) — TOUT le projet, mais les grandes photos sont des **marqueurs de pose** (logo et icônes réels). Pour la connexion plume : on repose ensuite les vraies photos par-dessus (lis `RESTAURER-IMAGES.txt` à sa racine — **jamais dézippé par-dessus un dossier qui a déjà les vraies photos !**).
+> - 🕊️ **`lsc-colombes-leger.zip`** (≈ 45 Ko) — uniquement les fichiers modifiés de la dernière réparation, à écraser dans le projet existant à jour.
+
+> 📦 **Archiver un paquet sans le dézipper** (ex. dans `/storage/emulated/0/Web+/cv2`) :
+> ```bash
+> mkdir -p "/storage/emulated/0/Web+/cv2"
+> curl -L -o "/storage/emulated/0/Web+/cv2/lsc-colombes-complet-placeholder.zip" \
+>   "https://raw.githubusercontent.com/Stein500/LSC/arena/019fce3a-lsc/lsc-colombes-complet-placeholder.zip"
+> ```
 
 ---
 
