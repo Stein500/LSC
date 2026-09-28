@@ -35,11 +35,14 @@
 
 Le mot de passe d'application Gmail est devenu invalide (Google le révoque si le mot de passe du compte change ; ou il a été recopié avec des espaces/une faute).
 
-1. Connectée avec **lesservicescolombes@gmail.com**, ouvre : **https://myaccount.google.com/apppasswords**
+> 🔑 **Règle d'or** : un mot de passe d'application n'ouvre la porte **qu'au compte Google qui l'a généré**. `SMTP_USER` doit donc être **exactement ce compte-là**, pas un autre.
+> Chez toi, tout a été généré avec **techsteinsecureway@gmail.com** → `SMTP_USER` = `techsteinsecureway@gmail.com`. *(Si tu mets `lesservicescolombes@gmail.com` avec le mot de passe de l'autre compte : Invalid login garanti.)*
+
+1. Connectée avec **le compte d'envoi des mails** (chez toi : **techsteinsecureway@gmail.com**), ouvre : **https://myaccount.google.com/apppasswords**
    *(nécessite la validation en 2 étapes du compte — active-la si demandée)*
 2. Crée un mot de passe d'application : nom « mail atelier » → génère → **16 lettres**.
 3. Vercel → `SMTP_PASS` → **Edit** → colle les 16 lettres **sans aucun espace** (ex. `abcdabcdabcdabcd`) → coche les 3 environnements → **Save**.
-4. Vérifie au passage que `SMTP_USER` = `lesservicescolombes@gmail.com` (exactement, sans faute).
+4. Vérifie au passage que `SMTP_USER` = **le même compte qu'à l'étape 1** (`techsteinsecureway@gmail.com` chez toi) — exactement, sans faute.
 
 ### Après les réparations
 
@@ -201,10 +204,10 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 | `SMTP_HOST` | `smtp.gmail.com` |
 | `SMTP_PORT` | `465` |
 | `SMTP_SECURE` | `true` |
-| `SMTP_USER` | ton adresse Gmail d'envoi |
-| `SMTP_PASS` | **mot de passe d'application** Google (Compte Google → Sécurité → Validation en 2 étapes → Mots de passe d'application) — PAS le mot de passe Gmail |
-| `MAIL_TO` | destinataire(s) des notifications — plusieurs : `a@x.com,b@x.com` |
-| `MAIL_FROM` | `Couture Colombe et Merceries <ton-adresse@gmail.com>` |
+| `SMTP_USER` | ton adresse Gmail d'envoi — **celle qui a généré le mot de passe d'application** 🔑 (atelier : `techsteinsecureway@gmail.com`) |
+| `SMTP_PASS` | **mot de passe d'application** Google du compte `SMTP_USER` (Compte Google → Sécurité → Validation en 2 étapes → Mots de passe d'application) — PAS le mot de passe Gmail |
+| `MAIL_TO` | destinataire(s) des notifications — plusieurs : `a@x.com,b@x.com` (atelier : `techsteinsecureway@gmail.com,lesservicescolombes@gmail.com`) |
+| `MAIL_FROM` | `Couture Colombe et Merceries <adresse@gmail.com>` — l'adresse entre `< >` **identique à `SMTP_USER`** (sinon Gmail réécrit l'expéditeur) |
 | `ATELIER_LOGO_URL` | `https://lesservicescolombes.vercel.app/images/logo.webp` |
 
 > ⚠️ Sans le SMTP, les formulaires fonctionnent mais aucun email n'est envoyé.
