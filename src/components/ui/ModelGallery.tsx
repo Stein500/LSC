@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Download, Scissors, Share2 } from "lucide-react";
 import { SmartImage } from "./SmartImage";
 import { downloadAtelierImage } from "@/utils/downloadImage";
-import { prepareAtelierShareFile, shareAtelierImage } from "@/utils/shareAtelier";
+import { displayedShareImage, prepareAtelierShareFile, shareAtelierImage } from "@/utils/shareAtelier";
 import type { InspirationSection } from "@/data/galleries";
 import type { GalleryImage } from "./ScissorGallery";
 
@@ -48,6 +48,9 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
   const navigate = useNavigate();
   const [busy, setBusy] = useState<"dl" | "share" | null>(null);
   const caption = img.caption ?? img.alt;
+  const tileRef = useRef<HTMLDivElement>(null);
+  /** L'<img> déjà affichée à l'écran — les pixels sont déjà dans le navigateur. */
+  const onScreenImage = () => displayedShareImage(tileRef.current, img.src);
 
   const doDownload = async () => {
     setBusy("dl");
@@ -57,8 +60,15 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
 
   const doShare = async () => {
     setBusy("share");
-    // 🕊️ La PHOTO du modèle voyage elle-même — le lien du site la suit.
-    await shareAtelierImage({ caption, path: "/inspirations", hash: sectionKey, imageSrc: img.src });
+    // 🕊️ La PHOTO du modèle voyage elle-même, puisée directement dans
+    //    l'image affichée à l'écran — le lien du site la suit.
+    await shareAtelierImage({
+      caption,
+      path: "/inspirations",
+      hash: sectionKey,
+      imageSrc: img.src,
+      sourceImage: onScreenImage(),
+    });
     setBusy(null);
   };
 
@@ -68,6 +78,7 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
 
   return (
     <motion.div
+      ref={tileRef}
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -90,8 +101,8 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
         <button
           type="button"
           onClick={doShare}
-          onPointerDown={() => void prepareAtelierShareFile(img.src)}
-          onPointerEnter={() => void prepareAtelierShareFile(img.src)}
+          onPointerDown={() => void prepareAtelierShareFile(img.src, onScreenImage())}
+          onPointerEnter={() => void prepareAtelierShareFile(img.src, onScreenImage())}
           disabled={busy !== null}
           aria-label={`Partager le modèle : ${caption} (le panneau s'ouvre avec la photo)`}
           title="Partager — le panneau s’ouvre avec la photo et le lien"

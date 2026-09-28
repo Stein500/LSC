@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Download, Pause, Play, Scissors, Share2 } fr
 import { SmartImage } from "./SmartImage";
 import { cn } from "@/utils/cn";
 import { downloadAtelierImage } from "@/utils/downloadImage";
-import { prepareAtelierShareFile, shareAtelierImage } from "@/utils/shareAtelier";
+import { displayedShareImage, prepareAtelierShareFile, shareAtelierImage } from "@/utils/shareAtelier";
 
 /**
  * Une photo dans la galerie.
@@ -61,6 +61,12 @@ export function ScissorGallery({
   const [currentAspect, setCurrentAspect] = useState<number>(4 / 3);
   const [loaded, setLoaded] = useState<Set<number>>(new Set([0]));
   const timerRef = useRef<number | null>(null);
+  const galRef = useRef<HTMLDivElement>(null);
+  /** L'<img> de la diapo en cours, déjà affichée à l'écran (pixels chauds). */
+  const onScreenImage = useCallback(
+    () => displayedShareImage(galRef.current, images[index]?.src ?? ""),
+    [images, index],
+  );
 
   const next = useCallback(() => {
     setDirection(1);
@@ -105,6 +111,16 @@ export function ScissorGallery({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, index]);
 
+  // 🕊️ Quand la diapo se pose, on coud son JPEG de partage en coulisses :
+  //    au clic sur Partager, la photo est déjà chaude — le panneau s'ouvre net.
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      const src = images[index]?.src;
+      if (src) void prepareAtelierShareFile(src, onScreenImage());
+    }, 1200);
+    return () => window.clearTimeout(t);
+  }, [images, index, onScreenImage]);
+
   // Drag/swipe
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     const threshold = 60;
@@ -133,9 +149,10 @@ export function ScissorGallery({
         caption: images[index].caption ?? images[index].alt,
         path,
         imageSrc: images[index].src,
+        sourceImage: onScreenImage(),
       });
     },
-    [images, index, sharePath],
+    [images, index, sharePath, onScreenImage],
   );
 
   if (images.length === 0) return null;
@@ -151,6 +168,7 @@ export function ScissorGallery({
 
   return (
     <div
+      ref={galRef}
       className={cn("relative w-full group/gal", className)}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -230,8 +248,8 @@ export function ScissorGallery({
         <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
           <button
             onClick={handleShare}
-            onPointerDown={() => void prepareAtelierShareFile(images[index].src)}
-            onPointerEnter={() => void prepareAtelierShareFile(images[index].src)}
+            onPointerDown={() => void prepareAtelierShareFile(images[index].src, onScreenImage())}
+            onPointerEnter={() => void prepareAtelierShareFile(images[index].src, onScreenImage())}
             className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"
             aria-label="Partager cette image (le panneau s'ouvre avec la photo)"
             title="Partager l'image"
