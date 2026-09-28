@@ -1,5 +1,7 @@
 # 🚀 Déploiement — Couture Colombe et Merceries (depuis Termux)
 
+> 📁 **Ton dossier projet** : les flux ci-dessous écrivent `~/lsc2`, mais chez toi le projet vit dans **`~/cv2`** — même geste, remplace simplement le nom (et le caveau devient `~/cv2_caveau`). 💛
+
 > **Trois livrables, trois gestes :**
 > - 🧵 **`lsc-colombes-complet.zip`** (≈ 15 Mo) — TOUT le projet, vraies images comprises. **Le choix sûr.**
 > - 🪶 **`lsc-colombes-complet-placeholder.zip`** (≈ 1,9 Mo) — TOUT le projet, mais les grandes photos sont des **marqueurs de pose** (logo et icônes réels). Pour la connexion plume : on repose ensuite les vraies photos par-dessus (lis `RESTAURER-IMAGES.txt` à sa racine — **jamais dézippé par-dessus un dossier qui a déjà les vraies photos !**).
