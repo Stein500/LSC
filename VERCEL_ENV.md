@@ -225,3 +225,41 @@ Pour rafraîchir après un changement sur Vercel : relancer simplement la derni�
 - `.env` est **gitignoré** — il ne sera jamais commité. Ne le colle dans aucun fichier `.md`.
 - Ne jamais prefixer un secret serveur avec `VITE_` (sauf les tokens prévus pour : `VITE_TRACK_TOKEN`).
 - Un secret publié par erreur = **le régénérer immédiatement** (voir « Générer des tokens neufs »).
+
+---
+
+## 🔍 La loupe du facteur (ajout du 28/09/2026 — soir)
+
+« Le mail ne part plus » alors que la santé est verte ? Deux outils cousus pour toi :
+
+**1. La loupe des réglages** — ouvre dans le navigateur :
+
+```
+https://lesservicescolombes.vercel.app/api/system/health?controle=facteur
+```
+
+Rubrique `checks.mailDiag` : `smtp_user` et `mail_from` (masqués, ex. `t•••@gmail.com`)
+et surtout **`from_matches_user` qui DOIT être `true`** — Gmail refuse tout mail
+dont l'expéditeur n'est pas exactement la boîte de `SMTP_USER`. C'est LE piège n°1.
+
+**2. Le test grandeur nature** — envoie un VRAI mail à l'atelier et rapporte
+l'erreur Gmail mot pour mot. Depuis Termux :
+
+```bash
+curl -s -H "x-api-token: VALEUR_DE_TRACK_TOKEN" \
+  "https://lesservicescolombes.vercel.app/api/system/health?testmail=1"
+```
+
+(`TRACK_TOKEN` se copie dans Vercel : Storage du projet → Settings → Environment Variables → TRACK_TOKEN → œil → copier.)
+
+Verdicts fréquents :
+| Verdict | Sens | Remède |
+|---|---|---|
+| `Sender address rejected` / `not owned` | MAIL_FROM ≠ SMTP_USER | MAIL_FROM = SMTP_USER = **techsteinsecureway@gmail.com**, puis redeploy |
+| `Daily user sending limit` | Quota Gmail du jour atteint | Ça revient tout seul sous ~24 h |
+| `Username and Password not accepted` | App password révoqué | Régénère un mot de passe d'application sur le compte techsteinsecureway |
+| `ok:true` mais rien reçu | Il part bien ! | Regarde **Courrier indésirable** (spam) |
+
+Rappel de la règle d'or : `MAIL_FROM` = `SMTP_USER` = **techsteinsecureway@gmail.com**
+(celle qui a GÉNÉRÉ le mot de passe d'application). `MAIL_TO` peut rester les deux
+adresses de l'atelier, séparées par une virgule.

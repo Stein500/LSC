@@ -790,6 +790,11 @@ async function buildPdfAttachment(type, data) {
 
 // =============================================================
 // Envoi des deux mails (admin + client). PDF joint aux deux.
+//
+// 🧵 RÈGLE D'OR (28/09/2026, demande de la cheffe) : les deux
+// envois sont ISOLÉS. Un souci chez la cliente (adresse mal
+// tapée, boîte pleine) ne fait JAMAIS perdre le mail atelier —
+// et inversement. Chaque canal rapporte son propre verdict.
 // =============================================================
 
 export async function sendSubmissionMail(type, data) {
@@ -805,38 +810,56 @@ export async function sendSubmissionMail(type, data) {
 
   const results = { admin: null, customer: null, pdfAttached: !!pdfAttachment };
 
-  // --- Mail atelier (interne) ---
-  const adminMail = buildAdminMail(type, enriched);
-  const adminAttachments = [...(adminMail.attachments || [])];
-  if (pdfAttachment) adminAttachments.push(pdfAttachment);
-  const adminInfo = await transport.sendMail({
-    from: MAIL_FROM,
-    to: MAIL_TO.join(", "),
-    subject: adminMail.subject,
-    text: adminMail.text,
-    html: adminMail.html,
-    attachments: adminAttachments,
-  });
-  results.admin = { messageId: adminInfo.messageId, recipients: MAIL_TO };
-
-  // --- Mail cliente (si email fourni) ---
-  const customerEmail = String(data.email || "").trim();
-  if (customerEmail) {
-    const clientMail = buildClientMail(type, enriched);
-    const customerAttachments = [...(clientMail.attachments || [])];
-    if (pdfAttachment) customerAttachments.push(pdfAttachment);
-    const customerInfo = await transport.sendMail({
+  // --- Mail atelier (interne) — canal SACRÉ, isolé ---
+  try {
+    const adminMail = buildAdminMail(type, enriched);
+    const adminAttachments = [...(adminMail.attachments || [])];
+    if (pdfAttachment) adminAttachments.push(pdfAttachment);
+    const adminInfo = await transport.sendMail({
       from: MAIL_FROM,
-      to: customerEmail,
-      replyTo: MAIL_TO[0],
-      subject: clientMail.subject,
-      text: clientMail.text,
-      html: clientMail.html,
-      attachments: customerAttachments,
+      to: MAIL_TO.join(", "),
+      subject: adminMail.subject,
+      text: adminMail.text,
+      html: adminMail.html,
+      attachments: adminAttachments,
     });
-    results.customer = { messageId: customerInfo.messageId, recipients: [customerEmail] };
+    results.admin = { ok: true, messageId: adminInfo.messageId, recipients: MAIL_TO };
+  } catch (e) {
+    results.admin = { ok: false, error: e?.message || String(e) };
+    console.error("[mailer] admin mail failed", results.admin.error);
   }
 
+  // --- Mail cliente (si email fourni) — isolé aussi ---
+  const customerEmail = String(data.email || "").trim();
+  if (customerEmail) {
+    try {
+      const clientMail = buildClientMail(type, enriched);
+      const customerAttachments = [...(clientMail.attachments || [])];
+      if (pdfAttachment) customerAttachments.push(pdfAttachment);
+      const customerInfo = await transport.sendMail({
+        from: MAIL_FROM,
+        to: customerEmail,
+        replyTo: MAIL_TO[0],
+        subject: clientMail.subject,
+        text: clientMail.text,
+        html: clientMail.html,
+        attachments: customerAttachments,
+      });
+      results.customer = { ok: true, messageId: customerInfo.messageId, recipients: [customerEmail] };
+    } catch (e) {
+      results.customer = { ok: false, error: e?.message || String(e) };
+      console.error("[mailer] customer mail failed", results.customer.error);
+    }
+  }
+
+  // « Livré » si AU MOINS un canal a abouti ; sinon on lève l'erreur
+  // la plus parlante pour que la réponse /api/track la rapporte.
+  const anySent = !!results.admin?.ok || !!results.customer?.ok;
+  if (!anySent) {
+    throw new Error(
+      results.admin?.error || results.customer?.error || "Aucun mail n'a pu partir",
+    );
+  }
   return { ok: true, ...results };
 }
 

@@ -65,7 +65,11 @@ export const precommandeSchema = z.object({
   nom: nameSchema,
   telephone: phoneSchema,
   email: emailSchema,
-  type_tenue: z.string().min(2, "Veuillez préciser le type de tenue."),
+  // 👗 Volonté de la cheffe (28/09/2026) : le type de tenue n'est PLUS
+  // obligatoire — plus d'astérisque, plus de porte fermée à l'étape 2.
+  // Le modèle vient souvent déjà choisi de la galerie ; sinon, on le
+  // choisira ensemble à l'atelier.
+  type_tenue: z.string().max(80).optional(),
   tenue_autre: z.string().max(120).optional(),
   couleur_preferee: z.string().max(60).optional(),
   taille: z.string().max(20).optional(),

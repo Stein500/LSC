@@ -153,9 +153,12 @@ export function PrecommandeForm({
   };
 
   const next = async () => {
+    // Seule l'étape 1 verrouille encore (nom + téléphone : il nous les
+    // faut pour rappeler). Le reste — type de tenue compris — est libre,
+    // comme demandé : plus d'astérisque sur les modèles de tenues.
     const fieldsMap: Record<number, (keyof PrecommandeSchema)[]> = {
       0: ["nom", "telephone"],
-      1: ["type_tenue"],
+      1: [],
       2: [],
     };
     const fields = fieldsMap[step] || [];
@@ -278,8 +281,31 @@ export function PrecommandeForm({
       {/* ===== Étape 2 : modèle ===== */}
       {step === 1 && (
         <div className="space-y-5 animate-fade-in">
-          {/* 👗 Type de tenue — grandes tuiles à toucher, zéro menu déroulant */}
-          <Field label="Quel modèle voulez-vous ?" required error={errors.type_tenue?.message}>
+          {/* 🧵 Venant d'un modèle de la galerie ? Il est déjà joint —
+              rien à refaire, rien à redire : fini les répétitions. */}
+          {presetModele && (
+            <p
+              className="text-sm rounded-2xl border px-3.5 py-2.5 flex items-start gap-2"
+              style={{
+                background: "var(--color-feuille-doux,#EFF7E3)",
+                borderColor: "color-mix(in srgb, var(--color-feuille,#7CBA45) 40%, transparent)",
+                color: "var(--color-feuille-f,#558B2F)",
+              }}
+            >
+              <span aria-hidden="true">🧵</span>
+              <span>
+                Modèle choisi dans la galerie : <strong>{presetModele}</strong> — il rejoint
+                votre commande tel quel, rien à refaire.
+              </span>
+            </p>
+          )}
+
+          {/* 👗 Type de tenue — grandes tuiles, OPTIONNELLES (plus d'astérisque) */}
+          <Field
+            label="Quel type de tenue ?"
+            hint="Optionnel — touchez une tuile si vous le savez déjà ; sinon, on choisira ensemble à l'atelier."
+            error={errors.type_tenue?.message}
+          >
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3" role="group" aria-label="Type de tenue">
               {SERVICES.map((s) => {
                 const selected = watch("type_tenue") === s.title;
@@ -344,18 +370,6 @@ export function PrecommandeForm({
                 : "Optionnel — montrez-nous le modèle exact (photo, capture, image sauvegardée)."
             }
           >
-            {presetModele && (
-              <p
-                className="mb-2.5 text-sm rounded-2xl border px-3.5 py-2.5"
-                style={{
-                  background: "var(--color-feuille-doux,#EFF7E3)",
-                  borderColor: "color-mix(in srgb, var(--color-feuille,#7CBA45) 40%, transparent)",
-                  color: "var(--color-feuille-f,#558B2F)",
-                }}
-              >
-                🧵 Modèle choisi dans la galerie : <strong>{presetModele}</strong>
-              </p>
-            )}
             <div className="flex items-center gap-4 flex-wrap">
               {photoPreview && (
                 <div className="flex items-center gap-3">

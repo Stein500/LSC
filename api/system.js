@@ -53,11 +53,34 @@ function detectAction(url) {
   return "info";
 }
 
+/* ── La loupe du facteur 🔍 — réglages visibles sans exposer les adresses ── */
+
+/** « Nom <adresse@domaine> » ou « adresse@domaine » → adresse nue. */
+function plainAddress(v) {
+  const s = String(v || "").trim();
+  const m = s.match(/<([^>]+)>/);
+  return (m ? m[1] : s).trim();
+}
+
+/** Masque doux : garde 1 initiale + le domaine (« t•••@gmail.com »). */
+function maskAddress(v) {
+  const addr = plainAddress(v);
+  if (!addr) return null;
+  const at = addr.indexOf("@");
+  if (at < 1) return "•••";
+  return `${addr.slice(0, 1)}•••@${addr.slice(at + 1)}`;
+}
+
 // =============================================================
 // Sous-handlers
 // =============================================================
 
-async function handleHealth(_req, res) {
+async function handleHealth(req, res) {
+  const MAIL_TO_LIST = String(process.env.MAIL_TO || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const checks = {
     env: {
       GOOGLE_SHEET_ID: !!process.env.GOOGLE_SHEET_ID,
@@ -69,6 +92,20 @@ async function handleHealth(_req, res) {
       MAIL_FROM: !!process.env.MAIL_FROM,
       MAIL_TO: !!process.env.MAIL_TO,
       TRACK_TOKEN: !!process.env.TRACK_TOKEN,
+    },
+    // 🔍 La loupe du facteur : les réglages mails, masqués mais vérifiables
+    //    d'un coup d'œil. Gmail EXIGE que MAIL_FROM = SMTP_USER — le verdict
+    //    `from_matches_user` le dit franchement (piège n°1 des mails perdus).
+    mailDiag: {
+      smtp_host: process.env.SMTP_HOST || "smtp.gmail.com (défaut)",
+      smtp_user: maskAddress(process.env.SMTP_USER),
+      mail_from: maskAddress(process.env.MAIL_FROM || process.env.SMTP_USER),
+      from_matches_user:
+        process.env.MAIL_FROM && process.env.SMTP_USER
+          ? plainAddress(process.env.MAIL_FROM).toLowerCase() ===
+            plainAddress(process.env.SMTP_USER).toLowerCase()
+          : null,
+      mail_to: MAIL_TO_LIST.map(maskAddress),
     },
     sheets: { ok: false, error: null },
     smtp: { ok: false, error: null },
@@ -87,6 +124,34 @@ async function handleHealth(_req, res) {
     checks.smtp.ok = true;
   } catch (e) {
     checks.smtp.error = e?.message || String(e);
+  }
+
+  // 📮 TEST GRANDEUR NATURE — GET /api/system/health?testmail=1 avec le
+  //    header x-api-token (TRACK_TOKEN) : envoie un VRAI mail au(x)
+  //    atelier(s) et rapporte le verdict Gmail mot pour mot. C'est ce
+  //    verdict qui distingue « quota dépassé », « from refusé », etc.
+  if (/[?&]testmail=1/.test(String(req.url || ""))) {
+    if (isAuthorized(req)) {
+      try {
+        const r = await sendRawMail({
+          subject: "🧵 Test du facteur — Couture Colombe et Merceries",
+          text: [
+            "Ce message confirme que le facteur repart correctement. 🕊️",
+            "",
+            `De (MAIL_FROM)   : ${process.env.MAIL_FROM || "—"}`,
+            `Boîte (SMTP_USER): ${process.env.SMTP_USER || "—"}`,
+            `Vers (MAIL_TO)   : ${process.env.MAIL_TO || "—"}`,
+            "",
+            "Si ce mail est bien arrivé, tout est cousu. — le chef ✂️",
+          ].join("\n"),
+        });
+        checks.mailTest = { ok: true, messageId: r.messageId, recipients: r.recipients.length, note: "Regarde la boîte de réception… et le dossier Courrier indésirable !" };
+      } catch (e) {
+        checks.mailTest = { ok: false, error: e?.message || String(e) };
+      }
+    } else {
+      checks.mailTest = { ok: false, error: "Ajoute le header x-api-token (TRACK_TOKEN) pour lancer le test." };
+    }
   }
 
   const allOk =
