@@ -47,10 +47,19 @@ export function ModelGallery({ sections }: { sections: InspirationSection[] }) {
 function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string }) {
   const navigate = useNavigate();
   const [busy, setBusy] = useState<"dl" | "share" | null>(null);
+  const [armed, setArmed] = useState(false);
+  const armTimer = useRef<number | null>(null);
   const caption = img.caption ?? img.alt;
   const tileRef = useRef<HTMLDivElement>(null);
   /** L'<img> déjà affichée à l'écran — les pixels sont déjà dans le navigateur. */
   const onScreenImage = () => displayedShareImage(tileRef.current, img.src);
+
+  /** Arme le bouton (vert feuille, il pulse) — retombe en douceur au bout de 25 s. */
+  const markArmed = (a: boolean) => {
+    setArmed(a);
+    if (armTimer.current) window.clearTimeout(armTimer.current);
+    if (a) armTimer.current = window.setTimeout(() => setArmed(false), 25000);
+  };
 
   const doDownload = async () => {
     setBusy("dl");
@@ -62,13 +71,15 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
     setBusy("share");
     // 🕊️ La PHOTO du modèle voyage elle-même, puisée directement dans
     //    l'image affichée à l'écran — le lien du site la suit.
-    await shareAtelierImage({
+    const result = await shareAtelierImage({
       caption,
       path: "/inspirations",
       hash: sectionKey,
       imageSrc: img.src,
       sourceImage: onScreenImage(),
+      onArmed: markArmed,
     });
+    if (result !== "armed") markArmed(false);
     setBusy(null);
   };
 
@@ -97,16 +108,28 @@ function ModelTile({ img, sectionKey }: { img: GalleryImage; sectionKey: string 
         <span className="absolute bottom-3 left-4 right-4 text-white text-sm font-semibold drop-shadow-sm line-clamp-1">
           {caption}
         </span>
-        {/* 📤 Partager — toujours visible, un seul doigt suffit */}
+        {/* 📤 Partager — toujours visible ; vert feuille qui pulse = photo PRÊTE, retouchez ! */}
         <button
           type="button"
           onClick={doShare}
           onPointerDown={() => void prepareAtelierShareFile(img.src, onScreenImage())}
           onPointerEnter={() => void prepareAtelierShareFile(img.src, onScreenImage())}
           disabled={busy !== null}
-          aria-label={`Partager le modèle : ${caption} (le panneau s'ouvre avec la photo)`}
-          title="Partager — le panneau s’ouvre avec la photo et le lien"
-          className="absolute top-3 right-3 w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-white/90 text-[var(--color-marron,#5C2E0C)] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 disabled:opacity-60"
+          aria-label={
+            armed
+              ? `La photo de ${caption} est prête — retouchez pour ouvrir le panneau de partage`
+              : `Partager le modèle : ${caption} (le panneau s'ouvre avec la photo)`
+          }
+          title={
+            armed
+              ? "C'est prêt ! Retouchez pour partager la photo 🕊️"
+              : "Partager — le panneau s’ouvre avec la photo et le lien"
+          }
+          className={`absolute top-3 right-3 w-11 h-11 min-h-[44px] min-w-[44px] rounded-full shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 disabled:opacity-60 ${
+            armed
+              ? "bg-[#558B2F] text-white ring-4 ring-[#7CBA45]/60 animate-pulse"
+              : "bg-white/90 text-[var(--color-marron,#5C2E0C)]"
+          }`}
         >
           <Share2 className="w-4.5 h-4.5" aria-hidden="true" />
         </button>

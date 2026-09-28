@@ -62,11 +62,20 @@ export function ScissorGallery({
   const [loaded, setLoaded] = useState<Set<number>>(new Set([0]));
   const timerRef = useRef<number | null>(null);
   const galRef = useRef<HTMLDivElement>(null);
+  const [shareArmed, setShareArmed] = useState(false);
+  const armTimer = useRef<number | null>(null);
   /** L'<img> de la diapo en cours, déjà affichée à l'écran (pixels chauds). */
   const onScreenImage = useCallback(
     () => displayedShareImage(galRef.current, images[index]?.src ?? ""),
     [images, index],
   );
+
+  /** Arme le bouton Partager (vert feuille, il pulse) — douceur de 25 s. */
+  const markShareArmed = useCallback((a: boolean) => {
+    setShareArmed(a);
+    if (armTimer.current) window.clearTimeout(armTimer.current);
+    if (a) armTimer.current = window.setTimeout(() => setShareArmed(false), 25000);
+  }, []);
 
   const next = useCallback(() => {
     setDirection(1);
@@ -145,14 +154,16 @@ export function ScissorGallery({
       const path =
         sharePath ??
         (typeof window !== "undefined" ? window.location.pathname : "/");
-      await shareAtelierImage({
+      const result = await shareAtelierImage({
         caption: images[index].caption ?? images[index].alt,
         path,
         imageSrc: images[index].src,
         sourceImage: onScreenImage(),
+        onArmed: markShareArmed,
       });
+      if (result !== "armed") markShareArmed(false);
     },
-    [images, index, sharePath, onScreenImage],
+    [images, index, sharePath, onScreenImage, markShareArmed],
   );
 
   if (images.length === 0) return null;
@@ -250,9 +261,17 @@ export function ScissorGallery({
             onClick={handleShare}
             onPointerDown={() => void prepareAtelierShareFile(images[index].src, onScreenImage())}
             onPointerEnter={() => void prepareAtelierShareFile(images[index].src, onScreenImage())}
-            className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white flex items-center justify-center transition-colors"
-            aria-label="Partager cette image (le panneau s'ouvre avec la photo)"
-            title="Partager l'image"
+            className={`w-9 h-9 rounded-full backdrop-blur-sm text-white flex items-center justify-center transition-colors ${
+              shareArmed
+                ? "bg-[#558B2F] hover:bg-[#558B2F] ring-2 ring-white animate-pulse"
+                : "bg-black/40 hover:bg-black/60"
+            }`}
+            aria-label={
+              shareArmed
+                ? "La photo est prête — retouchez pour ouvrir le panneau de partage"
+                : "Partager cette image (le panneau s'ouvre avec la photo)"
+            }
+            title={shareArmed ? "C'est prêt ! Retouchez pour partager la photo 🕊️" : "Partager l'image"}
           >
             <Share2 className="w-3.5 h-3.5" />
           </button>

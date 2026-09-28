@@ -1,35 +1,35 @@
 /**
- * shareAtelier — « la photo vient de l'écran » 📤🕊️
+ * shareAtelier — « le Guichet en deux temps » 📤🕊️
  * ------------------------------------------------------------
- * La cheffe a tranché (28/09/2026) :
- *   1. PLUS JAMAIS de téléchargement automatique — le bouton
- *      « Télécharger » des galeries est déjà là pour ça.
- *   2. Le clic ouvre le panneau de partage DIRECTEMENT, avec la
- *      photo DEDANS — comme au temps où ça marchait, même si la
- *      couture prend un instant.
- *   3. Son idée en or : puisque la photo est DÉJÀ affichée à
- *      l'écran, pourquoi aller la chercher ailleurs ?
+ * Retour de la cheffe (28/09/2026, après essai réussi) :
+ *   « Ça marche ! Mais il faut 2 clics pour partager avec la photo :
+ *     le premier prépare, le second envoie. Je veux un VRAI mécanisme
+ *     qui rassure — pas un “lien copié” qui arrive au mauvais moment. »
  *
- * La couture, dans l'ordre :
+ * Le design, assumé et guidé :
  *
- *   A. SOURCE ÉCRAN — on redessine l'<img> déjà affichée (ses
- *      pixels sont déjà décodés dans le navigateur : c'est le
- *      fameux « cache » de la cheffe) sur une toile → JPEG léger.
- *      ZÉRO réseau, zéro re-téléchargement.
+ *   1er TEMPS — la photo n'est pas chaude :
+ *     · toast immédiat « 🪡 On prépare ta photo… » (jamais d'attente muette) ;
+ *     · on coud le JPEG depuis l'<img> AFFICHÉE (pixels déjà décodés
+ *       dans le navigateur, zéro réseau) ou depuis le cache HTTP ;
+ *     · on TENTE le panneau direct — les bons appareils gardent le
+ *       geste ouvert assez longtemps : 1 clic suffit alors ;
+ *     · si le panneau refuse (fenêtre de geste refermée) : la photo
+ *       reste CHAUDE en mémoire, le bouton passe à l'état ARMÉ
+ *       (vert feuille, il pulse, petit *bzz*), et le toast dit :
+ *       « ✅ C'est prêt ! Retouche “Partager” — la photo part avec toi ».
  *
- *   B. SOURCE CACHE — si l'élément n'est pas sous la main, on lit
- *      le cache HTTP du navigateur (force-cache) comme avant.
+ *   2e TEMPS — bouton armé / photo chaude :
+ *     · la photo est jointe DANS le geste, le panneau natif s'ouvre
+ *       d'un coup, LA PHOTO DEDANS. ✨
  *
- *   C. PATIENCE DE L'AIGUILLE — on attend la photo SANS limite
- *      d'abandon : si l'attente dépasse un souffle, un toast
- *      rassure (« Préparation de la photo… »), puis le panneau
- *      natif s'ouvre, LA PHOTO DEDANS. Le test de capacité se
- *      fait avec la VRAIE photo (canShare({ files: [vraiePhoto] }))
- *      — jamais avec une sonde qui pourrait mentir.
- *
- *   D. REPLI PROPRE — si l'appareil refuse vraiment les fichiers,
- *      le panneau natif s'ouvre avec texte + lien. Rien n'est
- *      téléchargé, rien n'est copié en douce.
+ * Garde-fous :
+ *   · Le test de capacité se fait avec la VRAIE photo — un appareil
+ *     qui ne sait pas joindre les fichiers n'entend JAMAIS « c'est
+ *     prêt » : on ouvre le panneau texte honnêtement.
+ *   · JAMAIS de téléchargement automatique — le bouton « Télécharger »
+ *     des galeries reste seul maître.
+ *   · Annulation du doigt sur le panneau = silence respectueux.
  *
  * Le texte partagé contient TOUJOURS l'URL canonique du site.
  */
@@ -45,8 +45,15 @@ const MAX_DIM = 1280;
 const JPEG_QUALITY = 0.85;
 /** Toile crème posée sous les images transparentes avant le JPEG. */
 const MAT_BG = "#FDF6EF";
-/** Au-delà de ce souffle, un toast rassure pendant la préparation. */
-const SLOW_NOTICE_MS = 350;
+
+/** Petit *bzz* rassurant quand la photo est prête (Android). */
+function tickHaptic(): void {
+  try {
+    navigator.vibrate?.(12);
+  } catch {
+    /* le silence est permis */
+  }
+}
 
 /** URL publique de partage : site canonique + chemin (+ ancre éventuelle). */
 export function atelierShareUrl(path: string, hash?: string | null): string {
@@ -81,6 +88,8 @@ export function displayedShareImage(
 /* ═══════════ Préparation du fichier, avec cache chaud ═══════════ */
 
 const fileCache = new Map<string, Promise<File | null>>();
+/** Les photos PRÊTES : jointes au panneau dans le même geste, sans attente. */
+const hotFiles = new Map<string, File>();
 
 function shareFileName(src: string, type: string): string {
   const base =
@@ -185,22 +194,43 @@ export function prepareAtelierShareFile(
       return fileFromNetworkCache(src);
     })();
     fileCache.set(src, p);
-    // Un fichier manqué ne doit pas verrouiller la cachette à jamais.
     p.then((f) => {
-      if (!f) fileCache.delete(src);
+      if (f) hotFiles.set(src, f); // la photo devient CHAUDE : prochain clic = instantané
+      else fileCache.delete(src); // un raté ne verrouille jamais la cachette
     });
   }
   return p;
 }
 
-/* ═══════════ Le partage d'image, de vrai ═══════════ */
+/** Ce que le clic a réellement donné — le bouton se décore en connaissance. */
+export type ShareAttemptResult =
+  | "shared" // le panneau s'est ouvert avec la photo ✨
+  | "armed" // la photo est PRÊTE : « retouche Partager »
+  | "text" // repli honnête : panneau texte / lien copié
+  | "cancelled"; // la cliente a refermé le panneau : silence
+
+/** La vraie question, posée avec la VRAIE photo (jamais avec une sonde). */
+function canAttachFile(file: File): boolean {
+  try {
+    return (
+      typeof navigator.canShare !== "function" ||
+      navigator.canShare({ files: [file] })
+    );
+  } catch {
+    return false;
+  }
+}
+
+/* ═══════════ Le partage d'image, de vrai — le Guichet en deux temps ═══════════ */
 
 /**
  * Partage d'une image d'ambiance / d'un modèle.
  * `caption` habille le message ; `path` et `hash` mènent vers la bonne page ;
  * `imageSrc` (recommandé) permet d'EMBARQUER la vraie photo dans le panneau ;
  * `sourceImage` (recommandé) pointe l'<img> déjà affichée — les pixels sont
- * puisés directement dans le navigateur, sans aucun réseau.
+ * puisés directement dans le navigateur, sans aucun réseau ;
+ * `onArmed` (optionnel) prévient le bouton que la photo est PRÊTE, pour
+ * qu'il invite lui-même au second geste (vert feuille, il pulse).
  */
 export async function shareAtelierImage(opts: {
   caption?: string | null;
@@ -208,56 +238,69 @@ export async function shareAtelierImage(opts: {
   hash?: string | null;
   imageSrc?: string | null;
   sourceImage?: HTMLImageElement | null;
-}): Promise<void> {
+  onArmed?: (armed: boolean) => void;
+}): Promise<ShareAttemptResult> {
   const url = atelierShareUrl(opts.path, opts.hash);
   const caption = (opts.caption ?? "").trim();
   const text = `${caption ? `${caption} ✨\n` : ""}${SITE_TITLE} 🧵✂️\n${url}`;
+  const src = opts.imageSrc ?? null;
 
   const canNative =
     typeof navigator !== "undefined" && typeof navigator.share === "function";
 
-  // A–C) 🕊️ La PHOTO d'abord : écran → cache, et on l'attend sans jamais
-  //      abandonner — c'est cette patience qui faisait marcher « avant ».
-  if (opts.imageSrc && canNative) {
-    const filePromise = prepareAtelierShareFile(opts.imageSrc, opts.sourceImage);
-    // Un petit mot doux si l'aiguille prend plus d'un souffle.
-    const slowNotice = window.setTimeout(() => {
-      notify.info("🪡 Préparation de la photo… un fil de patience ✨");
-    }, SLOW_NOTICE_MS);
-    let file: File | null = null;
-    try {
-      file = await filePromise;
-    } finally {
-      window.clearTimeout(slowNotice);
-    }
-
-    if (file) {
-      // Le test de capacité AVEC LA VRAIE PHOTO — comme quand ça marchait.
-      const attachOk =
-        typeof navigator.canShare !== "function" ||
-        navigator.canShare({ files: [file] });
-      if (attachOk) {
-        try {
-          await navigator.share({ files: [file], title: SITE_TITLE, text });
-          notify.success("✨ La photo voyage — la colombe est partie 🕊️");
-          return; // ✅ la photo voyage, jointe au panneau
-        } catch (e) {
-          // Annulé du doigt : on sort proprement, sans double partage.
-          if ((e as DOMException)?.name === "AbortError") return;
-          // Toute autre glissade → repli texte juste après.
-        }
+  if (src && canNative) {
+    // ─── 2e TEMPS 🔥 — la photo est CHAUDE : jointe dans le geste même,
+    //     le panneau natif s'ouvre d'un coup, la photo dedans.
+    const hot = hotFiles.get(src);
+    if (hot && canAttachFile(hot)) {
+      try {
+        await navigator.share({ files: [hot], title: SITE_TITLE, text });
+        notify.success("✨ La photo voyage — la colombe est partie 🕊️");
+        opts.onArmed?.(false);
+        return "shared";
+      } catch (e) {
+        if ((e as DOMException)?.name === "AbortError") return "cancelled";
+        // Couac rare (fenêtre de geste plus stricte encore) : on réarme.
+        notify.success("✅ C'est prêt ! Retouche « Partager » — la photo part avec toi 🕊️");
+        opts.onArmed?.(true);
+        tickHaptic();
+        return "armed";
       }
     }
+
+    // ─── 1er TEMPS ⏳ — on prépare la photo, sans jamais laisser douter.
+    notify.info("🪡 On prépare ta photo… un instant de couture");
+    const file = await prepareAtelierShareFile(src, opts.sourceImage);
+
+    if (file && canAttachFile(file)) {
+      // Le panneau est tenté D'OFFICE : les bons appareils gardent le
+      // geste ouvert pendant la couture → 1 clic suffit alors. ✨
+      try {
+        await navigator.share({ files: [file], title: SITE_TITLE, text });
+        notify.success("✨ La photo voyage — la colombe est partie 🕊️");
+        opts.onArmed?.(false);
+        return "shared";
+      } catch (e) {
+        if ((e as DOMException)?.name === "AbortError") return "cancelled";
+        // Fenêtre de geste refermée → la photo reste CHAUDE, le bouton
+        // s'habille en vert feuille et invite au second geste.
+        notify.success("✅ C'est prêt ! Retouche « Partager » — la photo part avec toi 🕊️");
+        opts.onArmed?.(true);
+        tickHaptic();
+        return "armed";
+      }
+    }
+    // Fichier impossible, ou appareil qui ne sait VRAIMENT pas joindre
+    // les photos → repli honnête ci-dessous (jamais de « c'est prêt »,
+    // jamais de téléchargement automatique).
   }
 
-  // D) 🤍 Repli propre : le panneau natif s'ouvre avec texte + lien.
-  //    JAMAIS de téléchargement automatique — le bouton « Télécharger »
-  //    des galeries est là pour qui veut garder la photo.
+  // ─── Repli propre 🤍 — panneau texte natif, ou lien copié à l'ancienne.
   const channel = await shareText(text, SITE_TITLE);
   if (channel === "clipboard") {
-    notify.success("Lien copié — collez-le dans WhatsApp pour partager 🕊️");
+    notify.success("Lien copié — colle-le dans WhatsApp pour partager 🕊️");
   } else if (channel === "failed") {
-    notify.error("Le partage a glissé entre les mailles — réessayez.");
+    notify.error("Le partage a glissé entre les mailles — réessaie.");
   }
-  // "native"/"app" → le panneau s'est ouvert ; "cancelled" → silence respectueux.
+  return channel === "cancelled" ? "cancelled" : "text";
 }

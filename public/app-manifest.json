@@ -1,10 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-28T20:00:00Z",
-  "build_id": "arena-partage-cache-photo",
+  "content_version": "2026-09-28T22:00:00Z",
+  "build_id": "arena-partage-deux-temps",
   "changelog": [
-    "La photo est puisée directement dans l'image affichée à l'écran (le cache du navigateur) — zéro re-téléchargement, le panneau s'ouvre avec la photo dedans 📸",
-    "Patience de l'aiguille : on attend la photo sans jamais abandonner, avec un petit toast rassurant si ça dépasse un souffle 🪡",
-    "Fini le téléchargement automatique au partage — le bouton Télécharger des galeries reste seul maître 🤍"
+    "Le Guichet en deux temps : 1er clic = « 🪡 On prépare ta photo… » puis « ✅ C'est prêt ! Retouche Partager » — le bouton devient vert feuille et pulse, le téléphone fait *bzz* 🍃",
+    "2e clic = le panneau natif s'ouvre d'un coup, LA PHOTO DEDANS ✨",
+    "Fini le « lien copié » au mauvais moment, fini tout téléchargement automatique — un partage qui rassure, pensé pour les 2 clics réels du téléphone 🤍"
   ]
 }
