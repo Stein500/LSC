@@ -1,10 +1,10 @@
 {
   "app": "colombes",
-  "content_version": "2026-09-28T15:00:00Z",
-  "build_id": "arena-partage-photo-google",
+  "content_version": "2026-09-28T16:00:00Z",
+  "build_id": "arena-bouee-photo",
   "changelog": [
-    "Partage enfin direct : un clic ouvre le panneau du téléphone AVEC la photo — préparée dès que le doigt se pose 📤",
-    "Accueil « La Vitrine de la Maison » : textes parfaitement lisibles en clair comme en sombre ✨",
-    "Toutes les images déclarées à Google : plan du site + plan images (67 photos), prêt pour la Search Console 🗺️"
+    "La photo voyage TOUJOURS : si le téléphone ne sait pas la joindre au panneau, elle est enregistrée d'office dans la Galerie au même clic — prête pour WhatsApp 📸",
+    "Un clic = le panneau de partage s'ouvre directement, la photo dedans quand l'appareil le permet 📤",
+    "Toutes les images déclarées à Google (67 photos) + guide Search Console pas-à-pas 🗺️"
   ]
 }
