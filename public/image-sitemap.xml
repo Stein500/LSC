@@ -2,211 +2,287 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
-  <!-- ============== PAGE D'ACCUEIL ============== -->
   <url>
-    <loc>https://lesservicescolombes.vercel.app/</loc>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/og-share-preview.webp</image:loc>
-      <image:title>Couture Colombe et Merceries — Couture à Porto-Novo</image:title>
-      <image:caption>Atelier de couture d'exception à Porto-Novo, Bénin</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/header-colombes.webp</image:loc>
-      <image:title>Hero — Atelier Couture Colombe et Merceries</image:title>
-      <image:caption>Vue principale de l'atelier de couture à Porto-Novo</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/logo.webp</image:loc>
-      <image:title>Logo Couture Colombe et Merceries</image:title>
-      <image:caption>Logo officiel de l'atelier de couture</image:caption>
-    </image:image>
-  </url>
-
-  <!-- ============== GALERIE — L'ATELIER ============== -->
-  <url>
-    <loc>https://lesservicescolombes.vercel.app/</loc>
+    <loc>https://lesservicescolombes.vercel.app</loc>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-01.webp</image:loc>
-      <image:title>Vue d'ensemble de l'atelier Couture Colombe</image:title>
-      <image:caption>L'atelier — un espace dédié à la création</image:caption>
-    </image:image>    <image:image>
+      <image:title>Atelier 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-03.webp</image:loc>
-      <image:title>Détail d'un travail de couture en cours</image:title>
-      <image:caption>Chaque détail compte</image:caption>
+      <image:title>Atelier 03 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-04.webp</image:loc>
-      <image:title>La table de coupe et les patrons</image:title>
-      <image:caption>La coupe — étape fondatrice du sur-mesure</image:caption>
-    </image:image>    <image:image>
+      <image:title>Atelier 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/atelier-06.webp</image:loc>
-      <image:title>Robe ajustée sur mannequin de tailleur</image:title>
-      <image:caption>Plus de 35 ans de passion et de savoir-faire</image:caption>
+      <image:title>Atelier 06 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-10.webp</image:loc>
-      <image:title>Robe de mariée en finition — vraies manches en dentelle</image:title>
-      <image:caption>La robe de mariée — cousue ici, finie à la main</image:caption>
+      <image:loc>https://lesservicescolombes.vercel.app/images/header-colombes.webp</image:loc>
+      <image:title>Header colombes — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-05.webp</image:loc>
-      <image:title>Demoiselle d'honneur en robe safran à manches bouffantes</image:title>
-      <image:caption>Demoiselles d'honneur — la joie en safran</image:caption>
+      <image:loc>https://lesservicescolombes.vercel.app/images/logo-banniere.webp</image:loc>
+      <image:title>Logo banniere — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/logo.webp</image:loc>
+      <image:title>Logo — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/og-share-preview.webp</image:loc>
+      <image:title>Og share preview — Couture Colombe et Merceries</image:title>
     </image:image>
   </url>
-
-  <!-- ============== GALERIE — CRÉATIONS (page /services) ============== -->
   <url>
     <loc>https://lesservicescolombes.vercel.app/services</loc>
     <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/hero-services.webp</image:loc>
+      <image:title>Hero services — Couture Colombe et Merceries</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://lesservicescolombes.vercel.app/inspirations</loc>
+    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-01.webp</image:loc>
-      <image:title>Tenue africaine béninoise sur mesure</image:title>
-      <image:caption>Boubous et ensembles — l'élégance africaine</image:caption>
-    </image:image>
-        <image:image>
-          <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-01.webp</image:loc>
-          <image:title>Robe de mariée en bazin blanc cassé brodé d'or — Couture Colombe et Merceries</image:title>
-        </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-03.webp</image:loc>
-      <image:title>Mariée traditionnelle en pagne tissé rouge colombe et or — Couture Colombe et Merceries</image:title>
+      <image:title>Creation afrique 01 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-04.webp</image:loc>
-      <image:title>Mariée en robe sirène dentelle ivoire brodée d'or, arche fleurie rose — Couture Colombe et Merceries</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-08.webp</image:loc>
-      <image:title>Broderie d'or de la manche, bague et bouquet — détail mariée</image:title>
-    </image:image>    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-03.webp</image:loc>
-      <image:title>Ensemble jupe longue &amp; chemisier wax feuilles</image:title>
-      <image:caption>Jupe &amp; chemisier — le duo qui fait la silhouette</image:caption>
+      <image:title>Creation afrique 03 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-04.webp</image:loc>
-      <image:title>Robe africaine moderne et fluide</image:title>
-      <image:caption>Robes modernes — entre tradition et contemporain</image:caption>
+      <image:title>Creation afrique 04 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/creation-afrique-05.webp</image:loc>
-      <image:title>Ensemble layette pour nouveau-né</image:title>
-      <image:caption>Layette — la douceur pour les tout-petits</image:caption>
-    </image:image>  </url>
-
-  <!-- ============== GALERIE — FORMATION (page /formation) ============== -->
+      <image:title>Creation afrique 05 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/famille-trio-01.webp</image:loc>
+      <image:title>Famille trio 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-01.webp</image:loc>
+      <image:title>Inspirations 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-02.webp</image:loc>
+      <image:title>Inspirations 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-03.webp</image:loc>
+      <image:title>Inspirations 03 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-04.webp</image:loc>
+      <image:title>Inspirations 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-05.webp</image:loc>
+      <image:title>Inspirations 05 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-06.webp</image:loc>
+      <image:title>Inspirations 06 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-07.webp</image:loc>
+      <image:title>Inspirations 07 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-08.webp</image:loc>
+      <image:title>Inspirations 08 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-09.webp</image:loc>
+      <image:title>Inspirations 09 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-10.webp</image:loc>
+      <image:title>Inspirations 10 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-11.webp</image:loc>
+      <image:title>Inspirations 11 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-12.webp</image:loc>
+      <image:title>Inspirations 12 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-01.webp</image:loc>
+      <image:title>Inspirations page 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-02.webp</image:loc>
+      <image:title>Inspirations page 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-03.webp</image:loc>
+      <image:title>Inspirations page 03 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-04.webp</image:loc>
+      <image:title>Inspirations page 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/jeune-fille-01.webp</image:loc>
+      <image:title>Jeune fille 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/jeune-fille-02.webp</image:loc>
+      <image:title>Jeune fille 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/layette-bebe-01.webp</image:loc>
+      <image:title>Layette bebe 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-accessoires-01.webp</image:loc>
+      <image:title>Mariage accessoires 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-01.webp</image:loc>
+      <image:title>Mariage robe 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-02.webp</image:loc>
+      <image:title>Mariage robe 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-03.webp</image:loc>
+      <image:title>Mariage robe 03 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-04.webp</image:loc>
+      <image:title>Mariage robe 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-05.webp</image:loc>
+      <image:title>Mariage robe 05 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-07.webp</image:loc>
+      <image:title>Mariage robe 07 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-08.webp</image:loc>
+      <image:title>Mariage robe 08 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-09.webp</image:loc>
+      <image:title>Mariage robe 09 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-10.webp</image:loc>
+      <image:title>Mariage robe 10 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/monde-01.webp</image:loc>
+      <image:title>Monde 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/monde-02.webp</image:loc>
+      <image:title>Monde 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/monde-03.webp</image:loc>
+      <image:title>Monde 03 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/monde-04.webp</image:loc>
+      <image:title>Monde 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/monde-05.webp</image:loc>
+      <image:title>Monde 05 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/monde-06.webp</image:loc>
+      <image:title>Monde 06 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/splash-atelier-01.webp</image:loc>
+      <image:title>Splash atelier 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/tenue-semaine-01.webp</image:loc>
+      <image:title>Tenue semaine 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+  </url>
   <url>
     <loc>https://lesservicescolombes.vercel.app/formation</loc>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-01.webp</image:loc>
-      <image:title>Salle de formation en couture</image:title>
-      <image:caption>Un cadre propice à l'apprentissage</image:caption>
+      <image:title>Formation couture 01 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-02.webp</image:loc>
-      <image:title>Apprenante en cours de couture</image:title>
-      <image:caption>Encadrement personnalisé à chaque étape</image:caption>
-    </image:image>    <image:image>
+      <image:title>Formation couture 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-04.webp</image:loc>
-      <image:title>Démonstration sur machine à coudre</image:title>
-      <image:caption>Les techniques — expliquées et pratiquées</image:caption>
+      <image:title>Formation couture 04 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/formation-couture-05.webp</image:loc>
-      <image:title>Groupe d'apprenantes en pleine séance</image:title>
-      <image:caption>Une progression ensemble, dans la bonne humeur</image:caption>
-    </image:image>  </url>
-
-  <!-- ============== PAGE INSPIRATIONS ============== -->
-  <url>
-    <loc>https://lesservicescolombes.vercel.app/inspirations</loc>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-01.webp</image:loc>
-      <image:title>Inspirations — Wax multicolore</image:title>
-      <image:caption>Pièce signature de l'atelier</image:caption>
+      <image:title>Formation couture 05 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-02.webp</image:loc>
-      <image:title>Inspirations — Macro de tissus</image:title>
-      <image:caption>Mélange wax, bazin, pagne, lin</image:caption>
-    </image:image>
-        <image:image>
-          <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-02.webp</image:loc>
-          <image:title>Demoiselles d'honneur en robes wax assorties — Couture Colombe et Merceries</image:title>
-        </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-05.webp</image:loc>
-      <image:title>Robe midi boutonnée safran &amp; rose — bureau chic</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-06.webp</image:loc>
-      <image:title>Robe de soirée sirène noir &amp; fil d'or</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-07.webp</image:loc>
-      <image:title>Robe-chemise ceinturée vert feuille &amp; rose</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-08.webp</image:loc>
-      <image:title>Robe festive pagne rouge colombe &amp; or</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-09.webp</image:loc>
-      <image:title>Grand boubou-robe royal bazin safran brodé d'or</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-10.webp</image:loc>
-      <image:title>Ensemble jupe crayon &amp; chemisier pagne vert feuille</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-11.webp</image:loc>
-      <image:title>Robe invitée d'honneur — dentelle marron glacé &amp; or</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-12.webp</image:loc>
-      <image:title>Robe d'été vaporeuse rose poudré &amp; orange</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-07.webp</image:loc>
-      <image:title>Invitées en tenues aso-ebi assorties rose poudré, orange et feuilles — Couture Colombe et Merceries</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-robe-09.webp</image:loc>
-      <image:title>Robe corolle wax orange et feuille qui tourne sous les pétales — mariage civil</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/mariage-accessoires-01.webp</image:loc>
-      <image:title>Voile, gants, escarpins dorés, bijoux et bouquet de la mariée</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-03.webp</image:loc>
-      <image:title>Inspirations — Silhouette bazin</image:title>
-      <image:caption>Portrait éditorial en bazin brodé</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/inspirations-page-04.webp</image:loc>
-      <image:title>Inspirations — Flat lay couture</image:title>
-      <image:caption>Outils et matières premières</image:caption>
+      <image:loc>https://lesservicescolombes.vercel.app/images/hero-formation.webp</image:loc>
+      <image:title>Hero formation — Couture Colombe et Merceries</image:title>
     </image:image>
   </url>
-
-  <!-- ============== PAGE CONTACT ============== -->
   <url>
     <loc>https://lesservicescolombes.vercel.app/contact</loc>
     <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-atelier-01.webp</image:loc>
+      <image:title>Contact atelier 01 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-atelier-02.webp</image:loc>
+      <image:title>Contact atelier 02 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-atelier-03.webp</image:loc>
+      <image:title>Contact atelier 03 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-atelier-04.webp</image:loc>
+      <image:title>Contact atelier 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-atelier-05.webp</image:loc>
+      <image:title>Contact atelier 05 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-atelier-06.webp</image:loc>
+      <image:title>Contact atelier 06 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-01.webp</image:loc>
-      <image:title>Contact — Façade atelier</image:title>
-      <image:caption>Vue de l'atelier Couture Colombe</image:caption>
+      <image:title>Contact page 01 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-02.webp</image:loc>
-      <image:title>Contact — Consultation</image:title>
-      <image:caption>Mains d'une couturière au téléphone</image:caption>
+      <image:title>Contact page 02 — Couture Colombe et Merceries</image:title>
     </image:image>
     <image:image>
       <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-03.webp</image:loc>
-      <image:title>Contact — Table de travail</image:title>
-      <image:caption>Espace de travail de l'atelier</image:caption>
-    </image:image>  </url>
-
+      <image:title>Contact page 03 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/gallery/contact-page-04.webp</image:loc>
+      <image:title>Contact page 04 — Couture Colombe et Merceries</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://lesservicescolombes.vercel.app/images/hero-contact.webp</image:loc>
+      <image:title>Hero contact — Couture Colombe et Merceries</image:title>
+    </image:image>
+  </url>
 </urlset>
